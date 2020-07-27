@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+<h1 class="margins-top-bottom home-paragraph">
+    Welcome to Tabula, unknown user! TODO: Add spring security!
+    <!--- Welcome to Tabula, <span th:text="${#authentication.getName()}" th:remove="tag">user</span>! -->
+</h1>
+
+<p class="home-paragraph lead">
+    Tabula is a sample application in which you can create and explore announcements and events.
+    It is implemented entirely for educational purposes. Feel free to modify it, play around or
+    contribute your improvements and new features.
+</p>
+
+<p class="home-paragraph">
+    While it is deliberately quite simple it still demonstrates the usage of a
+    lot of libraries and concepts which you are likely to encounter in the wild.
+</p>
+
+<p class="home-paragraph">
+    Have fun!
+</p>
+
+<!-- Bootstap JS -->
+<!--<div th:replace="fragment/bootstrap-js :: bootstrap-js"></div>-->
+<!-- EO: Bootstap JS -->
+
+</body>
+</html>

@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(username);
         }
 
-        return new UserDTO(user);
+        return map(user);
     }
 
     private org.springframework.security.core.userdetails.User map(User user){

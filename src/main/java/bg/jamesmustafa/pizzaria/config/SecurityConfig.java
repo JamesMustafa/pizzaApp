@@ -24,24 +24,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).
-        passwordEncoder(passwordEncoder);
-    }
-
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.
+        http.csrf().disable().
                 authorizeRequests().
                 requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().
-                antMatchers("/login**").permitAll().
+                antMatchers("/login").permitAll().
                 antMatchers("/**").authenticated().
                 and().
                     formLogin().
                     loginPage("/login").
-                    loginProcessingUrl("/login/authenticate").
-                    failureForwardUrl("/login?param.error=bad_credentials").
-                    successForwardUrl("/home").
+                    permitAll().
                 and().
                     logout().
                     logoutUrl("/logout").
@@ -50,4 +42,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     deleteCookies("JSESSIONID");
 
     }
+
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).
+        passwordEncoder(passwordEncoder);
+    }
+
 }

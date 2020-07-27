@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <link crossorigin="anonymous"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          rel="stylesheet"/>
+
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary" th:fragment="navbar(activeTab)">
+
+    <!-- Project name -->
+    <a class="navbar-brand" href="#">Tabula</a>
+    <button aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+            class="navbar-toggler"
+            data-target="#navbarSupportedContent"
+            data-toggle="collapse"
+            type="button">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- EO: Project name -->
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item" th:classappend="${activeTab == 'home'}? 'active'">
+                <a class="nav-link" th:href="@{/home}">Home</a>
+            </li>
+            <li class="nav-item" th:classappend="${activeTab == 'announcements'}? 'active'">
+                <a class="nav-link" th:href="@{/announcements}">Announcements</a>
+            </li>
+            <li class="nav-item" th:classappend="${activeTab == 'events'}? 'active'">
+                <a class="nav-link" th:href="@{/events}">Events</a>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')" class="nav-item" th:classappend="${activeTab == 'stats'}? 'active'">
+                <a class="nav-link" th:href="@{/stats}">Statistics</a>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit"
+                            class="btn btn-link nav-link">
+                        Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!-- EO: Navbar -->
+
+</body>
+</html>
