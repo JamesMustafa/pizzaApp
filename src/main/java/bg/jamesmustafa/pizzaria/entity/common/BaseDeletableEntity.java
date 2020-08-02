@@ -2,6 +2,7 @@ package bg.jamesmustafa.pizzaria.entity.common;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
 import java.util.Date;
 
 //can two classes be @MappedSuperclass?
@@ -15,6 +16,11 @@ public abstract class BaseDeletableEntity extends BaseEntity {
     private Date deletedOn;
 
     protected BaseDeletableEntity() {
+    }
+
+    @PrePersist
+    public void setIsDeleted() {
+        this.isDeleted = false;
     }
 
     public Boolean getDeleted() {

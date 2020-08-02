@@ -1,4 +1,4 @@
-package bg.jamesmustafa.pizzaria.dto;
+package bg.jamesmustafa.pizzaria.data.dto;
 
 import bg.jamesmustafa.pizzaria.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

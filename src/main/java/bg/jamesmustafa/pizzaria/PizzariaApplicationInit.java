@@ -1,7 +1,9 @@
 package bg.jamesmustafa.pizzaria;
 
+import bg.jamesmustafa.pizzaria.entity.Category;
 import bg.jamesmustafa.pizzaria.entity.Role;
 import bg.jamesmustafa.pizzaria.entity.User;
+import bg.jamesmustafa.pizzaria.repository.CategoryRepository;
 import bg.jamesmustafa.pizzaria.repository.RoleRepository;
 import bg.jamesmustafa.pizzaria.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -14,11 +16,13 @@ import java.util.Set;
 public class PizzariaApplicationInit implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public PizzariaApplicationInit(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public PizzariaApplicationInit(UserRepository userRepository, CategoryRepository categoryRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -26,6 +30,21 @@ public class PizzariaApplicationInit implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        if(categoryRepository.count() ==0){
+            Category pizza = new Category();
+            pizza.setName("Pizza");
+            Category drinks = new Category();
+            drinks.setName("Drinks");
+            Category deserts = new Category();
+            deserts.setName("Deserts");
+            Category salads = new Category();
+            salads.setName("Salads");
+
+            categoryRepository.save(pizza);
+            categoryRepository.save(drinks);
+            categoryRepository.save(deserts);
+            categoryRepository.save(salads);
+        }
         if(userRepository.count() == 0){
 
 
