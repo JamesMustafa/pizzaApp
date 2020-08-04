@@ -15,7 +15,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary" th:fragment="navbar(activeTab)">
 
     <!-- Project name -->
-    <a class="navbar-brand" href="#">Tabula</a>
+    <a class="navbar-brand" th:href="@{/home}">Pizzaria Mizzaria</a>
     <button aria-controls="navbarSupportedContent"
             aria-expanded="false"
             aria-label="Toggle navigation"
@@ -25,21 +25,34 @@
             type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <!-- EO: Project name -->
+    <!-- Project name -->
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item" th:classappend="${activeTab == 'home'}? 'active'">
+            <!--<li class="nav-item" th:classappend="${activeTab == 'home'}? 'active'">
                 <a class="nav-link" th:href="@{/home}">Home</a>
             </li>
-            <!--<li class="nav-item" th:classappend="${activeTab == 'announcements'}? 'active'">
+            <li class="nav-item" th:classappend="${activeTab == 'announcements'}? 'active'">
                 <a class="nav-link" th:href="@{/announcements}">Announcements</a>
             </li>
             <li class="nav-item" th:classappend="${activeTab == 'events'}? 'active'">
                 <a class="nav-link" th:href="@{/events}">Events</a>
             </li>
             <li sec:authorize="hasRole('ADMIN')" class="nav-item" th:classappend="${activeTab == 'stats'}? 'active'">
-                <a class="nav-link" th:href="@{/stats}">Statistics</a> -->
+                <a class="nav-link" th:href="@{/stats}">Statistics</a>
+            </li> -->
+            <li class="nav-item">
+                <div class="dropdown">
+                    <a class="nav-link js-scroll-trigger dropdown-toggle btn-lg" data-toggle="dropdown">
+                        Menu
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:href="@{/}">Offers</a>
+                        <a class="dropdown-item" th:href="@{/}">order history</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" th:href="@{/products/}">View our Menu</a>
+                    </div>
+                </div>
             </li>
         </ul>
 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+<div class="container center">
+    <form th:action="@{/products/edit/{productId}(productId=${productEditForm.id})}" method="post" th:object="${productEditForm}" id="editProductForm">
+        <div class="form-group">
+            <label for="productName">Name</label>
+            <input type="text"
+                   th:value="${productEditForm.name}"
+                   class="form-control"
+                   id="productName"
+                   th:field="*{name}"
+                   readonly/>
+        </div>
+
+        <div class="form-group">
+            <label class="custom-control-label" for="productIsActive">Is active? </label>
+            <input type="checkbox"
+                   class="custom-control-input"
+                   id="productIsActive"
+                   th:field="*{activity}">
+        </div>
+
+        <div class="input-group">
+            <label for="productName">Price</label>
+            <input type="text"
+                   th:errorclass="is-invalid"
+                   th:value="${productEditForm.price}"
+                   class="form-control"
+                   aria-label="Amount (to the nearest dollar)"
+                   id="productPrice"
+                   th:field="*{price}">
+            <div class="input-group-append">
+                <span class="input-group-text">$</span>
+                <span class="input-group-text">0.00</span>
+            </div>
+            <div class="invalid-feedback">
+                Please fill in a product price.
+            </div>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>

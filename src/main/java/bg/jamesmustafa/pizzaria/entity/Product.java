@@ -22,9 +22,9 @@ public class Product extends BaseDeletableEntity {
     private String imgSrc;
 
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    private Boolean activity;
 
-    @ManyToOne(optional = false, targetEntity = Category.class)
+    @ManyToOne(targetEntity = Category.class)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
@@ -63,9 +63,9 @@ public class Product extends BaseDeletableEntity {
         this.imgSrc = imgSrc;
     }
 
-    public Boolean getActive() { return isActive; }
+    public Boolean getActivity() { return activity; }
 
-    public void setActive(Boolean active) { isActive = active; }
+    public void setActivity(Boolean activity) { this.activity = activity; }
 
     public Category getCategory() {
         return category;

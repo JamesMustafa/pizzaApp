@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+<div class="container center">
+    <form th:action="@{/offers/save}" method="post" th:object="${offerInputForm}" id="createOfferForm">
+        <div class="input-group">
+            <label for="offerPrice">Price</label>
+            <input type="text"
+                   th:errorclass="is-invalid"
+                   placeholder="Enter the price of the offer here"
+                   class="form-control"
+                   aria-label="Amount (to the nearest dollar)"
+                   id="offerPrice"
+                   th:field="*{promoPrice}">
+            <div class="input-group-append">
+                <span class="input-group-text">$</span>
+                <span class="input-group-text">0.00</span>
+            </div>
+            <div class="invalid-feedback">
+                Please fill in a offer price.
+            </div>
+        </div>
+
+
+        <div class="form-group col-md-6 mb-3">
+            <label class="text-center text-white font-weight-bold" for="products">Products</label>
+            <select multiple th:field="*{products}" id="products" class="form-control"
+                    th:classappend="${#fields.hasErrors('products')}? 'field-error'" >
+                <option value="">- Select products -</option>
+                    <option th:each="product : ${allProducts}" th:value="${product}"
+                            th:text="|   ${product.name} ${product.category.name}|"
+                            th:selected="${product == products}">
+                        Model
+                    </option>
+                </optgroup>
+            </select>
+            <p th:if="${#fields.hasErrors('products')}" th:errors="*{products}"
+               class="errors alert alert-danger">
+                Minimum one Product is required.
+            </p>
+        </div>
+
+        <div class="form-group">
+            <label for="validationDate">Image Url</label>
+            <input type="date"
+                   placeholder="Enter the date here"
+                   class="form-control"
+                   th:errorclass="is-invalid"
+                   id="validationDate"
+                   th:field="*{validUntil}"/>
+            <div class="invalid-feedback">
+                Please fill in a date.
+            </div>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+</body>
+</html>

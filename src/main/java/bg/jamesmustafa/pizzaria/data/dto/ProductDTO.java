@@ -1,5 +1,7 @@
 package bg.jamesmustafa.pizzaria.data.dto;
 
+import bg.jamesmustafa.pizzaria.entity.Category;
+
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -29,8 +31,8 @@ public class ProductDTO {
     @NotBlank(message = "Image source cannot be blank")
     private String imgSrc;
 
-    @NotBlank(message = "Category type cannot be blank")
-    private Long categoryId;
+    @NotNull(message = "Category cannot be null")
+    private Category category;
     //TODO: check if using another class in dto is correct
 
     public Long getId() {
@@ -79,11 +81,11 @@ public class ProductDTO {
         this.imgSrc = imgSrc;
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

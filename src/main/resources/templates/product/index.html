@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head th:replace="fragment/head :: head"></head>
+    <body>
+        <!-- Navbar -->
+        <div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+        <!-- EO: Navbar -->
+        <div class="jumbotron jumbotron-fluid p-2">
+            <div class="container">
+                <h1 class="display-4">Pizzas</h1>
+                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 p-4" th:each="pizza : ${pizzas}">
+                    <div class="card h-100">
+                        <img class="card-img-top" th:src="${pizza.imgSrc}" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${pizza.name}"></h5>
+                        <p class="card-text" th:text="${pizza.description}"></p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted" th:text="${pizza.price}"></small>
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <a th:href="@{/products/edit/{productId}(productId=${pizza.id})}" class="btn btn-success font-weight-bold text-white">Edit</a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="jumbotron jumbotron-fluid p-2">
+            <div class="container">
+                <h1 class="display-4">Salads</h1>
+                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 p-4" th:each="salad : ${salads}">
+                    <div class="card h-100">
+                        <img class="card-img-top" th:src="${salad.imgSrc}" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${salad.name}"></h5>
+                            <p class="card-text" th:text="${salad.description}"></p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted" th:text="${salad.price}"></small>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/products/edit/{productId}(productId=${salad.id})}" class="btn btn-success font-weight-bold text-white">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="jumbotron jumbotron-fluid p-2">
+            <div class="container">
+                <h1 class="display-4">Deserts</h1>
+                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 p-4" th:each="desert : ${deserts}">
+                    <div class="card h-100">
+                        <img class="card-img-top" th:src="${desert.imgSrc}" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${desert.name}"></h5>
+                            <p class="card-text" th:text="${desert.description}"></p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted" th:text="${desert.price}"></small>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/products/edit/{productId}(productId=${desert.id})}" class="btn btn-success font-weight-bold text-white">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="jumbotron jumbotron-fluid p-2">
+            <div class="container">
+                <h1 class="display-4">Drinks</h1>
+                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 p-4" th:each="drink : ${drinks}">
+                    <div class="card h-100">
+                        <img class="card-img-top" th:src="${drink.imgSrc}" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${drink.name}"></h5>
+                            <p class="card-text" th:text="${drink.description}"></p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted" th:text="${drink.price}"></small>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/products/edit/{productId}(productId=${drink.id})}" class="btn btn-success font-weight-bold text-white">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

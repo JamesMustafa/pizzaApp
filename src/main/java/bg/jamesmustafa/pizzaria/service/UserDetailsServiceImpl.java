@@ -1,6 +1,6 @@
 package bg.jamesmustafa.pizzaria.service;
 
-import bg.jamesmustafa.pizzaria.data.dto.UserDTO;
+import bg.jamesmustafa.pizzaria.data.models.service.UserDTO;
 import bg.jamesmustafa.pizzaria.entity.User;
 import bg.jamesmustafa.pizzaria.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

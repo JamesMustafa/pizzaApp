@@ -37,7 +37,27 @@
         </div>
 
         <div class="form-group">
-            <label class="custom-control-label" for="productIsActive">Is the product active? </label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="category">Category type</label>
+                </div>
+                <select th:errorclass="is-invalid"
+                        id="category"
+                        name="category"
+                        th:field="*{category.id}">
+                    <option th:each="aCategoryType : ${categoryTypes}"
+                            th:value="${aCategoryType.id}"
+                            th:text="${aCategoryType.name}"
+                            ></option>
+                </select>
+                <div class="invalid-feedback">
+                    Category type should be specified.
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="custom-control-label" for="productIsActive">Is active? </label>
             <input type="checkbox"
                    class="custom-control-input"
                    id="productIsActive"
@@ -75,25 +95,6 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <label class="input-group-text" for="categoryType">Category type</label>
-                </div>
-                <select th:field="*{categoryId}"
-                        th:errorclass="is-invalid"
-                        id="categoryType"
-                        name="categoryType">
-                    <option th:each="aCategoryType : ${categoryTypes}"
-                            th:value="${aCategoryType.id}"
-                            th:text="${aCategoryType.name}"
-                            th:selected="${aCategoryType.id}==*{categoryId}"></option>
-                </select>
-                <div class="invalid-feedback">
-                    Category type should be specified.
-                </div>
-            </div>
-        </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
