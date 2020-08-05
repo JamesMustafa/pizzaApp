@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+        <h1 class="text-center text-dark">Shopping Cart</h1>
+        <hr class="hr-2 bg-dark w-75">
+        <table class="table table-hover w-75 mx-auto">
+            <thead>
+            <tr class="row mx-auto">
+                <th class="col-md-2 text-center">Image</th>
+                <th class="col-md-3 text-center">Name</th>
+                <th class="col-md-2 text-center">Description</th>
+                <th class="col-md-2 text-center">Price</th>
+                <th class="col-md-1 text-center">Quantity</th>
+                <th class="col-md-2 text-center">Remove</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="item : ${#session.getAttribute('shopping-cart')}" th:object="${item}">
+                <tr class="row mx-auto">
+                    <th class="col-md-2 text-center"><img th:src="*{productDetailsViewModel.imgSrc}" alt="Product" height="150" width="150"></th>
+                    <td class="col-md-3 text-center" th:text="*{productDetailsViewModel.name}"></td>
+                    <td class="col-md-2 text-center" th:text="*{productDetailsViewModel.description}"></td>
+                    <td class="col-md-2 text-center" th:text="*{productDetailsViewModel.price}"></td>
+                    <td class="col-md-1 text-center" th:text="*{quantity}"></td>
+                    <td class="col-md-2 text-center">
+                        <form th:action="@{/cart/remove-product}" th:method="delete">
+                            <div class="button-holder d-flex justify-content-center">
+                                <input type="hidden" name="id" th:value="*{productDetailsViewModel.id}">
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </div>
+                        </form>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+        <hr class="hr-2 bg-dark">
+        <div class="text-center">
+            <h3 th:text="|Total: ${totalPrice}|"></h3>
+        </div>
+        <form th:action="@{/cart/checkout}" th:method="post">
+            <div class="button-holder d-flex justify-content-center">
+                <button type="submit" class="btn btn-success">Checkout</button>
+            </div>
+        </form>
+</body>
+</html>

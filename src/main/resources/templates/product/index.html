@@ -1,24 +1,30 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <html lang="en" xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head th:replace="fragment/head :: head"></head>
     <body>
 
     <!-- Behaviour -->
-    <script sec:authorize="hasRole('ADMIN')">
+    <script sec:authorize="hasRole('EMPLOYEE')">
         $(document).on("click", ".open-edit-dialog", function () {
         $("#activateId").val($(this).data('id'));
         });
     </script>
+
+    <script sec:authorize="hasRole('CUSTOMER')">
+        $(document).on("click", ".open-add-to-cart-dialog", function () {
+        $("#productId").val($(this).data('id'));
+        });
+    </script>
     <!-- EO: Behaviour-->
 
-        <!-- Navbar -->
-        <div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
-        <!-- EO: Navbar -->
+    <!-- Navbar -->
+    <div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+    <!-- EO: Navbar -->
         <div class="jumbotron jumbotron-fluid p-2">
             <div class="container">
                 <h1 class="display-4">Pizzas</h1>
-                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+                <p class="lead">There is no better feeling in the world than a warm pizza box in your lap.</p>
             </div>
         </div>
         <div class="container">
@@ -32,8 +38,18 @@
                     </div>
                     <div class="card-footer">
                         <small class="text-muted" th:text="${pizza.price}"></small>
-                        <div sec:authorize="hasRole('ADMIN')">
-                            <a th:href="@{/products/edit/{id}(id=${pizza.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+
+                        <div sec:authorize="hasRole('CUSTOMER')">
+                            <button type="button"
+                                    th:if="${pizza.activity}"
+                                    class="open-add-to-cart-dialog btn btn-success"
+                                    data-toggle="modal"
+                                    data-target="#addToCartModal"
+                                    th:data-id="*{pizza.id}">Add To Cart
+                            </button>
+                        </div>
+
+                        <div sec:authorize="hasRole('EMPLOYEE')">
                             <button type="button"
                                     th:if="${!pizza.activity}"
                                     class="open-edit-dialog btn btn-success"
@@ -49,6 +65,9 @@
                                     th:data-id="*{pizza.id}">Deactivate
                             </button>
                         </div>
+                        <div sec:authorize="hasRole('ADMIN')">
+                            <a th:href="@{/products/edit/{id}(id=${pizza.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                        </div>
                     </div>
                     </div>
                 </div>
@@ -58,7 +77,7 @@
         <div class="jumbotron jumbotron-fluid p-2">
             <div class="container">
                 <h1 class="display-4">Salads</h1>
-                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+                <p class="lead">The essence of a good salad is simplicity. Clean, bright flavors that, when brought together, bring out the best in one another.</p>
             </div>
         </div>
         <div class="container">
@@ -72,7 +91,17 @@
                         </div>
                         <div class="card-footer">
                             <small class="text-muted" th:text="${salad.price}"></small>
-                            <div sec:authorize="hasRole('ADMIN')">
+
+                            <div sec:authorize="hasRole('CUSTOMER')">
+                                <button type="button"
+                                        th:if="${salad.activity}"
+                                        class="open-add-to-cart-dialog btn btn-success"
+                                        data-toggle="modal"
+                                        data-target="#addToCartModal"
+                                        th:data-id="*{salad.id}">Add To Cart
+                                </button>
+                            </div>
+                            <div sec:authorize="hasRole('EMPLOYEE')">
                                 <button type="button"
                                         th:if="${!salad.activity}"
                                         class="open-edit-dialog btn btn-success"
@@ -88,6 +117,9 @@
                                         th:data-id="*{salad.id}">Deactivate
                                 </button>
                             </div>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/products/edit/{id}(id=${salad.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -96,8 +128,8 @@
 
         <div class="jumbotron jumbotron-fluid p-2">
             <div class="container">
-                <h1 class="display-4">Deserts</h1>
-                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+                <h1 class="display-4">Desserts</h1>
+                <p class="lead">It is hard to be sad when you are eating a cookie.</p>
             </div>
         </div>
         <div class="container">
@@ -111,7 +143,17 @@
                         </div>
                         <div class="card-footer">
                             <small class="text-muted" th:text="${desert.price}"></small>
-                            <div sec:authorize="hasRole('ADMIN')">
+
+                            <div sec:authorize="hasRole('CUSTOMER')">
+                                <button type="button"
+                                        th:if="${desert.activity}"
+                                        class="open-add-to-cart-dialog btn btn-success"
+                                        data-toggle="modal"
+                                        data-target="#addToCartModal"
+                                        th:data-id="*{desert.id}">Add To Cart
+                                </button>
+                            </div>
+                            <div sec:authorize="hasRole('EMPLOYEE')">
                                 <button type="button"
                                         th:if="${!desert.activity}"
                                         class="open-edit-dialog btn btn-success"
@@ -127,6 +169,9 @@
                                         th:data-id="*{desert.id}">Deactivate
                                 </button>
                             </div>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/products/edit/{id}(id=${desert.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -136,7 +181,8 @@
         <div class="jumbotron jumbotron-fluid p-2">
             <div class="container">
                 <h1 class="display-4">Drinks</h1>
-                <p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+                <p class="lead">“I drink to make other people more interesting.”
+                    ― Hemingway, Ernest</p>
             </div>
         </div>
         <div class="container">
@@ -150,7 +196,16 @@
                         </div>
                         <div class="card-footer">
                             <small class="text-muted" th:text="${drink.price}"></small>
-                            <div sec:authorize="hasRole('ADMIN')">
+                            <div sec:authorize="hasRole('CUSTOMER')">
+                                <button type="button"
+                                        th:if="${drink.activity}"
+                                        class="open-add-to-cart-dialog btn btn-success"
+                                        data-toggle="modal"
+                                        data-target="#addToCartModal"
+                                        th:data-id="*{drink.id}">Add To Cart
+                                </button>
+                            </div>
+                            <div sec:authorize="hasRole('EMPLOYEE')">
                                 <button type="button"
                                         th:if="${!drink.activity}"
                                         class="open-edit-dialog btn btn-success"
@@ -166,6 +221,9 @@
                                         th:data-id="*{drink.id}">Deactivate
                                 </button>
                             </div>
+                            <div sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/products/edit/{id}(id=${drink.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -173,11 +231,27 @@
         </div>
 
 
-        <!-- Delete announcement-->
-        <div sec:authorize="hasRole('ADMIN')" th:replace="product/activate :: activate-product">
+        <!-- Activate product-->
+        <div sec:authorize="hasRole('EMPLOYEE')" th:replace="product/activateModal :: activate-product">
             Modal dialog for activating product
         </div>
-        <!-- EO: Delete announcement-->
+        <!-- EO: Activate product-->
+
+        <!-- Activate product-->
+        <div sec:authorize="hasRole('CUSTOMER')" th:replace="product/addToCartModal :: add-to-cart">
+            Modal dialog for activating product
+        </div>
+        <!-- EO: Activate product-->
+
+
+
+<!--    <a href="#" class="btn btn-primary" rel="popover" data-content='-->
+<!--<form id="quantityForm" name="quantityForm" method="post" th:action="@{/cart/addProduct}">-->
+<!--        <label for="quantity">Quantity: </label>-->
+<!--        <input type="number" id="quantity" name="quantity" min="1" max="15" step="1"/>-->
+<!--</form>-->
+<!--' data-placement="top" data-original-title="Fill in form">Add to Cart</a>-->
+
 
     </body>
 </html>

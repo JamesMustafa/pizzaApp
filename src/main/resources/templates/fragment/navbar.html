@@ -54,6 +54,23 @@
                     </div>
                 </div>
             </li>
+
+            <li class="nav-item">
+                <div class="dropdown">
+                    <a class="nav-link js-scroll-trigger dropdown-toggle btn-lg" data-toggle="dropdown">
+                        Cart
+                    </a>
+                    <div class="dropdown-menu">
+                        <th:block th:each="item : ${#session.getAttribute('shopping-cart')}" th:object="${item}">
+                            <div class="dropdown-item" th:text="|*{productDetailsViewModel.name} x *{quantity}|"></div>
+                        </th:block>
+                        <div class="dropdown-divider"></div>
+                        <div class="text-center">
+                            <a th:href="@{/cart/details}" class="btn btn-dark">Cart</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
         </ul>
 
         <ul class="navbar-nav ml-auto">

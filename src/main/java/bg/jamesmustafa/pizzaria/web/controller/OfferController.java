@@ -17,12 +17,12 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/offers")
-public class OffersController {
+public class OfferController {
 
 private final OfferService offerService;
 private final ProductService productService;
 
-    public OffersController(OfferService offerService, ProductService productService) {
+    public OfferController(OfferService offerService, ProductService productService) {
         this.offerService = offerService;
         this.productService = productService;
     }
