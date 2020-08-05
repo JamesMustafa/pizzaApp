@@ -83,28 +83,36 @@ public class ProductController {
         return "product/index";
     }
 
-    //this will be the edit...
-    @GetMapping("/edit/{productId}")
-    @PreAuthorize("hasRole('EMPLOYEE')")
-    public String editProduct(@PathVariable("productId") Long productId, Model model) {
-        ProductDTO productDTO = productService.findById(productId);
+    @GetMapping("/edit/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String editProduct(@PathVariable("id") Long id, Model model) {
+        ProductDTO productDTO = productService.findById(id);
         model.addAttribute("productEditForm", productDTO);
+        model.addAttribute("categoryTypes", categoryService.findAll());
+
         return "product/edit";
     }
 
-    @PostMapping("/edit/{productId}")
-    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PostMapping("/edit/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String editProductConfirm(@Valid @ModelAttribute("productEditForm") ProductDTO productDTO,
+                                     @PathVariable("id") Long id,
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes){
 
         if (bindingResult.hasErrors()) {
             return "redirect:/products/";
         }
-        productService.editProduct(productDTO);
+        productService.editProduct(id, productDTO);
         return "redirect:/home";
     }
     //TODO: Make separate for pizza, drinks, etc.. make sort by active products, make add to cart button, make the price bigger.
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PostMapping("/activate")
+    public String activate(@ModelAttribute(name="activateId") Long activateId) {
+        productService.activateProduct(activateId);
+        return "redirect:/products/";
+    }
 
 }

@@ -8,15 +8,50 @@
 <!-- EO: Navbar -->
 
 <div class="container center">
-    <form th:action="@{/products/edit/{productId}(productId=${productEditForm.id})}" method="post" th:object="${productEditForm}" id="editProductForm">
+    <form th:action="@{/products/edit/{id}(id=${productEditForm.id})}" method="post" th:object="${productEditForm}" id="createProductForm">
         <div class="form-group">
             <label for="productName">Name</label>
             <input type="text"
-                   th:value="${productEditForm.name}"
                    class="form-control"
                    id="productName"
                    th:field="*{name}"
-                   readonly/>
+                   th:value="*{name}"/>
+            <div class="invalid-feedback">
+                Please fill in a product name.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="productDescription">Description</label>
+            <textarea class="form-control"
+                      form="createProductForm"
+                      id="productDescription"
+                      rows="5"
+                      th:field="*{description}"
+                      th:text="*{description}"></textarea>
+            <div class="invalid-feedback">
+                The description should be longer than 10 characters.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="category">Category type</label>
+                </div>
+                <select
+                        id="category"
+                        name="category"
+                        th:field="*{category.id}">
+                    <option th:each="aCategoryType : ${categoryTypes}"
+                            th:value="${aCategoryType.id}"
+                            th:text="${aCategoryType.name}"
+                    ></option>
+                </select>
+                <div class="invalid-feedback">
+                    Category type should be specified.
+                </div>
+            </div>
         </div>
 
         <div class="form-group">
@@ -30,18 +65,29 @@
         <div class="input-group">
             <label for="productName">Price</label>
             <input type="text"
-                   th:errorclass="is-invalid"
-                   th:value="${productEditForm.price}"
                    class="form-control"
                    aria-label="Amount (to the nearest dollar)"
                    id="productPrice"
-                   th:field="*{price}">
+                   th:field="*{price}"
+                   th:value="*{price}">
             <div class="input-group-append">
                 <span class="input-group-text">$</span>
                 <span class="input-group-text">0.00</span>
             </div>
             <div class="invalid-feedback">
                 Please fill in a product price.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="productImgSrc">Image Url</label>
+            <input type="text"
+                   class="form-control"
+                   id="productImgSrc"
+                   th:field="*{imgSrc}"
+                   th:value="*{imgSrc}"/>
+            <div class="invalid-feedback">
+                Please fill in a product image source.
             </div>
         </div>
 

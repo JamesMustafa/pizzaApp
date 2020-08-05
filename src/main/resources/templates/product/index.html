@@ -3,6 +3,15 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
     <head th:replace="fragment/head :: head"></head>
     <body>
+
+    <!-- Behaviour -->
+    <script sec:authorize="hasRole('ADMIN')">
+        $(document).on("click", ".open-edit-dialog", function () {
+        $("#activateId").val($(this).data('id'));
+        });
+    </script>
+    <!-- EO: Behaviour-->
+
         <!-- Navbar -->
         <div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
         <!-- EO: Navbar -->
@@ -24,7 +33,21 @@
                     <div class="card-footer">
                         <small class="text-muted" th:text="${pizza.price}"></small>
                         <div sec:authorize="hasRole('ADMIN')">
-                            <a th:href="@{/products/edit/{productId}(productId=${pizza.id})}" class="btn btn-success font-weight-bold text-white">Edit</a>
+                            <a th:href="@{/products/edit/{id}(id=${pizza.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                            <button type="button"
+                                    th:if="${!pizza.activity}"
+                                    class="open-edit-dialog btn btn-success"
+                                    data-toggle="modal"
+                                    data-target="#activateModal"
+                                    th:data-id="*{pizza.id}">Activate
+                            </button>
+                            <button type="button"
+                                    th:if="${pizza.activity}"
+                                    class="open-edit-dialog btn btn-danger"
+                                    data-toggle="modal"
+                                    data-target="#activateModal"
+                                    th:data-id="*{pizza.id}">Deactivate
+                            </button>
                         </div>
                     </div>
                     </div>
@@ -50,7 +73,20 @@
                         <div class="card-footer">
                             <small class="text-muted" th:text="${salad.price}"></small>
                             <div sec:authorize="hasRole('ADMIN')">
-                                <a th:href="@{/products/edit/{productId}(productId=${salad.id})}" class="btn btn-success font-weight-bold text-white">Edit</a>
+                                <button type="button"
+                                        th:if="${!salad.activity}"
+                                        class="open-edit-dialog btn btn-success"
+                                        data-toggle="modal"
+                                        data-target="#activateModal"
+                                        th:data-id="*{salad.id}">Activate
+                                </button>
+                                <button type="button"
+                                        th:if="${salad.activity}"
+                                        class="open-edit-dialog btn btn-danger"
+                                        data-toggle="modal"
+                                        data-target="#activateModal"
+                                        th:data-id="*{salad.id}">Deactivate
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -76,7 +112,20 @@
                         <div class="card-footer">
                             <small class="text-muted" th:text="${desert.price}"></small>
                             <div sec:authorize="hasRole('ADMIN')">
-                                <a th:href="@{/products/edit/{productId}(productId=${desert.id})}" class="btn btn-success font-weight-bold text-white">Edit</a>
+                                <button type="button"
+                                        th:if="${!desert.activity}"
+                                        class="open-edit-dialog btn btn-success"
+                                        data-toggle="modal"
+                                        data-target="#activateModal"
+                                        th:data-id="*{desert.id}">Activate
+                                </button>
+                                <button type="button"
+                                        th:if="${desert.activity}"
+                                        class="open-edit-dialog btn btn-danger"
+                                        data-toggle="modal"
+                                        data-target="#activateModal"
+                                        th:data-id="*{desert.id}">Deactivate
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -102,12 +151,33 @@
                         <div class="card-footer">
                             <small class="text-muted" th:text="${drink.price}"></small>
                             <div sec:authorize="hasRole('ADMIN')">
-                                <a th:href="@{/products/edit/{productId}(productId=${drink.id})}" class="btn btn-success font-weight-bold text-white">Edit</a>
+                                <button type="button"
+                                        th:if="${!drink.activity}"
+                                        class="open-edit-dialog btn btn-success"
+                                        data-toggle="modal"
+                                        data-target="#activateModal"
+                                        th:data-id="*{drink.id}">Activate
+                                </button>
+                                <button type="button"
+                                        th:if="${drink.activity}"
+                                        class="open-edit-dialog btn btn-danger"
+                                        data-toggle="modal"
+                                        data-target="#activateModal"
+                                        th:data-id="*{drink.id}">Deactivate
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+
+        <!-- Delete announcement-->
+        <div sec:authorize="hasRole('ADMIN')" th:replace="product/activate :: activate-product">
+            Modal dialog for activating product
+        </div>
+        <!-- EO: Delete announcement-->
+
     </body>
 </html>

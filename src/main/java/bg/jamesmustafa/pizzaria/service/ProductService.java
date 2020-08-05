@@ -65,8 +65,29 @@ public class ProductService {
         productRepository.deleteById(productId);
     }
 
-    public void editProduct(ProductDTO productDTO){
-        Product product = this.productRepository.findById(productDTO.getId()).orElseThrow();
+
+    public void activateProduct(Long activateId){
+        Product product = this.productRepository.findById(activateId).orElseThrow();
+        if(product.getActivity()){
+            product.setActivity(false);
+        }
+        else product.setActivity(true);
+
+        productRepository.save(product);
+    }
+
+    public void editProduct(Long id, ProductDTO productDTO){
+
+        Product product = this.productRepository
+                .findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product with this id was not found!"));
+
+        product.setName(productDTO.getName());
+        product.setActivity(productDTO.getActivity());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setCategory(productDTO.getCategory());
+
         productRepository.save(product);
     }
 }
