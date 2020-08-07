@@ -42,8 +42,8 @@ public class User extends BaseEntity {
     @Column(name = "address")
     private String address;
 
-    @OneToMany(mappedBy = "user", targetEntity = Order.class,
-            fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", targetEntity = Order.class,
+            fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Order> orders;
 
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)

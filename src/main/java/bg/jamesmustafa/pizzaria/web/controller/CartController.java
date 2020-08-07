@@ -1,19 +1,22 @@
 package bg.jamesmustafa.pizzaria.web.controller;
 
+import bg.jamesmustafa.pizzaria.data.dto.OrderDTO;
+import bg.jamesmustafa.pizzaria.data.dto.ProductDTO;
 import bg.jamesmustafa.pizzaria.data.models.view.CartViewModel;
 import bg.jamesmustafa.pizzaria.data.models.view.ProductDetailsViewModel;
+import bg.jamesmustafa.pizzaria.service.OrderService;
 import bg.jamesmustafa.pizzaria.service.ProductService;
+import bg.jamesmustafa.pizzaria.service.UserDetailsServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,11 +25,15 @@ import java.util.List;
 public class CartController {
 
     private final ProductService productService;
+    private final OrderService orderService;
     private final ModelMapper modelMapper;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    public CartController(ProductService productService, ModelMapper modelMapper) {
+    public CartController(ProductService productService, OrderService orderService, ModelMapper modelMapper, UserDetailsServiceImpl userDetailsService) {
         this.productService = productService;
+        this.orderService = orderService;
         this.modelMapper = modelMapper;
+        this.userDetailsService = userDetailsService;
     }
 
     @PostMapping("/addProduct")
@@ -48,7 +55,7 @@ public class CartController {
     }
 
     @GetMapping("/details")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public String cartDetails(Model model, HttpSession session) {
         var cart = this.retrieveCart(session);
         model.addAttribute("totalPrice", this.calcTotal(cart));
@@ -56,11 +63,33 @@ public class CartController {
         return "cart/details";
     }
 
+    //TODO: DeleteMapping and method="delete" are not working, but when it's Post everything is fine. Why is that?
+    @PostMapping("/removeProduct")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public String removeFromCartConfirm(@ModelAttribute(name="deleteId") Long deleteId, HttpSession session) {
+        this.removeItemFromCart(deleteId, this.retrieveCart(session));
+
+        return "redirect:/cart/details";
+    }
+
+    @PostMapping("/checkout")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public String checkoutConfirm(HttpSession session, Principal principal) {
+        var cart = this.retrieveCart(session);
+
+        OrderDTO orderDTO = this.prepareOrder(cart, principal.getName());
+        this.orderService.addOrderForApproval(orderDTO);
+        //this.orderService.createOrder(orderDTO); --this thing will be implemented when the employee accepts.
+        return "redirect:/home";
+    }
+
+
     private void initCart(HttpSession session) {
         if (session.getAttribute("shopping-cart") == null) {
             session.setAttribute("shopping-cart", new LinkedList<>());
         }
     }
+
 
     private void addItemToCart(CartViewModel cartViewModel, List<CartViewModel> cartViewModelList) {
         for (CartViewModel item : cartViewModelList) {
@@ -86,6 +115,28 @@ public class CartController {
         }
 
         return result;
+    }
+
+    private void removeItemFromCart(Long id, List<CartViewModel> cart) {
+        cart.removeIf(c -> c.getProductDetailsViewModel().getId().equals(id));
+    }
+
+    private OrderDTO prepareOrder(List<CartViewModel> cart, String customer) {
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setCustomer(this.userDetailsService.findUserByUsername(customer));
+        List<ProductDTO> products = new ArrayList<>();
+        for (CartViewModel item : cart) {
+            ProductDTO productDTO = this.modelMapper.map(item.getProductDetailsViewModel(), ProductDTO.class);
+
+            for (int i = 0; i < item.getQuantity(); i++) {
+                products.add(productDTO);
+            }
+        }
+
+        orderDTO.setProducts(products);
+        orderDTO.setTotalPrice(this.calcTotal(cart));
+
+        return orderDTO;
     }
 
 }

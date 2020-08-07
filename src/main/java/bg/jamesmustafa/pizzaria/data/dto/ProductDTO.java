@@ -31,6 +31,7 @@ public class ProductDTO {
     @NotBlank(message = "Image source cannot be blank")
     private String imgSrc;
 
+    //TODO: Make it categoryDTO class.
     @NotNull(message = "Category cannot be null")
     private Category category;
     //TODO: check if using another class in dto is correct

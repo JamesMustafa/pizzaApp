@@ -30,9 +30,9 @@
                     <td class="col-md-2 text-center" th:text="*{productDetailsViewModel.price}"></td>
                     <td class="col-md-1 text-center" th:text="*{quantity}"></td>
                     <td class="col-md-2 text-center">
-                        <form th:action="@{/cart/remove-product}" th:method="delete">
+                        <form th:action="@{/cart/removeProduct}" th:method="post">
                             <div class="button-holder d-flex justify-content-center">
-                                <input type="hidden" name="id" th:value="*{productDetailsViewModel.id}">
+                                <input type="hidden" id="deleteId" name="deleteId" th:value="*{productDetailsViewModel.id}">
                                 <button type="submit" class="btn btn-danger">Remove</button>
                             </div>
                         </form>

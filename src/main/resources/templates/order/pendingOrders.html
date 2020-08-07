@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+<h1 class="text-center text-dark my-4">Pending Orders</h1>
+
+<th:block th:each="order : ${pendingOrders}">
+    <div class="col-sm-10 my-4 mx-auto">
+    <div class="card">
+        <div class="card-header">
+            <h4>
+                Order request number: ' <span th:text="${order.id}"></span> ' , Ordered By: ' <span th:text="${order.customer.username}"></span> '
+            </h4>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                To address: <span th:text="${order.customer.address}"></span>, <span th:text="${order.customer.city}"></span>
+            </p>
+            <h6 class="card-title">
+                Total price: <span th:text="${order.totalPrice}"></span>
+            </h6>
+            <div class="text-right">
+                <a th:href="@{/orders/pending/{id}(id=${order.id})}" class="btn btn-primary font-weight-bold text-white">View All</a>
+            </div>
+        </div>
+    </div>
+    </div>
+</th:block>
+
+</body>
+</html>

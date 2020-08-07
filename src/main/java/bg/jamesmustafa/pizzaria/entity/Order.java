@@ -13,10 +13,15 @@ public class Order extends BaseEntity {
 
     @Column(name = "total_price", nullable = false)
     private BigDecimal totalPrice;
+
     @Column(name = "is_successful")
     private Boolean isSuccessful;
+
     @Column(name = "waiting_time")
     private LocalDateTime waitingTime;
+
+    @Column(name = "is_approved", nullable = false)
+    private Boolean isApproved;
 
     @ManyToMany(targetEntity = Product.class, fetch = FetchType.EAGER)
     @JoinTable(
@@ -32,9 +37,9 @@ public class Order extends BaseEntity {
     )
     private List<Product> products;
 
-    @ManyToOne(optional = false, targetEntity = User.class)
+    @ManyToOne(optional = true, targetEntity = User.class)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    private User customer;
 
     public Order() {
     }
@@ -71,11 +76,11 @@ public class Order extends BaseEntity {
         this.products = products;
     }
 
-    public User getUser() {
-        return user;
-    }
+    public User getCustomer() { return customer; }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public void setCustomer(User customer) { this.customer = customer; }
+
+    public Boolean getApproved() { return isApproved; }
+
+    public void setApproved(Boolean approved) { isApproved = approved; }
 }
