@@ -74,10 +74,10 @@ public class CartController {
 
     @PostMapping("/checkout")
     @PreAuthorize("hasRole('CUSTOMER')")
-    public String checkoutConfirm(HttpSession session, Principal principal) {
+    public String checkoutConfirm(String comment, HttpSession session, Principal principal) {
         var cart = this.retrieveCart(session);
 
-        OrderDTO orderDTO = this.prepareOrder(cart, principal.getName());
+        OrderDTO orderDTO = this.prepareOrder(cart, principal.getName(), comment);
         this.orderService.addOrderForApproval(orderDTO);
         //this.orderService.createOrder(orderDTO); --this thing will be implemented when the employee accepts.
         return "redirect:/home";
@@ -121,8 +121,9 @@ public class CartController {
         cart.removeIf(c -> c.getProductDetailsViewModel().getId().equals(id));
     }
 
-    private OrderDTO prepareOrder(List<CartViewModel> cart, String customer) {
+    private OrderDTO prepareOrder(List<CartViewModel> cart, String customer, String comment) {
         OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setComment(comment);
         orderDTO.setCustomer(this.userDetailsService.findUserByUsername(customer));
         List<ProductDTO> products = new ArrayList<>();
         for (CartViewModel item : cart) {

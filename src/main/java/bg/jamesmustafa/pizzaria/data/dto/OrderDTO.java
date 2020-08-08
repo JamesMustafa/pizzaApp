@@ -10,6 +10,8 @@ import java.util.List;
 
 public class OrderDTO {
 
+    //TODO: Can i put PositiveOrZero to the boolean values??
+
     private Long id;
 
     @NotBlank(message = "Price cannot be blank")
@@ -31,6 +33,9 @@ public class OrderDTO {
 
     @NotNull(message = "Boolean should be either true or false")
     private Boolean isApproved;
+
+    @Size(max = 200, message = "Comment length must be less than 200 characters")
+    private String comment;
 
     public Long getId() { return id; }
 
@@ -73,4 +78,8 @@ public class OrderDTO {
     public Boolean getApproved() { return isApproved; }
 
     public void setApproved(Boolean approved) { isApproved = approved; }
+
+    public String getComment() { return comment; }
+
+    public void setComment(String comment) { this.comment = comment; }
 }

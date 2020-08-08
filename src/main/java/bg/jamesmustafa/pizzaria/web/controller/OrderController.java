@@ -6,9 +6,9 @@ import bg.jamesmustafa.pizzaria.service.ProductService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -31,5 +31,31 @@ public class OrderController {
         model.addAttribute("pendingOrders", pendingOrders);
 
         return "order/pendingOrders";
+    }
+
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @GetMapping("/pending/{id}")
+    public String pendingDetails(@PathVariable("id") Long orderId, Model model) {
+
+        OrderDTO orderDTO = this.orderService.findById(orderId);
+        model.addAttribute("order", orderDTO);
+
+        return "order/pendingDetails";
+    }
+
+    @PostMapping("/declineOrder")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public String declineOrder(@ModelAttribute(name="orderDeclineId") Long orderId){
+
+        this.orderService.declineOrder(orderId);
+        return "redirect:/home";
+    }
+
+    @PostMapping("/confirmOrder")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public String confirmOrder(@ModelAttribute(name="orderConfirmId") Long orderId, String waitingTime){
+
+        this.orderService.confirmOrder(orderId, waitingTime);
+        return "redirect:/home";
     }
 }

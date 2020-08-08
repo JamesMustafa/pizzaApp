@@ -23,7 +23,10 @@ public class Order extends BaseEntity {
     @Column(name = "is_approved", nullable = false)
     private Boolean isApproved;
 
-    @ManyToMany(targetEntity = Product.class, fetch = FetchType.EAGER)
+    @Column(name = "comment")
+    private String comment;
+
+    @ManyToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
     @JoinTable(
             name = "orders_products",
             joinColumns = @JoinColumn(
@@ -37,7 +40,7 @@ public class Order extends BaseEntity {
     )
     private List<Product> products;
 
-    @ManyToOne(optional = true, targetEntity = User.class)
+    @ManyToOne(targetEntity = User.class)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User customer;
 
@@ -83,4 +86,8 @@ public class Order extends BaseEntity {
     public Boolean getApproved() { return isApproved; }
 
     public void setApproved(Boolean approved) { isApproved = approved; }
+
+    public String getComment() { return comment; }
+
+    public void setComment(String comment) { this.comment = comment; }
 }

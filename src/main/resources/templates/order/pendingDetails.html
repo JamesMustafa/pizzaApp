@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<script sec:authorize="hasRole('EMPLOYEE')">
+        $(document).on("click", ".open-decline-modal", function () {
+        $("#orderDeclineId").val($(this).data('id'));
+        });
+
+        $(document).on("click", ".open-confirm-modal", function () {
+        $("#orderConfirmId").val($(this).data('id'));
+        });
+</script>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+<h1 class="text-center text-dark">Order Details</h1>
+<hr class="hr-2 bg-dark w-75">
+<table class="table table-hover w-75 mx-auto">
+    <thead>
+    <tr class="row mx-auto">
+        <th class="col-md-3 text-center">Image</th>
+        <th class="col-md-3 text-center">Name</th>
+        <th class="col-md-3 text-center">Description</th>
+        <th class="col-md-3 text-center">Price</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <!--TODO: Is it a good practice to use th:block or nah-->
+
+    <th:block th:each="product : ${order.products}">
+        <tr class="row mx-auto">
+            <th class="col-md-3 text-center"><img th:src="*{product.imgSrc}" alt="Product" height="150" width="150"></th>
+            <td class="col-md-3 text-center" th:text="*{product.name}"></td>
+            <td class="col-md-3 text-center" th:text="*{product.description}"></td>
+            <td class="col-md-3 text-center" th:text="*{product.price}"></td>
+        </tr>
+    </th:block>
+    </tbody>
+</table>
+<hr class="hr-2 bg-dark">
+<div class="text-center">
+    <h3 th:text="|Total: ${order.totalPrice}|"></h3>
+</div>
+<hr class="hr-2 bg-dark">
+
+<div class="card w-75 mx-auto text-center" style="width: 18rem;">
+
+    <div class="card-body">
+        <h4 class="card-title">User details for <span th:text="${order.customer.username}"></span></h4>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><h6>Full Name: </h6><span th:text="${order.customer.name}"></span> <span th:text="${order.customer.surname}"></span></li>
+        <li class="list-group-item"><h6>E-mail:  </h6><span th:text="${order.customer.email}"></span></li>
+        <li class="list-group-item"><h6>City: </h6><span th:text="${order.customer.city}"></span></li>
+        <li class="list-group-item"><h6>Address: </h6><span th:text="${order.customer.address}"></span></li>
+    </ul>
+    <div class="card-body">
+        <h5 class="card-title">Comment for the order: </h5>
+        <p class="card-text"><span th:text="${order.comment}"></span></p>
+    </div>
+    <div class="card-body">
+        <a href="#" class="card-link">Send an e-mail</a>
+    </div>
+</div>
+<div class=" container text-center w-75 mx-auto my-5">
+    <div class="row">
+        <div class="col">
+            <button type="button"
+                    class="open-decline-modal btn btn-danger btn-lg btn-block"
+                    data-toggle="modal"
+                    data-target="#declineModal"
+                    th:data-id="*{order.id}">Decline Order
+            </button>
+        </div>
+        <div class="col">
+            <button type="button"
+                    class="open-confirm-modal btn btn-success btn-lg btn-block"
+                    data-toggle="modal"
+                    data-target="#confirmModal"
+                    th:data-id="*{order.id}">Confirm Order
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Decline order modal-->
+<div sec:authorize="hasRole('EMPLOYEE')" th:replace="order/declineModal :: decline-order">
+    Modal dialog for declining order
+</div>
+<!-- Decline order modal-->
+
+<!-- Confirm order modal-->
+<div sec:authorize="hasRole('EMPLOYEE')" th:replace="order/confirmModal :: confirm-order">
+    Modal dialog for confirming order
+</div>
+<!-- Confirm order modal-->
+
+
+</body>
+</html>

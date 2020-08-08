@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="confirm-order">
+
+    <!-- Modal  -->
+
+    <div class="modal fade" id="confirmModal" tabindex="-1"
+         role="dialog"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirm Order</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formConfirm"
+                      th:method="post"
+                      th:action="@{/orders/confirmOrder}">
+                    <div class="modal-body">
+                        Please enter the waiting time for order:
+                        <input type="time"
+                               id="waitingTime"
+                               th:attr="min=${#dates.format(#dates.createNow(), 'HH:mm')}"
+                               name="waitingTime"/>
+                        <!--Checks if the time is present or in future and does not allow to put past time-->
+                        <input id="orderConfirmId" name="orderConfirmId" type="hidden" value=""/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Confirm Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

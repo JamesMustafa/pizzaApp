@@ -87,6 +87,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     public String editProduct(@PathVariable("id") Long id, Model model) {
         ProductDTO productDTO = productService.findById(id);
+
         model.addAttribute("productEditForm", productDTO);
         model.addAttribute("categoryTypes", categoryService.findAll());
 

@@ -41,14 +41,30 @@
             </th:block>
             </tbody>
         </table>
+
+
         <hr class="hr-2 bg-dark">
         <div class="text-center">
             <h3 th:text="|Total: ${totalPrice}|"></h3>
         </div>
+        <hr class="hr-2 bg-dark">
+        <h4 class="text-center">If you want to add some comment to your order you can type it below</h4>
         <form th:action="@{/cart/checkout}" th:method="post">
-            <div class="button-holder d-flex justify-content-center">
+            <div class="form-group w-50 mx-auto">
+                <label for="comment" class="col-form-label">Let us know if you have any preferences: </label>
+                <textarea class="form-control"
+                          id="comment"
+                          name="comment"
+                          style="resize:none"
+                          rows="3"
+                          placeholder="Example: I don't want any sauces/ I have milk intolerance"
+                          ></textarea>
+            </div>
+            <div class="button-holder d-flex justify-content-center my-4">
                 <button type="submit" class="btn btn-success">Checkout</button>
             </div>
         </form>
+
+
 </body>
 </html>

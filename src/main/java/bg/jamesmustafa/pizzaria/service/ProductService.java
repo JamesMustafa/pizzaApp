@@ -14,12 +14,10 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final CategoryService categoryService;
     private final ModelMapper modelMapper;
 
-    public ProductService(ProductRepository productRepository, CategoryService categoryService, ModelMapper modelMapper) {
+    public ProductService(ProductRepository productRepository, ModelMapper modelMapper) {
         this.productRepository = productRepository;
-        this.categoryService = categoryService;
         this.modelMapper = modelMapper;
     }
 
@@ -90,4 +88,24 @@ public class ProductService {
 
         productRepository.save(product);
     }
+
+//    public List<Product> mapToListOfProducts(List<ProductDTO> productDTOList){
+//        List<Product> products = productDTOList
+//                .stream()
+//                .map(p -> this.modelMapper.map(p, Product.class))
+//                .collect(Collectors.toList());
+//
+//        return products;
+//    }
+//
+//    public List<ProductDTO> mapToListOfProductsDTOS(List<Product> products){
+//        List<ProductDTO> productsDTOS = products
+//                .stream()
+//                .map(p -> this.modelMapper.map(p, ProductDTO.class))
+//                .collect(Collectors.toList());
+//
+//        return productsDTOS;
+//    }
+
+
 }
