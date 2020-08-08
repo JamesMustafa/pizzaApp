@@ -232,14 +232,14 @@
 
 
         <!-- Activate product-->
-        <div sec:authorize="hasRole('EMPLOYEE')" th:replace="product/activateModal :: activate-product">
+        <div sec:authorize="hasRole('EMPLOYEE')" th:replace="product/modal/activateModal :: activate-product">
             Modal dialog for activating product
         </div>
         <!-- EO: Activate product-->
 
         <!-- Add to cart product-->
-        <div sec:authorize="hasRole('CUSTOMER')" th:replace="product/addToCartModal :: add-to-cart">
-            Modal dialog for activating product
+        <div sec:authorize="hasRole('CUSTOMER')" th:replace="product/modal/addToCartModal :: add-to-cart">
+            Modal dialog for adding product to cart
         </div>
         <!-- EO: Add to cart product-->
 

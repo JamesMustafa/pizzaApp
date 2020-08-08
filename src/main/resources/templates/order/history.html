@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+<h1 class="text-center text-dark my-4">Order History</h1>
+
+<th:block th:each="order : ${previousOrders}">
+    <div class="col-sm-10 my-4 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                <h4>
+                    Order request number: ' <span th:text="${order.id}"></span> ' , Ordered at:
+                    <span th:text="${#temporals.format(order.createdOn, 'dd-MMM-yyyy, HH:mm')}"></span>
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    To address: <span th:text="${order.customer.address}"></span>, <span th:text="${order.customer.city}"></span>
+                </p>
+                <h6 class="card-title">
+                    Total price: <span th:text="${order.totalPrice}"></span>
+                </h6>
+<!--                <h6 class="card-title">-->
+<!--                    You waited :-->
+<!--                    <span th:with="minutes=${T(java.util.concurrent.TimeUnit).MINUTES}"-->
+<!--                          th:text="${minutes.convert(${order.waitingTime} - ${order.createdOn}, minutes)}" />-->
+<!--                </h6>-->
+                <div class="text-right">
+                    <form method="post" th:action="@{/cart/reOrder}">
+                        <div class="form-group">
+                            <input id="orderId" name="orderId" type="hidden" th:value="${order.id}"/>
+                            <button type="submit" class="btn btn-primary text-white">Add to Cart</button>
+                        </div>
+                    </form>
+            </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+</body>
+</html>

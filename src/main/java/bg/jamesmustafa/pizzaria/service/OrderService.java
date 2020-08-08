@@ -2,6 +2,7 @@ package bg.jamesmustafa.pizzaria.service;
 
 import bg.jamesmustafa.pizzaria.data.dto.OrderDTO;
 import bg.jamesmustafa.pizzaria.data.dto.ProductDTO;
+import bg.jamesmustafa.pizzaria.data.models.view.OrderHistoryViewModel;
 import bg.jamesmustafa.pizzaria.entity.Order;
 import bg.jamesmustafa.pizzaria.entity.User;
 import bg.jamesmustafa.pizzaria.error.OrderNotFoundException;
@@ -30,14 +31,6 @@ public class OrderService {
     }
 
     @Transactional
-    public void createOrder(OrderDTO orderDTO) {
-
-        //Here we shouldn't create an order, but to update it, so the approve= true
-        orderDTO.setSuccessful(true);
-        Order approvedOrder = this.modelMapper.map(orderDTO, Order.class);
-        this.orderRepository.saveAndFlush(approvedOrder);
-    }
-
     public void addOrderForApproval(OrderDTO orderDTO){
 
         Order pendingOrder = this.modelMapper.map(orderDTO, Order.class);
@@ -71,11 +64,17 @@ public class OrderService {
         return orderDTOList;
     }
 
-    public List<OrderDTO> findOrdersByCustomer(String username) {
-        return this.orderRepository.findOrdersByCustomer(username)
+    public List<OrderHistoryViewModel> findOrdersByCustomer(String username) {
+
+        List<Order> orders = this.orderRepository.findAll();
+
+        List<OrderHistoryViewModel> orderHistoryViewModelList = orders
                 .stream()
-                .map(o -> modelMapper.map(o, OrderDTO.class))
+                .filter(o -> o.getCustomer().getUsername().equals(username))
+                .map(o -> this.modelMapper.map(o, OrderHistoryViewModel.class))
                 .collect(Collectors.toList());
+
+        return orderHistoryViewModelList;
     }
 
 

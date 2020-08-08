@@ -90,13 +90,13 @@
 </div>
 
 <!-- Decline order modal-->
-<div sec:authorize="hasRole('EMPLOYEE')" th:replace="order/declineModal :: decline-order">
+<div sec:authorize="hasRole('EMPLOYEE')" th:replace="order/modal/declineModal :: decline-order">
     Modal dialog for declining order
 </div>
 <!-- Decline order modal-->
 
 <!-- Confirm order modal-->
-<div sec:authorize="hasRole('EMPLOYEE')" th:replace="order/confirmModal :: confirm-order">
+<div sec:authorize="hasRole('EMPLOYEE')" th:replace="order/modal/confirmModal :: confirm-order">
     Modal dialog for confirming order
 </div>
 <!-- Confirm order modal-->

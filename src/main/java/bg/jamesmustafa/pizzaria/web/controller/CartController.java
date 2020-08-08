@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,6 +55,30 @@ public class CartController {
         return "redirect:/products/";
     }
 
+    @PostMapping("/reOrder")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public String reOrderConfirm(Long orderId, HttpSession session) {
+
+        OrderDTO orderDTO = this.orderService.findById(orderId);
+        for (ProductDTO productDTO : orderDTO.getProducts()){
+
+            this.initCart(session);
+            ProductDetailsViewModel product = this.modelMapper
+                    .map(productDTO, ProductDetailsViewModel.class);
+
+            CartViewModel cartViewModel = new CartViewModel();
+            cartViewModel.setProductDetailsViewModel(product);
+            cartViewModel.setQuantity(1); //one because there is counter in addItemToCart method and it will collect all the same products
+
+
+            var cart = this.retrieveCart(session);
+            this.addItemToCart(cartViewModel, cart);
+        }
+
+
+        return "redirect:/products/";
+    }
+
     @GetMapping("/details")
     @PreAuthorize("hasRole('CUSTOMER')")
     public String cartDetails(Model model, HttpSession session) {
@@ -79,6 +104,7 @@ public class CartController {
 
         OrderDTO orderDTO = this.prepareOrder(cart, principal.getName(), comment);
         this.orderService.addOrderForApproval(orderDTO);
+        session.removeAttribute("shopping-cart");
         //this.orderService.createOrder(orderDTO); --this thing will be implemented when the employee accepts.
         return "redirect:/home";
     }

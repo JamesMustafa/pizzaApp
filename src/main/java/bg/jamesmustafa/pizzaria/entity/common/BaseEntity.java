@@ -1,6 +1,7 @@
 package bg.jamesmustafa.pizzaria.entity.common;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @MappedSuperclass
@@ -10,13 +11,12 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_on")
-    private Date createdOn;
+    private LocalDateTime createdOn;
 
     @PrePersist
     public void setCreationDate() {
-        this.createdOn = new Date();
+        this.createdOn = LocalDateTime.now();
     }
 
     protected BaseEntity() {
@@ -30,11 +30,11 @@ public abstract class BaseEntity {
         this.id = id;
     }
 
-    public Date getCreatedOn() {
+    public LocalDateTime getCreatedOn() {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
     }
 }

@@ -1,6 +1,7 @@
 package bg.jamesmustafa.pizzaria.web.controller;
 
 import bg.jamesmustafa.pizzaria.data.dto.OrderDTO;
+import bg.jamesmustafa.pizzaria.data.models.view.OrderHistoryViewModel;
 import bg.jamesmustafa.pizzaria.service.OrderService;
 import bg.jamesmustafa.pizzaria.service.ProductService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,11 +17,9 @@ import java.util.List;
 @RequestMapping("/orders")
 public class OrderController {
 
-    private final ProductService productService;
     private final OrderService orderService;
 
-    public OrderController(ProductService productService, OrderService orderService) {
-        this.productService = productService;
+    public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
 
@@ -57,5 +57,15 @@ public class OrderController {
 
         this.orderService.confirmOrder(orderId, waitingTime);
         return "redirect:/home";
+    }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping("/history")
+    public String getOrderHistory(Principal principal, Model model)
+    {
+
+        model.addAttribute("previousOrders", this.orderService.findOrdersByCustomer(principal.getName()));
+
+        return "order/history";
     }
 }
