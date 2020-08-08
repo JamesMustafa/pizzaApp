@@ -1,16 +1,15 @@
 package bg.jamesmustafa.pizzaria.web.controller;
 
 import bg.jamesmustafa.pizzaria.data.dto.OrderDTO;
-import bg.jamesmustafa.pizzaria.data.models.view.OrderHistoryViewModel;
+import bg.jamesmustafa.pizzaria.data.models.view.OrderDetailsViewModel;
 import bg.jamesmustafa.pizzaria.service.OrderService;
-import bg.jamesmustafa.pizzaria.service.ProductService;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -18,9 +17,11 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+    private final ModelMapper modelMapper;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, ModelMapper modelMapper) {
         this.orderService = orderService;
+        this.modelMapper = modelMapper;
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
@@ -67,5 +68,14 @@ public class OrderController {
         model.addAttribute("previousOrders", this.orderService.findOrdersByCustomer(principal.getName()));
 
         return "order/history";
+    }
+
+    @PreAuthorize("hasRole('CUSTOMER')")
+    @GetMapping("/history/{id}")
+    public String getOrderHistoryDetails(@PathVariable("id") Long orderId, Model model)
+    {
+        model.addAttribute("orderDetails", this.orderService.findOrderDetailsById(orderId));
+
+        return "order/historyDetails";
     }
 }

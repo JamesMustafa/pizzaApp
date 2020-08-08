@@ -15,7 +15,7 @@ public class Order extends BaseEntity {
     private BigDecimal totalPrice;
 
     @Column(name = "is_successful")
-    private Boolean isSuccessful;
+    private Boolean successful; //thymeleaf does not recognize it if it's isSuccessful
 
     @Column(name = "waiting_time")
     private LocalDateTime waitingTime;
@@ -55,13 +55,9 @@ public class Order extends BaseEntity {
         this.totalPrice = totalPrice;
     }
 
-    public Boolean getSuccessful() {
-        return isSuccessful;
-    }
+    public Boolean getSuccessful() { return successful; }
 
-    public void setSuccessful(Boolean successful) {
-        isSuccessful = successful;
-    }
+    public void setSuccessful(Boolean successful) { this.successful = successful; }
 
     public LocalDateTime getWaitingTime() {
         return waitingTime;

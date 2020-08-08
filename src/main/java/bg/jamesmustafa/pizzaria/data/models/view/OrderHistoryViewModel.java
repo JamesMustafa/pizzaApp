@@ -10,10 +10,8 @@ public class OrderHistoryViewModel {
 
     private Long id;
     private BigDecimal totalPrice;
-    private Boolean isSuccessful;
     private UserServiceModel customer;
     private LocalDateTime createdOn;
-    private LocalDateTime waitingTime;
 
     public Long getId() {
         return id;
@@ -31,14 +29,6 @@ public class OrderHistoryViewModel {
         this.totalPrice = totalPrice;
     }
 
-    public Boolean getSuccessful() {
-        return isSuccessful;
-    }
-
-    public void setSuccessful(Boolean successful) {
-        isSuccessful = successful;
-    }
-
     public UserServiceModel getCustomer() {
         return customer;
     }
@@ -53,14 +43,6 @@ public class OrderHistoryViewModel {
 
     public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
-    }
-
-    public LocalDateTime getWaitingTime() {
-        return waitingTime;
-    }
-
-    public void setWaitingTime(LocalDateTime waitingTime) {
-        this.waitingTime = waitingTime;
     }
 
 }

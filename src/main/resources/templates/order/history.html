@@ -26,19 +26,9 @@
                 <h6 class="card-title">
                     Total price: <span th:text="${order.totalPrice}"></span>
                 </h6>
-<!--                <h6 class="card-title">-->
-<!--                    You waited :-->
-<!--                    <span th:with="minutes=${T(java.util.concurrent.TimeUnit).MINUTES}"-->
-<!--                          th:text="${minutes.convert(${order.waitingTime} - ${order.createdOn}, minutes)}" />-->
-<!--                </h6>-->
                 <div class="text-right">
-                    <form method="post" th:action="@{/cart/reOrder}">
-                        <div class="form-group">
-                            <input id="orderId" name="orderId" type="hidden" th:value="${order.id}"/>
-                            <button type="submit" class="btn btn-primary text-white">Add to Cart</button>
-                        </div>
-                    </form>
-            </div>
+                    <a th:href="@{/orders/history/{id}(id=${order.id})}" class="btn btn-primary font-weight-bold text-white">View Details</a>
+                </div>
             </div>
         </div>
     </div>

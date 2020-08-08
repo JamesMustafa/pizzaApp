@@ -76,7 +76,7 @@ public class CartController {
         }
 
 
-        return "redirect:/products/";
+        return "redirect:/cart/details";
     }
 
     @GetMapping("/details")

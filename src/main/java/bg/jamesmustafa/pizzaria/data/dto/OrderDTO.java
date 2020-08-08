@@ -23,7 +23,7 @@ public class OrderDTO {
     private LocalDateTime waitingTime;
 
     @NotNull(message = "Boolean should be either true or false")
-    private Boolean isSuccessful;
+    private Boolean successful; //thymeleaf does not recognize it if it's isSuccessful
 
     @NotEmpty(message = "There must be more than zero products")
     private List<ProductDTO> products;
@@ -55,13 +55,9 @@ public class OrderDTO {
         this.waitingTime = waitingTime;
     }
 
-    public Boolean getSuccessful() {
-        return isSuccessful;
-    }
+    public Boolean getSuccessful() { return successful; }
 
-    public void setSuccessful(Boolean successful) {
-        isSuccessful = successful;
-    }
+    public void setSuccessful(Boolean successful) { this.successful = successful; }
 
     public List<ProductDTO> getProducts() {
         return products;

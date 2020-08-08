@@ -2,7 +2,9 @@ package bg.jamesmustafa.pizzaria.service;
 
 import bg.jamesmustafa.pizzaria.data.dto.OrderDTO;
 import bg.jamesmustafa.pizzaria.data.dto.ProductDTO;
+import bg.jamesmustafa.pizzaria.data.models.view.OrderDetailsViewModel;
 import bg.jamesmustafa.pizzaria.data.models.view.OrderHistoryViewModel;
+import bg.jamesmustafa.pizzaria.data.models.view.ProductDetailsViewModel;
 import bg.jamesmustafa.pizzaria.entity.Order;
 import bg.jamesmustafa.pizzaria.entity.User;
 import bg.jamesmustafa.pizzaria.error.OrderNotFoundException;
@@ -11,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -71,10 +74,35 @@ public class OrderService {
         List<OrderHistoryViewModel> orderHistoryViewModelList = orders
                 .stream()
                 .filter(o -> o.getCustomer().getUsername().equals(username))
+                .filter(o -> o.getApproved().equals(true)) //the order should be approved in order to show in the history !
                 .map(o -> this.modelMapper.map(o, OrderHistoryViewModel.class))
                 .collect(Collectors.toList());
 
         return orderHistoryViewModelList;
+    }
+    public OrderDetailsViewModel findOrderDetailsById(Long orderId){
+        Order order = this.orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order with this id has not been found!"));
+
+        OrderDetailsViewModel orderDetailsViewModel = this.modelMapper.map(order, OrderDetailsViewModel.class);
+
+        orderDetailsViewModel.setProducts(
+                order.getProducts()
+                .stream()
+                .map(o -> this.modelMapper.map(o, ProductDetailsViewModel.class))
+                .collect(Collectors.toList())
+        );
+
+        if(orderDetailsViewModel.getWaitingTime() != null){
+            orderDetailsViewModel
+                    .setWaitingMinutes
+                            (Duration.between(orderDetailsViewModel.getCreatedOn(), orderDetailsViewModel.getWaitingTime()).toMinutes());
+        }
+        if(orderDetailsViewModel.getComment().isEmpty()){
+            orderDetailsViewModel.setComment("You do not have any comments about this order!");
+        }
+
+        return orderDetailsViewModel;
     }
 
 
@@ -86,11 +114,13 @@ public class OrderService {
 
     public void declineOrder(Long orderId){
 
-        OrderDTO orderDTO = this.findById(orderId);
-        orderDTO.setApproved(true);
-        orderDTO.setSuccessful(false);
+        Order order= this.orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order with this id does not exist!"));
+        
+        order.setApproved(true);
+        order.setSuccessful(false);
 
-        this.orderRepository.save(this.modelMapper.map(orderDTO, Order.class));
+        this.orderRepository.save(order);
     }
 
     public void confirmOrder(Long orderId, String waitingTime){

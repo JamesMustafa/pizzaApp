@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+<h1 class="text-center text-dark">Order Details</h1>
+<hr class="hr-2 bg-dark w-75">
+<table class="table table-hover w-75 mx-auto">
+    <thead>
+    <tr class="row mx-auto">
+        <th class="col-md-3 text-center">Image</th>
+        <th class="col-md-3 text-center">Name</th>
+        <th class="col-md-3 text-center">Description</th>
+        <th class="col-md-3 text-center">Price</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <!--TODO: Is it a good practice to use th:block or nah-->
+
+    <th:block th:each="product : ${orderDetails.products}">
+        <tr class="row mx-auto">
+            <th class="col-md-3 text-center"><img th:src="*{product.imgSrc}" alt="Product" height="150" width="150"></th>
+            <td class="col-md-3 text-center" th:text="*{product.name}"></td>
+            <td class="col-md-3 text-center" th:text="*{product.description}"></td>
+            <td class="col-md-3 text-center" th:text="*{product.price}"></td>
+        </tr>
+    </th:block>
+    </tbody>
+</table>
+<hr class="hr-2 bg-dark">
+<div class="text-center">
+    <h3 th:text="|Total: ${orderDetails.totalPrice}|"></h3>
+</div>
+<hr class="hr-2 bg-dark">
+
+<div class="card w-75 mx-auto text-center" style="width: 18rem;">
+
+    <div class="card-body">
+        <h4 class="card-title">User details for <span th:text="${orderDetails.customer.username}"></span></h4>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item" th:if="${orderDetails.successful == true}"><h6>Was the order successful: Yes</h6></li>
+        <li class="list-group-item" th:if="${orderDetails.successful == false}"><h6>Was the order successful: No</h6></li>
+        <li class="list-group-item"
+            th:unless="${orderDetails.successful == false}">
+            <h6>You have waited:  </h6>
+            <span th:text="${orderDetails.waitingMinutes}"></span>
+            <h6> minutes</h6>
+        </li>
+    </ul>
+    <div class="card-body">
+        <h5 class="card-title">Comment for the order: </h5>
+        <p class="card-text"><span th:text="${orderDetails.comment}"></span></p>
+    </div>
+</div>
+
+<div class=" container text-center w-75 mx-auto my-5">
+    <div class="row">
+        <div class="col">
+            <a th:href="@{/orders/history}" class="btn btn-secondary btn-lg btn-block">Go Back</a>
+        </div>
+        <div class="col">
+            <form method="post" th:action="@{/cart/reOrder}">
+                <div class="form-group">
+                    <input id="orderId" name="orderId" type="hidden" th:value="${orderDetails.id}"/>
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Continue with Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
