@@ -42,7 +42,7 @@
 <div class="card w-75 mx-auto text-center" style="width: 18rem;">
 
     <div class="card-body">
-        <h4 class="card-title">User details for <span th:text="${orderDetails.customer.username}"></span></h4>
+        <h4 class="card-title">Other order details for <span th:text="${orderDetails.customer.username}"></span></h4>
     </div>
     <ul class="list-group list-group-flush">
         <li class="list-group-item" th:if="${orderDetails.successful == true}"><h6>Was the order successful: Yes</h6></li>
@@ -69,7 +69,7 @@
             <form method="post" th:action="@{/cart/reOrder}">
                 <div class="form-group">
                     <input id="orderId" name="orderId" type="hidden" th:value="${orderDetails.id}"/>
-                    <button type="submit" class="btn btn-success btn-lg btn-block">Continue with Order</button>
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Place This Order Again</button>
                 </div>
             </form>
         </div>

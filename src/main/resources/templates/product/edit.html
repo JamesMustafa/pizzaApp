@@ -8,7 +8,7 @@
 <!-- EO: Navbar -->
 
 <div class="container center">
-    <form th:action="@{/products/edit/{id}(id=${productEditForm.id})}" method="post" th:object="${productEditForm}" id="createProductForm">
+    <form th:action="@{/products/edit/{id}(id=${productEditForm.id})}" method="post" th:object="${productEditForm}" id="editProductForm">
         <div class="form-group">
             <label for="productName">Name</label>
             <input type="text"
@@ -24,7 +24,7 @@
         <div class="form-group">
             <label for="productDescription">Description</label>
             <textarea class="form-control"
-                      form="createProductForm"
+                      form="editProductForm"
                       id="productDescription"
                       rows="5"
                       th:field="*{description}"

@@ -74,10 +74,10 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public void editProduct(Long id, ProductDTO productDTO){
+    public void editProduct(Long productId, ProductDTO productDTO){
 
         Product product = this.productRepository
-                .findById(id)
+                .findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product with this id was not found!"));
 
         product.setName(productDTO.getName());
@@ -88,24 +88,5 @@ public class ProductService {
 
         productRepository.save(product);
     }
-
-//    public List<Product> mapToListOfProducts(List<ProductDTO> productDTOList){
-//        List<Product> products = productDTOList
-//                .stream()
-//                .map(p -> this.modelMapper.map(p, Product.class))
-//                .collect(Collectors.toList());
-//
-//        return products;
-//    }
-//
-//    public List<ProductDTO> mapToListOfProductsDTOS(List<Product> products){
-//        List<ProductDTO> productsDTOS = products
-//                .stream()
-//                .map(p -> this.modelMapper.map(p, ProductDTO.class))
-//                .collect(Collectors.toList());
-//
-//        return productsDTOS;
-//    }
-
 
 }

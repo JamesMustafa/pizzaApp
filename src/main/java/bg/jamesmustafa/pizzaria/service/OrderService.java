@@ -24,12 +24,10 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final ProductService productService;
     private final ModelMapper modelMapper;
 
-    public OrderService(OrderRepository orderRepository, ProductService productService, ModelMapper modelMapper) {
+    public OrderService(OrderRepository orderRepository, ModelMapper modelMapper) {
         this.orderRepository = orderRepository;
-        this.productService = productService;
         this.modelMapper = modelMapper;
     }
 
@@ -38,12 +36,8 @@ public class OrderService {
 
         Order pendingOrder = this.modelMapper.map(orderDTO, Order.class);
         pendingOrder.setApproved(false);
-        //pendingOrder.setProducts(this.productService.mapToListOfProducts(orderDTO.getProducts()));
         pendingOrder.setCustomer(this.modelMapper.map(orderDTO.getCustomer(), User.class));
         this.orderRepository.saveAndFlush(pendingOrder);
-        //should create a list kydeto se trupat takiwa orderi za approvment ot employee.
-        //toi trq da sloji vreme i da cukne dali ordera e successful ili ne e
-        //trq mu izlezne specialen prozorec kyudeto da se pokaje ordera i choweka koito go e poruchal
     }
 
 
@@ -58,8 +52,8 @@ public class OrderService {
     }
 
     public List<OrderDTO> findAll() {
-        List<Order> orders = this.orderRepository.findAll();
-        List<OrderDTO> orderDTOList= orders
+
+        List<OrderDTO> orderDTOList= this.orderRepository.findAll()
                 .stream()
                 .map(o -> this.modelMapper.map(o, OrderDTO.class))
                 .collect(Collectors.toList());
@@ -69,9 +63,7 @@ public class OrderService {
 
     public List<OrderHistoryViewModel> findOrdersByCustomer(String username) {
 
-        List<Order> orders = this.orderRepository.findAll();
-
-        List<OrderHistoryViewModel> orderHistoryViewModelList = orders
+        List<OrderHistoryViewModel> orderHistoryViewModelList = this.orderRepository.findAll()
                 .stream()
                 .filter(o -> o.getCustomer().getUsername().equals(username))
                 .filter(o -> o.getApproved().equals(true)) //the order should be approved in order to show in the history !
@@ -81,6 +73,7 @@ public class OrderService {
         return orderHistoryViewModelList;
     }
     public OrderDetailsViewModel findOrderDetailsById(Long orderId){
+
         Order order = this.orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id has not been found!"));
 
@@ -107,16 +100,19 @@ public class OrderService {
 
 
     public OrderDTO findById(Long orderId) {
-        return this.orderRepository.findById(orderId)
+
+        OrderDTO order = this.orderRepository.findById(orderId)
                 .map(o -> this.modelMapper.map(o, OrderDTO.class))
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id has not been found!"));
+
+        return order;
     }
 
     public void declineOrder(Long orderId){
 
         Order order= this.orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id does not exist!"));
-        
+
         order.setApproved(true);
         order.setSuccessful(false);
 

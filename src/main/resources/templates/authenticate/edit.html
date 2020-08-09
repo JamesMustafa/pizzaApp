@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+<div class="card bg-light">
+    <article class="card-body mx-auto" style="max-width: 400px;">
+        <h4 class="card-title mt-3 text-center">Edit Account</h4>
+        <form th:action="@{/authentication/edit/{id}(id=${userEditForm.id})}" th:method="post" th:object="${userEditForm}">
+
+            <!-- username -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                </div>
+                <input name="username"
+                       class="form-control"
+                       type="text"
+                       th:value="*{username}"
+                       th:field="*{username}"
+                       readonly>
+            </div>
+            <!-- username -->
+
+            <!-- name -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                </div>
+                <input name="name"
+                       class="form-control"
+                       type="text"
+                       th:value="*{name}"
+                       th:field="*{name}"
+                       th:errorclass="is-invalid">
+                <div class="invalid-feedback">
+                    The name should be valid.
+                </div>
+            </div>
+            <!-- name -->
+
+            <!-- surname -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                </div>
+                <input name="surname"
+                       class="form-control"
+                       type="text"
+                       th:value="*{surname}"
+                       th:field="*{surname}"
+                       th:errorclass="is-invalid">
+                <div class="invalid-feedback">
+                    The surname should be valid.
+                </div>
+            </div>
+            <!-- surname -->
+
+            <!-- email -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                </div>
+                <input name="email"
+                       class="form-control"
+                       type="email"
+                       th:value="*{email}"
+                       th:field="*{email}"
+                       th:errorclass="is-invalid">
+                <div class="invalid-feedback">
+                    The e-mail address should be valid.
+                </div>
+            </div>
+            <!-- email -->
+
+            <!-- phone -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+                </div>
+                <select class="custom-select" style="max-width: 120px;">
+                    <option selected="">+359</option>
+                </select>
+                <input name="phoneNumber"
+                       class="form-control"
+                       type="text"
+                       th:value="*{phoneNumber}"
+                       th:field="*{phoneNumber}"
+                       th:errorclass="is-invalid">
+                <div class="invalid-feedback">
+                    The phone number should be valid.
+                </div>
+            </div>
+            <!-- phone -->
+
+            <!-- city -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+                </div>
+                <input name="city"
+                       class="form-control"
+                       type="text"
+                       th:value="*{city}"
+                       th:field="*{city}"
+                       th:errorclass="is-invalid">
+                <div class="invalid-feedback">
+                    The city field should be valid.
+                </div>
+            </div>
+            <!-- city -->
+
+            <!-- address -->
+            <div class="form-group input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+                </div>
+                <input name="address"
+                       class="form-control"
+                       type="text"
+                       th:value="*{address}"
+                       th:field="*{address}"
+                       th:errorclass="is-invalid">
+                <div class="invalid-feedback">
+                    The address field should be valid.
+                </div>
+            </div>
+            <!-- address -->
+
+            <!-- register button -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block"> Submit  </button>
+            </div>
+            <!-- register button -->
+        </form>
+    </article>
+</div> <!-- card.// -->
+
+</body>
+</html>

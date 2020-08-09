@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+<h1 class="text-center text-dark">User Details</h1>
+<hr class="hr-2 bg-dark w-75">
+<div class="card w-75 mx-auto text-center" style="width: 18rem;">
+    <div class="card-body">
+        <h4 class="card-title">User details for <span th:text="${userProfile.username}"></span></h4>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item"><h6>Full Name: </h6><span th:text="${userProfile.name}"></span> <span th:text="${userProfile.surname}"></span></li>
+        <li class="list-group-item">
+            <h6>E-mail:  </h6><span th:text="${userProfile.email}"></span>
+            <button type="button"
+                    th:if="${userProfile.emailConfirmed == false}"
+                    class="btn btn-success btn-block my-4">Confirm your email address
+            </button>
+        </li>
+        <li class="list-group-item">
+            <h6>Phone number:  </h6><span th:text="${userProfile.phoneNumber}"></span>
+            <button type="button"
+                    th:if="${userProfile.phoneNumberConfirmed == false}"
+                    class="btn btn-success btn-block my-4">Confirm your phone number
+            </button>
+        </li>
+        <li class="list-group-item"><h6>City: </h6><span th:text="${userProfile.city}"></span></li>
+        <li class="list-group-item"><h6>Address: </h6><span th:text="${userProfile.address}"></span></li>
+    </ul>
+</div>
+</body>
+</html>

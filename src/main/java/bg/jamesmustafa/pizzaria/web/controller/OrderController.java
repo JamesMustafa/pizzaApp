@@ -57,7 +57,7 @@ public class OrderController {
     public String confirmOrder(@ModelAttribute(name="orderConfirmId") Long orderId, String waitingTime){
 
         this.orderService.confirmOrder(orderId, waitingTime);
-        return "redirect:/home";
+        return "redirect:/order/pendingOrders";
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")

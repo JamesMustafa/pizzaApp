@@ -2,6 +2,7 @@ package bg.jamesmustafa.pizzaria.web.controller;
 
 import bg.jamesmustafa.pizzaria.data.dto.OrderDTO;
 import bg.jamesmustafa.pizzaria.data.dto.ProductDTO;
+import bg.jamesmustafa.pizzaria.data.models.service.UserServiceModel;
 import bg.jamesmustafa.pizzaria.data.models.view.CartViewModel;
 import bg.jamesmustafa.pizzaria.data.models.view.ProductDetailsViewModel;
 import bg.jamesmustafa.pizzaria.service.OrderService;
@@ -150,7 +151,7 @@ public class CartController {
     private OrderDTO prepareOrder(List<CartViewModel> cart, String customer, String comment) {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setComment(comment);
-        orderDTO.setCustomer(this.userDetailsService.findUserByUsername(customer));
+        orderDTO.setCustomer(this.modelMapper.map(this.userDetailsService.findUserByUsername(customer), UserServiceModel.class));
         List<ProductDTO> products = new ArrayList<>();
         for (CartViewModel item : cart) {
             ProductDTO productDTO = this.modelMapper.map(item.getProductDetailsViewModel(), ProductDTO.class);

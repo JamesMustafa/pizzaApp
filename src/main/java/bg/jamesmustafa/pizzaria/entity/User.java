@@ -18,23 +18,23 @@ public class User extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "name", nullable = false, updatable = false)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "surname", nullable = false, updatable = false)
+    @Column(name = "surname", nullable = false)
     private String surname;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "is_email_confirmed", nullable = false)
-    private Boolean isEmailConfirmed;
+    private Boolean emailConfirmed;
 
     @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
     @Column(name = "is_phone_confirmed", nullable = false)
-    private Boolean isPhoneNumberConfirmed;
+    private Boolean phoneNumberConfirmed;
 
     @Column(name = "city")
     private String city;
@@ -42,9 +42,9 @@ public class User extends BaseEntity {
     @Column(name = "address")
     private String address;
 
-    @OneToMany(mappedBy = "customer", targetEntity = Order.class,
-            fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<Order> orders;
+//    @OneToMany(mappedBy = "customer", targetEntity = Order.class,
+//            fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    private List<Order> orders;
 
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
     @JoinTable(
@@ -83,17 +83,13 @@ public class User extends BaseEntity {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public void setName(String name) { this.name = name; }
 
     public String getSurname() {
         return surname;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
+    public void setSurname(String surname) { this.surname = surname; }
 
     public String getEmail() {
         return email;
@@ -103,10 +99,6 @@ public class User extends BaseEntity {
         this.email = email;
     }
 
-    public Boolean getEmailConfirmed() { return isEmailConfirmed; }
-
-    public void setEmailConfirmed(Boolean emailConfirmed) { isEmailConfirmed = emailConfirmed; }
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -115,9 +107,13 @@ public class User extends BaseEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public Boolean getPhoneNumberConfirmed() { return isPhoneNumberConfirmed; }
+    public Boolean getEmailConfirmed() { return emailConfirmed; }
 
-    public void setPhoneNumberConfirmed(Boolean phoneNumberConfirmed) { isPhoneNumberConfirmed = phoneNumberConfirmed; }
+    public void setEmailConfirmed(Boolean emailConfirmed) { this.emailConfirmed = emailConfirmed; }
+
+    public Boolean getPhoneNumberConfirmed() { return phoneNumberConfirmed; }
+
+    public void setPhoneNumberConfirmed(Boolean phoneNumberConfirmed) { this.phoneNumberConfirmed = phoneNumberConfirmed; }
 
     public String getCity() {
         return city;
@@ -142,8 +138,4 @@ public class User extends BaseEntity {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-
-    public List<Order> getOrders() { return orders; }
-
-    public void setOrders(List<Order> orders) { this.orders = orders; }
 }
