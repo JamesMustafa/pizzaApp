@@ -1,10 +1,10 @@
 package bg.jamesmustafa.pizzaria.web.controller;
 
-import bg.jamesmustafa.pizzaria.data.dto.OrderDTO;
-import bg.jamesmustafa.pizzaria.data.dto.ProductDTO;
-import bg.jamesmustafa.pizzaria.data.models.service.UserServiceModel;
-import bg.jamesmustafa.pizzaria.data.models.view.CartViewModel;
-import bg.jamesmustafa.pizzaria.data.models.view.ProductDetailsViewModel;
+import bg.jamesmustafa.pizzaria.dto.binding.OrderBindingModel;
+import bg.jamesmustafa.pizzaria.dto.binding.ProductBindingModel;
+import bg.jamesmustafa.pizzaria.dto.binding.auth.UserServiceModel;
+import bg.jamesmustafa.pizzaria.dto.view.CartViewModel;
+import bg.jamesmustafa.pizzaria.dto.view.ProductDetailsViewModel;
 import bg.jamesmustafa.pizzaria.service.OrderService;
 import bg.jamesmustafa.pizzaria.service.ProductService;
 import bg.jamesmustafa.pizzaria.service.UserDetailsServiceImpl;
@@ -18,12 +18,12 @@ import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/cart")
+@PreAuthorize("hasRole('CUSTOMER')")
 public class CartController {
 
     private final ProductService productService;
@@ -39,7 +39,6 @@ public class CartController {
     }
 
     @PostMapping("/addProduct")
-    @PreAuthorize("hasRole('CUSTOMER')")
     public String addToCartConfirm(@ModelAttribute(name="productId") Long productId, int quantity, HttpSession session) {
         this.initCart(session);
         ProductDetailsViewModel product = this.modelMapper
@@ -57,11 +56,10 @@ public class CartController {
     }
 
     @PostMapping("/reOrder")
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public String reOrderConfirm(Long orderId, HttpSession session) {
+    public String reOrderConfirm(@ModelAttribute(name="orderId") Long orderId, HttpSession session) {
 
-        OrderDTO orderDTO = this.orderService.findById(orderId);
-        for (ProductDTO productDTO : orderDTO.getProducts()){
+        OrderBindingModel orderBindingModel = this.orderService.findById(orderId);
+        for (ProductBindingModel productDTO : orderBindingModel.getProducts()){
 
             this.initCart(session);
             ProductDetailsViewModel product = this.modelMapper
@@ -81,8 +79,8 @@ public class CartController {
     }
 
     @GetMapping("/details")
-    @PreAuthorize("hasRole('CUSTOMER')")
     public String cartDetails(Model model, HttpSession session) {
+
         var cart = this.retrieveCart(session);
         model.addAttribute("totalPrice", this.calcTotal(cart));
 
@@ -99,14 +97,14 @@ public class CartController {
     }
 
     @PostMapping("/checkout")
-    @PreAuthorize("hasRole('CUSTOMER')")
     public String checkoutConfirm(String comment, HttpSession session, Principal principal) {
+
         var cart = this.retrieveCart(session);
 
-        OrderDTO orderDTO = this.prepareOrder(cart, principal.getName(), comment);
-        this.orderService.addOrderForApproval(orderDTO);
+        OrderBindingModel orderBindingModel = this.prepareOrder(cart, principal.getName(), comment);
+        this.orderService.addOrderForApproval(orderBindingModel);
         session.removeAttribute("shopping-cart");
-        //this.orderService.createOrder(orderDTO); --this thing will be implemented when the employee accepts.
+
         return "redirect:/home";
     }
 
@@ -148,23 +146,24 @@ public class CartController {
         cart.removeIf(c -> c.getProductDetailsViewModel().getId().equals(id));
     }
 
-    private OrderDTO prepareOrder(List<CartViewModel> cart, String customer, String comment) {
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setComment(comment);
-        orderDTO.setCustomer(this.modelMapper.map(this.userDetailsService.findUserByUsername(customer), UserServiceModel.class));
-        List<ProductDTO> products = new ArrayList<>();
+    private OrderBindingModel prepareOrder(List<CartViewModel> cart, String customer, String comment) {
+        //TODO: Should I use service models in controller
+        OrderBindingModel orderBindingModel = new OrderBindingModel();
+        orderBindingModel.setComment(comment);
+        orderBindingModel.setCustomer(this.modelMapper.map(this.userDetailsService.findUserByUsername(customer), UserServiceModel.class));
+        List<ProductBindingModel> products = new ArrayList<>();
         for (CartViewModel item : cart) {
-            ProductDTO productDTO = this.modelMapper.map(item.getProductDetailsViewModel(), ProductDTO.class);
+            ProductBindingModel productDTO = this.modelMapper.map(item.getProductDetailsViewModel(), ProductBindingModel.class);
 
             for (int i = 0; i < item.getQuantity(); i++) {
                 products.add(productDTO);
             }
         }
 
-        orderDTO.setProducts(products);
-        orderDTO.setTotalPrice(this.calcTotal(cart));
+        orderBindingModel.setProducts(products);
+        orderBindingModel.setTotalPrice(this.calcTotal(cart));
 
-        return orderDTO;
+        return orderBindingModel;
     }
 
 }

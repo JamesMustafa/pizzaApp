@@ -1,6 +1,6 @@
 package bg.jamesmustafa.pizzaria.web.controller;
 
-import bg.jamesmustafa.pizzaria.data.dto.ProductDTO;
+import bg.jamesmustafa.pizzaria.dto.binding.ProductBindingModel;
 import bg.jamesmustafa.pizzaria.service.CategoryService;
 import bg.jamesmustafa.pizzaria.service.ProductService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,15 +28,8 @@ public class ProductController {
     @GetMapping("/add")
     public String addProduct(Model model) {
 
-        ProductDTO productInputForm;
-        if (model.containsAttribute("productInputForm")) {
-            productInputForm = (ProductDTO) model.getAttribute("productInputForm");
-        }  else {
-            productInputForm = new ProductDTO();
-        }
-
-        model.addAttribute("productInputForm", productInputForm);
-        model.addAttribute("categoryTypes", categoryService.findAll());
+        model.addAttribute("productInputForm", new ProductBindingModel());
+        model.addAttribute("categoryTypes", this.categoryService.findAll());
 
         return "product/createProduct";
     }
@@ -46,57 +39,54 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/save")
     public String save
-    (@Valid @ModelAttribute("productInputForm") ProductDTO productDTO,
+    (@Valid @ModelAttribute("productInputForm") ProductBindingModel productDTO,
                     BindingResult bindingResult,
                     RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("productInputForm", productDTO);
-            redirectAttributes.addFlashAttribute(BindingResult.MODEL_KEY_PREFIX + "productInputForm",
-                    bindingResult);
-
             return "redirect:/products/add";
         }
 
-        productService.createProduct(productDTO);
+        this.productService.createProduct(productDTO);
 
-        return "redirect:/home";
+        return "redirect:/products/";
     }
 
-    //TODO: Make it optional hard or soft delete with constructor variable
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete")
     public String delete(@ModelAttribute(name="deleteId") Long deleteId) {
-        productService.hardDelete(deleteId);
+
+        this.productService.hardDelete(deleteId);
+
         return "redirect:/home";
     }
 
     @GetMapping("/")
     public String viewProducts(Model model){
 
-        model.addAttribute("pizzas", productService.findAllByCategory("pizza"));
-        model.addAttribute("drinks", productService.findAllByCategory("drinks"));
-        model.addAttribute("deserts", productService.findAllByCategory("deserts"));
-        model.addAttribute("salads", productService.findAllByCategory("salads"));
+        model.addAttribute("pizzas", this.productService.findAllByCategory("pizza"));
+        model.addAttribute("drinks", this.productService.findAllByCategory("drinks"));
+        model.addAttribute("deserts", this.productService.findAllByCategory("deserts"));
+        model.addAttribute("salads", this.productService.findAllByCategory("salads"));
 
         //TODO: can i make foreach for every model attribute?
         return "product/index";
     }
 
+    //TODO: to make the getter without /{id}
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String editProduct(@PathVariable("id") Long id, Model model) {
-        ProductDTO productDTO = productService.findById(id);
+    public String editProduct(@PathVariable("id") Long productId, Model model) {
 
-        model.addAttribute("productEditForm", productDTO);
-        model.addAttribute("categoryTypes", categoryService.findAll());
+        model.addAttribute("productEditForm", this.productService.findById(productId));
+        model.addAttribute("categoryTypes", this.categoryService.findAll());
 
         return "product/edit";
     }
 
     @PostMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String editProductConfirm(@Valid @ModelAttribute("productEditForm") ProductDTO productDTO,
+    public String editProductConfirm(@Valid @ModelAttribute("productEditForm") ProductBindingModel productDTO,
                                      @PathVariable("id") Long id,
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes){
@@ -104,15 +94,18 @@ public class ProductController {
         if (bindingResult.hasErrors()) {
             return "redirect:/products/";
         }
-        productService.editProduct(id, productDTO);
+
+        this.productService.editProduct(id, productDTO);
+
         return "redirect:/home";
     }
-    //TODO: Make separate for pizza, drinks, etc.. make sort by active products, make add to cart button, make the price bigger.
 
     @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping("/activate")
     public String activate(@ModelAttribute(name="activateId") Long activateId) {
-        productService.activateProduct(activateId);
+
+        this.productService.activateProduct(activateId);
+
         return "redirect:/products/";
     }
 

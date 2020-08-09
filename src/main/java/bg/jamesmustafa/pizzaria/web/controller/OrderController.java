@@ -1,7 +1,6 @@
 package bg.jamesmustafa.pizzaria.web.controller;
 
-import bg.jamesmustafa.pizzaria.data.dto.OrderDTO;
-import bg.jamesmustafa.pizzaria.data.models.view.OrderDetailsViewModel;
+import bg.jamesmustafa.pizzaria.dto.binding.OrderBindingModel;
 import bg.jamesmustafa.pizzaria.service.OrderService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +27,8 @@ public class OrderController {
     @GetMapping("/pending")
     public String pending(Model model) {
 
-        List<OrderDTO> pendingOrders = this.orderService.findAllOrdersForApproval();
+        List<OrderBindingModel> pendingOrders = this.orderService.findAllOrdersForApproval();
+
         model.addAttribute("pendingOrders", pendingOrders);
 
         return "order/pendingOrders";
@@ -37,9 +37,10 @@ public class OrderController {
     @PreAuthorize("hasRole('EMPLOYEE')")
     @GetMapping("/pending/{id}")
     public String pendingDetails(@PathVariable("id") Long orderId, Model model) {
+        //TODO: Should I use service models in controller
+        OrderBindingModel orderBindingModel = this.orderService.findById(orderId);
 
-        OrderDTO orderDTO = this.orderService.findById(orderId);
-        model.addAttribute("order", orderDTO);
+        model.addAttribute("order", orderBindingModel);
 
         return "order/pendingDetails";
     }
@@ -64,7 +65,6 @@ public class OrderController {
     @GetMapping("/history")
     public String getOrderHistory(Principal principal, Model model)
     {
-
         model.addAttribute("previousOrders", this.orderService.findOrdersByCustomer(principal.getName()));
 
         return "order/history";

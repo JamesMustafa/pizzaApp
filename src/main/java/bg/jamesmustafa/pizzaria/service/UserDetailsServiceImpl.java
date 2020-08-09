@@ -1,11 +1,11 @@
 package bg.jamesmustafa.pizzaria.service;
 
-import bg.jamesmustafa.pizzaria.data.models.binding.UserAddBindingModel;
-import bg.jamesmustafa.pizzaria.data.models.service.UserDTO;
-import bg.jamesmustafa.pizzaria.data.models.service.UserServiceModel;
-import bg.jamesmustafa.pizzaria.entity.Role;
-import bg.jamesmustafa.pizzaria.entity.User;
-import bg.jamesmustafa.pizzaria.repository.UserRepository;
+import bg.jamesmustafa.pizzaria.dto.binding.auth.UserAddBindingModel;
+import bg.jamesmustafa.pizzaria.dto.binding.auth.UserDTO;
+import bg.jamesmustafa.pizzaria.dto.binding.auth.UserServiceModel;
+import bg.jamesmustafa.pizzaria.db.entity.Role;
+import bg.jamesmustafa.pizzaria.db.entity.User;
+import bg.jamesmustafa.pizzaria.db.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -39,25 +40,26 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDTO loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
+        User user = this.userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
 
         return new UserDTO(user);
     }
 
     //TODO: Should there be two methods like that or i should make them one
+    //TODO: This method below should return a dto not the entity object ;)
     public User findUserByUsername(String username) throws UsernameNotFoundException{
-        User user = userRepository.findByUsername(username)
+
+        return this.userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
 
-        return user;
     }
 
     public boolean isUsernameAvailable(String username){
         return userRepository.findByUsername(username).isPresent();
     }
 
-
+    @Transactional
     public void createAndLoginUser(UserAddBindingModel userModel) {
         User newUser = createUser(userModel);
         UserDTO user = loadUserByUsername(newUser.getUsername());
@@ -71,8 +73,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
+    @Transactional
     private User createUser(UserAddBindingModel userModel) {
-        LOGGER.info("Creating a new user with username [GDPR].");
+        LOGGER.info("Creating a new user with username.");
 
         User user = this.modelMapper.map(userModel, User.class);
 
@@ -98,6 +101,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return user;
     }
 
+    @Transactional
     public void editUser(Long userId, UserServiceModel userModel){
 
         User user = this.userRepository

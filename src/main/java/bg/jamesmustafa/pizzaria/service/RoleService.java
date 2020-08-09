@@ -1,10 +1,9 @@
 package bg.jamesmustafa.pizzaria.service;
 
-import bg.jamesmustafa.pizzaria.entity.Role;
-import bg.jamesmustafa.pizzaria.repository.RoleRepository;
+import bg.jamesmustafa.pizzaria.db.entity.Role;
+import bg.jamesmustafa.pizzaria.db.repository.RoleRepository;
+import bg.jamesmustafa.pizzaria.error.RoleNotFoundException;
 import org.springframework.stereotype.Service;
-
-import javax.management.relation.RoleNotFoundException;
 
 @Service
 public class RoleService {
@@ -17,13 +16,12 @@ public class RoleService {
 
     public Role findRoleByName(String name){
 
-        Role role = this.roleRepository
+        return this.roleRepository
                 .findAll()
                 .stream()
                 .filter(r -> r.getName().equals(name))
                 .findAny()
-                .orElseThrow(); //TODO: Order not found exception
+                .orElseThrow(() -> new RoleNotFoundException("Role with given id was not found!")); //TODO: Order not found exception
 
-        return role;
     }
 }

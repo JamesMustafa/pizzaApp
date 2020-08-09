@@ -1,11 +1,11 @@
 package bg.jamesmustafa.pizzaria;
 
-import bg.jamesmustafa.pizzaria.entity.Category;
-import bg.jamesmustafa.pizzaria.entity.Role;
-import bg.jamesmustafa.pizzaria.entity.User;
-import bg.jamesmustafa.pizzaria.repository.CategoryRepository;
-import bg.jamesmustafa.pizzaria.repository.RoleRepository;
-import bg.jamesmustafa.pizzaria.repository.UserRepository;
+import bg.jamesmustafa.pizzaria.db.entity.Category;
+import bg.jamesmustafa.pizzaria.db.entity.Role;
+import bg.jamesmustafa.pizzaria.db.entity.User;
+import bg.jamesmustafa.pizzaria.db.repository.CategoryRepository;
+import bg.jamesmustafa.pizzaria.db.repository.RoleRepository;
+import bg.jamesmustafa.pizzaria.db.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

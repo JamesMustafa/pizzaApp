@@ -1,11 +1,12 @@
 package bg.jamesmustafa.pizzaria.service;
 
-import bg.jamesmustafa.pizzaria.data.dto.ProductDTO;
-import bg.jamesmustafa.pizzaria.entity.Product;
+import bg.jamesmustafa.pizzaria.dto.binding.ProductBindingModel;
+import bg.jamesmustafa.pizzaria.db.entity.Product;
 import bg.jamesmustafa.pizzaria.error.ProductNotFoundException;
-import bg.jamesmustafa.pizzaria.repository.ProductRepository;
+import bg.jamesmustafa.pizzaria.db.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,51 +22,52 @@ public class ProductService {
         this.modelMapper = modelMapper;
     }
 
-    public void createProduct(ProductDTO productDTO) {
-    //TODO: Use the modelMapper for the mapping and find a solution to the setCategory property when using a mapper.
-        Product product = this.modelMapper.map(productDTO, Product.class);
-        product.setActivity(productDTO.getActivity());
-        //TODO: Set category from input /// Is it good idea to remove the categoryservice here and work with it only through the product controller?
+    @Transactional
+    public void createProduct(ProductBindingModel productModel) {
+
+        Product product = this.modelMapper.map(productModel, Product.class);
         productRepository.save(product);
     }
 
-    public List<ProductDTO> findAll() {
+    public List<ProductBindingModel> findAll() {
         return productRepository.
                 findAll().
                 stream().
-                map(product -> this.modelMapper.map(product, ProductDTO.class)).
+                map(product -> this.modelMapper.map(product, ProductBindingModel.class)).
                 collect(Collectors.toList());
     }
 
-    public List<ProductDTO> findAllByCategory(String categoryName){
+    public List<ProductBindingModel> findAllByCategory(String categoryName){
         return productRepository.
                 findAll().
                 stream().
                 filter(product -> product.getCategory().getName().equalsIgnoreCase(categoryName)).
-                map(product -> this.modelMapper.map(product, ProductDTO.class)).
+                map(product -> this.modelMapper.map(product, ProductBindingModel.class)).
                 collect(Collectors.toList());
     }
 
-    public ProductDTO findById(Long productId){
+    public ProductBindingModel findById(Long productId){
+
        return this.productRepository.findById(productId)
-               .map(product -> {
-                   ProductDTO productDTO = this.modelMapper.map(product, ProductDTO.class);
-                           return productDTO;
-               })
+               .map(product -> this.modelMapper.map(product, ProductBindingModel.class))
                .orElseThrow(() -> new ProductNotFoundException("Product with this id was not found"));
     }
 
+    @Transactional
     public void softDelete(Long productId) {
-        //TODO: set isDeleted  to true and deletedOn
+        //TODO: set isDeleted  to true and deletedOn to LocalDateTime.now()
     }
 
+    @Transactional
     public void hardDelete(Long productId) {
         productRepository.deleteById(productId);
     }
 
-
+    @Transactional
     public void activateProduct(Long activateId){
-        Product product = this.productRepository.findById(activateId).orElseThrow();
+        Product product = this.productRepository.findById(activateId)
+                .orElseThrow(() -> new ProductNotFoundException("No product with the given id was found!"));
+
         if(product.getActivity()){
             product.setActivity(false);
         }
@@ -74,7 +76,8 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public void editProduct(Long productId, ProductDTO productDTO){
+    @Transactional
+    public void editProduct(Long productId, ProductBindingModel productDTO){
 
         Product product = this.productRepository
                 .findById(productId)

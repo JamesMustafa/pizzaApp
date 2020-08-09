@@ -4,18 +4,17 @@
 <body>
 
 <div class="container center">
-    <!-- FACEBOOK SIGNIN -->
-    <div class="card">
+    <div class="card my-5">
         <article class="card-body">
             <a th:href="@{/register}" class="float-right btn btn-outline-primary">Sign up</a>
             <h4 class="card-title mb-4 mt-1">Sign in</h4>
-            <p>
-                <a th:href="@{/oauth2/authorization/facebook}"
-                   class="btn btn-block btn-outline-primary">
-                    <i class="fab fa-facebook-f"></i>
-                    Login via facebook
-                </a>
-            </p>
+<!--            <p>-->
+<!--                <a th:href="@{/oauth2/authorization/facebook}"-->
+<!--                   class="btn btn-block btn-outline-primary">-->
+<!--                    <i class="fab fa-facebook-f"></i>-->
+<!--                    Login via facebook-->
+<!--                </a>-->
+<!--            </p>-->
             <hr>
             <form th:action="@{/login}" method="post">
                 <div th:if="${error}" class="alert alert-danger" role="alert">

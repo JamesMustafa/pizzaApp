@@ -1,8 +1,8 @@
 package bg.jamesmustafa.pizzaria.web.controller;
 
-import bg.jamesmustafa.pizzaria.data.models.binding.UserAddBindingModel;
-import bg.jamesmustafa.pizzaria.data.models.service.UserServiceModel;
-import bg.jamesmustafa.pizzaria.data.models.view.UserDetailsViewModel;
+import bg.jamesmustafa.pizzaria.dto.binding.auth.UserAddBindingModel;
+import bg.jamesmustafa.pizzaria.dto.binding.auth.UserServiceModel;
+import bg.jamesmustafa.pizzaria.dto.view.UserDetailsViewModel;
 import bg.jamesmustafa.pizzaria.service.UserDetailsServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +37,9 @@ public class AuthenticationController {
 
     @GetMapping("/register")
     public String showRegisterView(Model model) {
+
         model.addAttribute("userRegisterForm", new UserAddBindingModel());
+
         return "authenticate/registration";
     }
 
@@ -46,14 +48,15 @@ public class AuthenticationController {
                            BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            return "registration/registration";
+            return "authenticate/registration";
         }
 
         if (userService.isUsernameAvailable(user.getUsername())) {
-            bindingResult.rejectValue("email",
-                    "error.email",
-                    "An account with this email already exists.");
-            return "registration/registration";
+            bindingResult.rejectValue("username",
+                    "error.username",
+                    "An account with this username already exists.");
+
+            return "authenticate/registration";
         }
 
         userService.createAndLoginUser(user);
@@ -65,10 +68,12 @@ public class AuthenticationController {
     @PreAuthorize("hasRole('CUSTOMER')")
     public String showProfile(Principal principal, Model model){
 
-        UserDetailsViewModel user = this.modelMapper.map(this.userService.findUserByUsername(principal.getName()),UserDetailsViewModel.class);
+        UserDetailsViewModel user = this.modelMapper.map(
+                this.userService.findUserByUsername(principal.getName()) , UserDetailsViewModel.class);
+
         model.addAttribute("userProfile", user);
 
-        return "authenticate/profile";
+        return "redirect:/home";
     }
 
     @GetMapping("authentication/edit")
@@ -76,7 +81,8 @@ public class AuthenticationController {
     public String editUser(Principal principal, Model model) {
         //TODO: Is good practice to use principal, because if I pass id's everywhere its super easy to change the id
         //TODO: and see data of other users. Should look for a solution for this with Spring Secuirty as well...
-        UserServiceModel user = this.modelMapper.map(this.userService.findUserByUsername(principal.getName()),UserServiceModel.class);
+        UserServiceModel user = this.modelMapper.map(
+                this.userService.findUserByUsername(principal.getName()),UserServiceModel.class);
 
         model.addAttribute("userEditForm", user);
 
@@ -91,10 +97,10 @@ public class AuthenticationController {
                                      RedirectAttributes redirectAttributes){
 
         if (bindingResult.hasErrors()) {
-            return "redirect:/home";
+            return "authenticate/edit";
         }
         this.userService.editUser(userId, userModel);
-        return "redirect:/home";
+        return "authenticate/profile";
     }
 
 }

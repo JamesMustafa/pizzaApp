@@ -1,28 +1,27 @@
 package bg.jamesmustafa.pizzaria.service;
 
-import bg.jamesmustafa.pizzaria.data.dto.OrderDTO;
-import bg.jamesmustafa.pizzaria.data.dto.ProductDTO;
-import bg.jamesmustafa.pizzaria.data.models.view.OrderDetailsViewModel;
-import bg.jamesmustafa.pizzaria.data.models.view.OrderHistoryViewModel;
-import bg.jamesmustafa.pizzaria.data.models.view.ProductDetailsViewModel;
-import bg.jamesmustafa.pizzaria.entity.Order;
-import bg.jamesmustafa.pizzaria.entity.User;
+import bg.jamesmustafa.pizzaria.dto.binding.OrderBindingModel;
+import bg.jamesmustafa.pizzaria.dto.view.OrderDetailsViewModel;
+import bg.jamesmustafa.pizzaria.dto.view.OrderHistoryViewModel;
+import bg.jamesmustafa.pizzaria.dto.view.ProductDetailsViewModel;
+import bg.jamesmustafa.pizzaria.db.entity.Order;
+import bg.jamesmustafa.pizzaria.db.entity.User;
 import bg.jamesmustafa.pizzaria.error.OrderNotFoundException;
-import bg.jamesmustafa.pizzaria.repository.OrderRepository;
+import bg.jamesmustafa.pizzaria.db.repository.OrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-
+    //TODO: This service returns a couple of view models instead of binding models. should check it again...
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
 
@@ -32,46 +31,41 @@ public class OrderService {
     }
 
     @Transactional
-    public void addOrderForApproval(OrderDTO orderDTO){
+    public void addOrderForApproval(OrderBindingModel orderBindingModel){
 
-        Order pendingOrder = this.modelMapper.map(orderDTO, Order.class);
+        Order pendingOrder = this.modelMapper.map(orderBindingModel, Order.class);
         pendingOrder.setApproved(false);
-        pendingOrder.setCustomer(this.modelMapper.map(orderDTO.getCustomer(), User.class));
-        this.orderRepository.saveAndFlush(pendingOrder);
+        pendingOrder.setCustomer(this.modelMapper.map(orderBindingModel.getCustomer(), User.class));
+        this.orderRepository.save(pendingOrder);
     }
 
 
-    public List<OrderDTO> findAllOrdersForApproval(){
+    public List<OrderBindingModel> findAllOrdersForApproval(){
 
-        List<OrderDTO> ordersForApproval = this.findAll()
+        return this.findAll()
                 .stream()
                 .filter(o -> o.getApproved().equals(false))
                 .collect(Collectors.toList());
-
-        return ordersForApproval;
     }
 
-    public List<OrderDTO> findAll() {
+    public List<OrderBindingModel> findAll() {
 
-        List<OrderDTO> orderDTOList= this.orderRepository.findAll()
+        return this.orderRepository.findAll()
                 .stream()
-                .map(o -> this.modelMapper.map(o, OrderDTO.class))
+                .map(o -> this.modelMapper.map(o, OrderBindingModel.class))
                 .collect(Collectors.toList());
-
-        return orderDTOList;
     }
 
     public List<OrderHistoryViewModel> findOrdersByCustomer(String username) {
 
-        List<OrderHistoryViewModel> orderHistoryViewModelList = this.orderRepository.findAll()
+         return this.orderRepository.findAll()
                 .stream()
                 .filter(o -> o.getCustomer().getUsername().equals(username))
                 .filter(o -> o.getApproved().equals(true)) //the order should be approved in order to show in the history !
                 .map(o -> this.modelMapper.map(o, OrderHistoryViewModel.class))
                 .collect(Collectors.toList());
-
-        return orderHistoryViewModelList;
     }
+
     public OrderDetailsViewModel findOrderDetailsById(Long orderId){
 
         Order order = this.orderRepository.findById(orderId)
@@ -99,18 +93,17 @@ public class OrderService {
     }
 
 
-    public OrderDTO findById(Long orderId) {
+    public OrderBindingModel findById(Long orderId) {
 
-        OrderDTO order = this.orderRepository.findById(orderId)
-                .map(o -> this.modelMapper.map(o, OrderDTO.class))
+        return this.orderRepository.findById(orderId)
+                .map(o -> this.modelMapper.map(o, OrderBindingModel.class))
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id has not been found!"));
-
-        return order;
     }
 
+    @Transactional
     public void declineOrder(Long orderId){
 
-        Order order= this.orderRepository.findById(orderId)
+        Order order = this.orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id does not exist!"));
 
         order.setApproved(true);
@@ -119,6 +112,7 @@ public class OrderService {
         this.orderRepository.save(order);
     }
 
+    @Transactional
     public void confirmOrder(Long orderId, String waitingTime){
 
         Order order = this.orderRepository
