@@ -24,64 +24,45 @@ public class ProductController {
         this.categoryService = categoryService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/add")
-    public String addProduct(Model model) {
-
-        model.addAttribute("productInputForm", new ProductBindingModel());
-        model.addAttribute("categoryTypes", this.categoryService.findAll());
-
-        return "product/createProduct";
-    }
-
-    //TODO: Should I make my own image uploader???
-    //TODO: Should this method have the same name with the getMethod above?
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/save")
-    public String save
-    (@Valid @ModelAttribute("productInputForm") ProductBindingModel productDTO,
-                    BindingResult bindingResult,
-                    RedirectAttributes redirectAttributes) {
-
-        if (bindingResult.hasErrors()) {
-            return "redirect:/products/add";
-        }
-
-        this.productService.createProduct(productDTO);
-
-        return "redirect:/products/";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete")
-    public String delete(@ModelAttribute(name="deleteId") Long deleteId) {
-
-        this.productService.hardDelete(deleteId);
-
-        return "redirect:/home";
-    }
-
     @GetMapping("/")
     public String viewProducts(Model model){
-
         model.addAttribute("pizzas", this.productService.findAllByCategory("pizza"));
         model.addAttribute("drinks", this.productService.findAllByCategory("drinks"));
         model.addAttribute("deserts", this.productService.findAllByCategory("deserts"));
         model.addAttribute("salads", this.productService.findAllByCategory("salads"));
-
-        //TODO: can i make foreach for every model attribute?
         return "product/index";
+    }
+
+    @GetMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String addProduct(Model model) {
+        model.addAttribute("productInputForm", new ProductBindingModel());
+        model.addAttribute("categoryTypes", this.categoryService.findAll());
+        return "product/createProduct";
     }
 
     //TODO: to make the getter without /{id}
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String editProduct(@PathVariable("id") Long productId, Model model) {
-
         model.addAttribute("productEditForm", this.productService.findById(productId));
         model.addAttribute("categoryTypes", this.categoryService.findAll());
-
         return "product/edit";
+    }
+
+    //TODO: Should I make my own image uploader???
+    //TODO: Should this method have the same name with the getMethod above?
+    @PostMapping("/save")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String save
+    (@Valid @ModelAttribute("productInputForm") ProductBindingModel productDTO,
+                    BindingResult bindingResult,
+                    RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/products/add";
+        }
+        this.productService.createProduct(productDTO);
+        return "redirect:/products/";
     }
 
     @PostMapping("/edit/{id}")
@@ -90,23 +71,26 @@ public class ProductController {
                                      @PathVariable("id") Long id,
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes){
-
         if (bindingResult.hasErrors()) {
             return "redirect:/products/";
         }
-
         this.productService.editProduct(id, productDTO);
-
         return "redirect:/home";
     }
 
-    @PreAuthorize("hasRole('EMPLOYEE')")
     @PostMapping("/activate")
+    @PreAuthorize("hasRole('EMPLOYEE')")
     public String activate(@ModelAttribute(name="activateId") Long activateId) {
-
         this.productService.activateProduct(activateId);
-
         return "redirect:/products/";
+    }
+
+
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String delete(@ModelAttribute(name="deleteId") Long deleteId) {
+        this.productService.hardDelete(deleteId);
+        return "redirect:/home";
     }
 
 }

@@ -43,6 +43,31 @@ public class AuthenticationController {
         return "authenticate/registration";
     }
 
+    @GetMapping("/authentication/profile")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public String showProfile(Principal principal, Model model){
+
+        UserDetailsViewModel user = this.modelMapper.map(
+                this.userService.findUserByUsername(principal.getName()) , UserDetailsViewModel.class);
+
+        model.addAttribute("userProfile", user);
+
+        return "authenticate/profile";
+    }
+
+    @GetMapping("authentication/edit")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public String editUser(Principal principal, Model model) {
+        //TODO: Is good practice to use principal, because if I pass id's everywhere its super easy to change the id
+        //TODO: and see data of other users. Should look for a solution for this with Spring Secuirty as well...
+        UserServiceModel user = this.modelMapper.map(
+                this.userService.findUserByUsername(principal.getName()),UserServiceModel.class);
+
+        model.addAttribute("userEditForm", user);
+
+        return "authenticate/edit";
+    }
+
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("userRegisterForm") UserAddBindingModel user,
                            BindingResult bindingResult) {
@@ -64,30 +89,6 @@ public class AuthenticationController {
         return "redirect:/home";
     }
 
-    @GetMapping("/authentication/profile")
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public String showProfile(Principal principal, Model model){
-
-        UserDetailsViewModel user = this.modelMapper.map(
-                this.userService.findUserByUsername(principal.getName()) , UserDetailsViewModel.class);
-
-        model.addAttribute("userProfile", user);
-
-        return "redirect:/home";
-    }
-
-    @GetMapping("authentication/edit")
-    @PreAuthorize("hasRole('CUSTOMER')")
-    public String editUser(Principal principal, Model model) {
-        //TODO: Is good practice to use principal, because if I pass id's everywhere its super easy to change the id
-        //TODO: and see data of other users. Should look for a solution for this with Spring Secuirty as well...
-        UserServiceModel user = this.modelMapper.map(
-                this.userService.findUserByUsername(principal.getName()),UserServiceModel.class);
-
-        model.addAttribute("userEditForm", user);
-
-        return "authenticate/edit";
-    }
 
     @PostMapping("authentication/edit/{id}")
     @PreAuthorize("hasRole('CUSTOMER')")

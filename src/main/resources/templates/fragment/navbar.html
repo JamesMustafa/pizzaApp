@@ -12,10 +12,10 @@
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary" th:fragment="navbar(activeTab)">
+<nav class="navbar navbar-expand-lg navbar-dark bg-warning" th:fragment="navbar(activeTab)">
 
     <!-- Project name -->
-    <a class="navbar-brand" th:href="@{/home}">Pizzaria Mizzaria</a>
+    <a class="navbar-brand" th:href="@{/home}">Pizzaria La Jem</a>
     <button aria-controls="navbarSupportedContent"
             aria-expanded="false"
             aria-label="Toggle navigation"
@@ -41,7 +41,7 @@
             <li sec:authorize="hasRole('ADMIN')" class="nav-item" th:classappend="${activeTab == 'stats'}? 'active'">
                 <a class="nav-link" th:href="@{/stats}">Statistics</a>
             </li> -->
-            <li class="nav-item">
+            <li sec:authorize="hasRole('CUSTOMER')" class="nav-item">
                 <div class="dropdown">
                     <a class="nav-link js-scroll-trigger dropdown-toggle btn-lg" data-toggle="dropdown">
                         Menu
@@ -55,7 +55,7 @@
                 </div>
             </li>
 
-            <li class="nav-item">
+            <li sec:authorize="hasRole('CUSTOMER')" class="nav-item">
                 <div class="dropdown">
                     <a class="nav-link js-scroll-trigger dropdown-toggle btn-lg" data-toggle="dropdown">
                         Cart
@@ -72,7 +72,7 @@
                 </div>
             </li>
 
-            <li class="nav-item">
+            <li sec:authorize="hasRole('CUSTOMER')" class="nav-item">
                 <div class="dropdown">
                     <a class="nav-link js-scroll-trigger dropdown-toggle btn-lg" data-toggle="dropdown">
                         Profile
@@ -80,6 +80,7 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" th:href="@{/authentication/profile}">View Profile</a>
                         <a class="dropdown-item" th:href="@{/authentication/edit}">Edit Profile</a>
+                        <a class="dropdown-item" th:href="@{/authentication/changePassword}">Change Password</a>
                         <div class="dropdown-divider"></div>
                         <div class="dropdown-item">
                             <form th:action="@{/logout}" method="post">
@@ -92,12 +93,15 @@
                     </div>
                 </div>
             </li>
+            <li sec:authorize="hasRole('EMPLOYEE')" class="nav-item">
+                <a class="nav-link btn-lg" th:href="@{/orders/pending}">Pending Orders</a>
+            </li>
 
         </ul>
 
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-
+            <li sec:authorize="isAnonymous()" class="nav-item">
+                <a th:href="@{/register}" class="btn btn-outline-danger btn-lg">Get Started</a>
             </li>
         </ul>
     </div>

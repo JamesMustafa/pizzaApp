@@ -8,14 +8,12 @@ import bg.jamesmustafa.pizzaria.db.entity.Order;
 import bg.jamesmustafa.pizzaria.db.entity.User;
 import bg.jamesmustafa.pizzaria.error.OrderNotFoundException;
 import bg.jamesmustafa.pizzaria.db.repository.OrderRepository;
+import bg.jamesmustafa.pizzaria.util.TimeUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,16 +21,17 @@ import java.util.stream.Collectors;
 public class OrderService {
     //TODO: This service returns a couple of view models instead of binding models. should check it again...
     private final OrderRepository orderRepository;
+    private final EmailService emailService;
     private final ModelMapper modelMapper;
 
-    public OrderService(OrderRepository orderRepository, ModelMapper modelMapper) {
+    public OrderService(OrderRepository orderRepository, EmailService emailService, ModelMapper modelMapper) {
         this.orderRepository = orderRepository;
+        this.emailService = emailService;
         this.modelMapper = modelMapper;
     }
 
     @Transactional
     public void addOrderForApproval(OrderBindingModel orderBindingModel){
-
         Order pendingOrder = this.modelMapper.map(orderBindingModel, Order.class);
         pendingOrder.setApproved(false);
         pendingOrder.setCustomer(this.modelMapper.map(orderBindingModel.getCustomer(), User.class));
@@ -41,7 +40,6 @@ public class OrderService {
 
 
     public List<OrderBindingModel> findAllOrdersForApproval(){
-
         return this.findAll()
                 .stream()
                 .filter(o -> o.getApproved().equals(false))
@@ -49,7 +47,6 @@ public class OrderService {
     }
 
     public List<OrderBindingModel> findAll() {
-
         return this.orderRepository.findAll()
                 .stream()
                 .map(o -> this.modelMapper.map(o, OrderBindingModel.class))
@@ -57,7 +54,6 @@ public class OrderService {
     }
 
     public List<OrderHistoryViewModel> findOrdersByCustomer(String username) {
-
          return this.orderRepository.findAll()
                 .stream()
                 .filter(o -> o.getCustomer().getUsername().equals(username))
@@ -67,7 +63,6 @@ public class OrderService {
     }
 
     public OrderDetailsViewModel findOrderDetailsById(Long orderId){
-
         Order order = this.orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id has not been found!"));
 
@@ -94,7 +89,6 @@ public class OrderService {
 
 
     public OrderBindingModel findById(Long orderId) {
-
         return this.orderRepository.findById(orderId)
                 .map(o -> this.modelMapper.map(o, OrderBindingModel.class))
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id has not been found!"));
@@ -102,42 +96,33 @@ public class OrderService {
 
     @Transactional
     public void declineOrder(Long orderId){
-
         Order order = this.orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id does not exist!"));
 
         order.setApproved(true);
         order.setSuccessful(false);
+        //send an email to the customer
+        this.emailService.sendMail(
+                order.getCustomer().getEmail(),"Your order has been declined.", "you order has been placed bro");
 
         this.orderRepository.save(order);
     }
 
     @Transactional
     public void confirmOrder(Long orderId, String waitingTime){
-
         Order order = this.orderRepository
                 .findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id does not exist!"));
 
         order.setApproved(true);
         order.setSuccessful(true);
-        order.setWaitingTime(parseTime(waitingTime));
-        //sent an email to the customer
+        order.setWaitingTime(TimeUtil.parseTime(waitingTime));
+        //send an email to the customer
+        this.emailService.sendMail(
+                order.getCustomer().getEmail(),"Your order has been confirmed.", "you order has been placed bro");
 
         this.orderRepository.save(order);
     }
-
-    private LocalDateTime parseTime(String time)
-    {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String confirmDate = LocalDateTime.now().format(dateFormatter).toString();
-        String waitingDateAndTime = confirmDate + " " + time;
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(waitingDateAndTime, dateTimeFormatter);
-
-        return dateTime;
-    }
-
 
 }
 
