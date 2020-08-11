@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4 p-4" th:each="offer : ${offers}">
+            <div class="card h-75">
+                <img class="card-img-top" src="/img/logo.png" alt="Card image cap">
+                <div class="card-body mb-3">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="card-title">Top Offer</h5>
+                        </div>
+                        <div class="col">
+                            <form method="post" th:action="@{/cart/addOffer}">
+                                <div class="form-group">
+                                    <input id="offerId" name="offerId" type="hidden" th:value="${offer.id}"/>
+                                    <button type="submit" class="btn btn-success btn-sm btn-block">Order Now</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item" th:each="product : ${offer.products}">
+                        <div class="row">
+                            <div class="col">
+                                <img class="card-img-top w-50 h-50" th:src="${product.imgSrc}" alt="Card image cap">
+                            </div>
+                            <div class="col text-right">
+                                <p class="font-weight-bold text-truncate" data-toggle="tooltip" th:title="${product.name}" th:text="${product.name}"></p>
+                                <p class="font-weight-light">Price:
+                                    <span class="text-danger font-weight-bold" th:text="${product.price}"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div class="card-footer text-left">
+                    <div class="row">
+                        <div class="col">
+                            <p class="font-weight-light">Promotional price:
+                            <h2 class="font-weight-bold text-success" th:text="${offer.promoPrice}"></h2>
+                            </p>
+                        </div>
+                        <div class="col">
+                            <p class="font-weight-light">Old price:
+                                <h2 class="text-danger">
+                                    <del th:text="${offer.oldPrice}"></del>
+                                </h2>
+                            </p>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+</body>
+</html>

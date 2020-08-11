@@ -52,7 +52,7 @@ public class ProductController {
 
     //TODO: Should I make my own image uploader???
     //TODO: Should this method have the same name with the getMethod above?
-    @PostMapping("/save")
+    @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
     public String save
     (@Valid @ModelAttribute("productInputForm") ProductBindingModel productDTO,

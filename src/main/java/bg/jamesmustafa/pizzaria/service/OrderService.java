@@ -116,7 +116,7 @@ public class OrderService {
 
         order.setApproved(true);
         order.setSuccessful(true);
-        order.setWaitingTime(TimeUtil.parseTime(waitingTime));
+        order.setWaitingTime(TimeUtil.parseTimeToDate(waitingTime));
         //send an email to the customer
         this.emailService.sendMail(
                 order.getCustomer().getEmail(),"Your order has been confirmed.", "you order has been placed bro");

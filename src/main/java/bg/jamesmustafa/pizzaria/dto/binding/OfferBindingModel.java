@@ -19,12 +19,16 @@ public class OfferBindingModel {
     @DecimalMin(value = "0.00", inclusive = false)
     private BigDecimal promoPrice;
 
+    @NotBlank(message = "Price cannot be blank")
+    @DecimalMin(value = "0.00", inclusive = false)
+    private BigDecimal oldPrice;
+
     @Future(message = "Please select a date in the future")
     @DateTimeFormat(iso= DateTimeFormat.ISO.DATE)
     private LocalDateTime validUntil;
 
     @NotEmpty(message = "There must be more than zero products")
-    private List<String> products;
+    private List<ProductBindingModel> products;
 
     public Long getId() { return id; }
 
@@ -42,11 +46,15 @@ public class OfferBindingModel {
 
     public void setValidUntil(LocalDateTime validUntil) { this.validUntil = validUntil; }
 
-    public List<String> getProducts() {
-        return products;
+    public List<ProductBindingModel> getProducts() { return products; }
+
+    public void setProducts(List<ProductBindingModel> products) { this.products = products; }
+
+    public BigDecimal getOldPrice() {
+        return oldPrice;
     }
 
-    public void setProducts(List<String> products) {
-        this.products = products;
+    public void setOldPrice(BigDecimal oldPrice) {
+        this.oldPrice = oldPrice;
     }
 }

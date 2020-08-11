@@ -11,13 +11,16 @@ import java.util.List;
 @Table(name = "offers")
 public class Offer extends BaseDeletableEntity {
 
+    @Column(name = "old_price", nullable = false)
+    private BigDecimal oldPrice;
+
     @Column(name = "promotional_price", nullable = false)
     private BigDecimal promoPrice;
 
     @Column(name = "valid_until", nullable = false)
     private LocalDateTime validUntil;
-
-    @ManyToMany(targetEntity = Product.class, cascade = CascadeType.ALL)
+    //TODO: Learn about all the cascadetypes...
+    @ManyToMany(targetEntity = Product.class, cascade = CascadeType.MERGE) //with cascadetype.all it gives exception
     @JoinTable(
             name = "offers_products",
             joinColumns = @JoinColumn(
@@ -34,6 +37,10 @@ public class Offer extends BaseDeletableEntity {
 
     public Offer() {
     }
+
+    public BigDecimal getOldPrice() { return oldPrice; }
+
+    public void setOldPrice(BigDecimal oldPrice) { this.oldPrice = oldPrice; }
 
     public BigDecimal getPromoPrice() {
         return promoPrice;

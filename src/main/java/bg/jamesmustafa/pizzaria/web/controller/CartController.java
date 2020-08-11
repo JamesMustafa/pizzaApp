@@ -1,10 +1,12 @@
 package bg.jamesmustafa.pizzaria.web.controller;
 
+import bg.jamesmustafa.pizzaria.dto.binding.OfferBindingModel;
 import bg.jamesmustafa.pizzaria.dto.binding.OrderBindingModel;
 import bg.jamesmustafa.pizzaria.dto.binding.ProductBindingModel;
 import bg.jamesmustafa.pizzaria.dto.binding.auth.UserServiceModel;
-import bg.jamesmustafa.pizzaria.dto.view.CartViewModel;
+import bg.jamesmustafa.pizzaria.dto.view.CartProductViewModel;
 import bg.jamesmustafa.pizzaria.dto.view.ProductDetailsViewModel;
+import bg.jamesmustafa.pizzaria.service.OfferService;
 import bg.jamesmustafa.pizzaria.service.OrderService;
 import bg.jamesmustafa.pizzaria.service.ProductService;
 import bg.jamesmustafa.pizzaria.service.UserDetailsServiceImpl;
@@ -27,12 +29,14 @@ import java.util.List;
 public class CartController {
 
     private final ProductService productService;
+    private final OfferService offerService;
     private final OrderService orderService;
     private final ModelMapper modelMapper;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public CartController(ProductService productService, OrderService orderService, ModelMapper modelMapper, UserDetailsServiceImpl userDetailsService) {
+    public CartController(ProductService productService, OfferService offerService, OrderService orderService, ModelMapper modelMapper, UserDetailsServiceImpl userDetailsService) {
         this.productService = productService;
+        this.offerService = offerService;
         this.orderService = orderService;
         this.modelMapper = modelMapper;
         this.userDetailsService = userDetailsService;
@@ -44,13 +48,13 @@ public class CartController {
         ProductDetailsViewModel product = this.modelMapper
                 .map(this.productService.findById(productId), ProductDetailsViewModel.class);
 
-        CartViewModel cartViewModel = new CartViewModel();
+        CartProductViewModel cartProductViewModel = new CartProductViewModel();
 
-        cartViewModel.setProductDetailsViewModel(product);
-        cartViewModel.setQuantity(quantity);
+        cartProductViewModel.setProductDetailsViewModel(product);
+        cartProductViewModel.setQuantity(quantity);
 
         var cart = this.retrieveCart(session);
-        this.addItemToCart(cartViewModel, cart);
+        this.addItemToCart(cartProductViewModel, cart);
 
         return "redirect:/products/";
     }
@@ -59,23 +63,33 @@ public class CartController {
     public String reOrderConfirm(@ModelAttribute(name="orderId") Long orderId, HttpSession session) {
 
         OrderBindingModel orderBindingModel = this.orderService.findById(orderId);
-        for (ProductBindingModel productDTO : orderBindingModel.getProducts()){
+        addProductsToCart(orderBindingModel.getProducts(), session);
+        return "redirect:/cart/details";
+    }
+
+    @PostMapping("/addOffer")
+    public String addOfferConfirm(@ModelAttribute(name="offerId") Long offerId, HttpSession session) {
+
+        OfferBindingModel offerBindingModel = this.offerService.findById(offerId);
+        addProductsToCart(offerBindingModel.getProducts(), session);
+        return "redirect:/cart/details";
+    }
+
+    private void addProductsToCart(List<ProductBindingModel> products, HttpSession session){
+        for (ProductBindingModel productDTO : products){
 
             this.initCart(session);
             ProductDetailsViewModel product = this.modelMapper
                     .map(productDTO, ProductDetailsViewModel.class);
 
-            CartViewModel cartViewModel = new CartViewModel();
-            cartViewModel.setProductDetailsViewModel(product);
-            cartViewModel.setQuantity(1); //one because there is counter in addItemToCart method and it will collect all the same products
+            CartProductViewModel cartProductViewModel = new CartProductViewModel();
+            cartProductViewModel.setProductDetailsViewModel(product);
+            cartProductViewModel.setQuantity(1); //one because there is counter in addItemToCart method and it will collect all the same products
 
 
             var cart = this.retrieveCart(session);
-            this.addItemToCart(cartViewModel, cart);
+            this.addItemToCart(cartProductViewModel, cart);
         }
-
-
-        return "redirect:/cart/details";
     }
 
     @GetMapping("/details")
@@ -89,7 +103,6 @@ public class CartController {
 
     //TODO: DeleteMapping and method="delete" are not working, but when it's Post everything is fine. Why is that?
     @PostMapping("/removeProduct")
-    @PreAuthorize("hasRole('CUSTOMER')")
     public String removeFromCartConfirm(@ModelAttribute(name="deleteId") Long deleteId, HttpSession session) {
         this.removeItemFromCart(deleteId, this.retrieveCart(session));
 
@@ -116,43 +129,43 @@ public class CartController {
     }
 
 
-    private void addItemToCart(CartViewModel cartViewModel, List<CartViewModel> cartViewModelList) {
-        for (CartViewModel item : cartViewModelList) {
-            if (item.getProductDetailsViewModel().getId().equals(cartViewModel.getProductDetailsViewModel().getId())) {
-                item.setQuantity(item.getQuantity() + cartViewModel.getQuantity());
+    private void addItemToCart(CartProductViewModel cartProductViewModel, List<CartProductViewModel> cartProductViewModelList) {
+        for (CartProductViewModel item : cartProductViewModelList) {
+            if (item.getProductDetailsViewModel().getId().equals(cartProductViewModel.getProductDetailsViewModel().getId())) {
+                item.setQuantity(item.getQuantity() + cartProductViewModel.getQuantity());
                 return;
             }
         }
 
-        cartViewModelList.add(cartViewModel);
+        cartProductViewModelList.add(cartProductViewModel);
     }
 
-    private List<CartViewModel> retrieveCart(HttpSession session) {
+    private List<CartProductViewModel> retrieveCart(HttpSession session) {
         this.initCart(session);
 
-        return (List<CartViewModel>) session.getAttribute("shopping-cart");
+        return (List<CartProductViewModel>) session.getAttribute("shopping-cart");
     }
 
-    private BigDecimal calcTotal(List<CartViewModel> cart) {
+    private BigDecimal calcTotal(List<CartProductViewModel> cart) {
         BigDecimal result = new BigDecimal(0);
-        for (CartViewModel item : cart) {
+        for (CartProductViewModel item : cart) {
             result = result.add(item.getProductDetailsViewModel().getPrice().multiply(new BigDecimal(item.getQuantity())));
         }
 
         return result;
     }
 
-    private void removeItemFromCart(Long id, List<CartViewModel> cart) {
+    private void removeItemFromCart(Long id, List<CartProductViewModel> cart) {
         cart.removeIf(c -> c.getProductDetailsViewModel().getId().equals(id));
     }
 
-    private OrderBindingModel prepareOrder(List<CartViewModel> cart, String customer, String comment) {
+    private OrderBindingModel prepareOrder(List<CartProductViewModel> cart, String customer, String comment) {
         //TODO: Should I use service models in controller
         OrderBindingModel orderBindingModel = new OrderBindingModel();
         orderBindingModel.setComment(comment);
         orderBindingModel.setCustomer(this.modelMapper.map(this.userDetailsService.findUserByUsername(customer), UserServiceModel.class));
         List<ProductBindingModel> products = new ArrayList<>();
-        for (CartViewModel item : cart) {
+        for (CartProductViewModel item : cart) {
             ProductBindingModel productDTO = this.modelMapper.map(item.getProductDetailsViewModel(), ProductBindingModel.class);
 
             for (int i = 0; i < item.getQuantity(); i++) {

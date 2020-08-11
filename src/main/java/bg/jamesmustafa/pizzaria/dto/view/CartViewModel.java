@@ -1,26 +1,26 @@
 package bg.jamesmustafa.pizzaria.dto.view;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 public class CartViewModel {
 
-    private ProductDetailsViewModel productDetailsViewModel;
-    private int quantity;
+    private List<CartProductViewModel> products;
+    private BigDecimal totalPrice;
 
-    public CartViewModel() {
+    public List<CartProductViewModel> getProducts() {
+        return products;
     }
 
-    public ProductDetailsViewModel getProductDetailsViewModel() {
-        return productDetailsViewModel;
+    public void setProducts(List<CartProductViewModel> products) {
+        this.products = products;
     }
 
-    public void setProductDetailsViewModel(ProductDetailsViewModel productDetailsViewModel) {
-        this.productDetailsViewModel = productDetailsViewModel;
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

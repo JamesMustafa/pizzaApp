@@ -8,7 +8,7 @@
 <!-- EO: Navbar -->
 
 <div class="container center">
-    <form th:action="@{/products/save}" method="post" th:object="${productInputForm}" id="createProductForm">
+    <form th:action="@{/products/add}" method="post" th:object="${productInputForm}" id="createProductForm">
         <div class="form-group">
             <label for="productName">Name</label>
             <input type="text"

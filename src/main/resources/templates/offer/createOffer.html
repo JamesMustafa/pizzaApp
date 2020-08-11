@@ -7,8 +7,8 @@
 <div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
 <!-- EO: Navbar -->
 
-<div class="container center">
-    <form th:action="@{/offers/save}" method="post" th:object="${offerInputForm}" id="createOfferForm">
+<div class="container center my-5">
+    <form th:action="@{/offers/add}" method="post" th:object="${offerInputForm}" id="createOfferForm">
         <div class="input-group">
             <label for="offerPrice">Price</label>
             <input type="text"
@@ -27,13 +27,28 @@
             </div>
         </div>
 
+        <div class="form-group row">
+            <label for="validUntil" class="col-2 col-form-label">Valid Until</label>
+            <div class="col-10">
+                <input class="form-control"
+                       type="month"
+                       th:errorclass="is-invalid"
+                       id="validUntil"
+                       th:field="*{validUntil}"
+                       name="validUntil">
+                <div class="invalid-feedback">
+                    Please fill in a validity month
+                </div>
+            </div>
+        </div>
+
 
         <div class="form-group col-md-6 mb-3">
             <label class="text-center text-white font-weight-bold" for="products">Products</label>
             <select multiple th:field="*{products}" id="products" class="form-control"
                     th:classappend="${#fields.hasErrors('products')}? 'field-error'" >
                 <option value="">- Select products -</option>
-                    <option th:each="product : ${allProducts}" th:value="${product}"
+                    <option th:each="product : ${allProducts}" th:value="${product.id}"
                             th:text="|   ${product.name} ${product.category.name}|"
                             th:selected="${product == products}">
                         Model
@@ -44,19 +59,6 @@
                class="errors alert alert-danger">
                 Minimum one Product is required.
             </p>
-        </div>
-
-        <div class="form-group">
-            <label for="validationDate">Image Url</label>
-            <input type="date"
-                   placeholder="Enter the date here"
-                   class="form-control"
-                   th:errorclass="is-invalid"
-                   id="validationDate"
-                   th:field="*{validUntil}"/>
-            <div class="invalid-feedback">
-                Please fill in a date.
-            </div>
         </div>
 
 
