@@ -102,8 +102,7 @@ public class OrderService {
         order.setApproved(true);
         order.setSuccessful(false);
         //send an email to the customer
-        this.emailService.sendMail(
-                order.getCustomer().getEmail(),"Your order has been declined.", "you order has been placed bro");
+        //this.emailService.sendMail(order.getCustomer().getEmail(),"Your order has been declined.", "you order has been placed bro");
 
         this.orderRepository.save(order);
     }
@@ -118,8 +117,7 @@ public class OrderService {
         order.setSuccessful(true);
         order.setWaitingTime(TimeUtil.parseTimeToDate(waitingTime));
         //send an email to the customer
-        this.emailService.sendMail(
-                order.getCustomer().getEmail(),"Your order has been confirmed.", "you order has been placed bro");
+        //this.emailService.sendMail(order.getCustomer().getEmail(),"Your order has been confirmed.", "you order has been placed bro");
 
         this.orderRepository.save(order);
     }

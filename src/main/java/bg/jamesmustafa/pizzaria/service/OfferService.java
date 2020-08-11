@@ -34,7 +34,6 @@ public class OfferService {
     @Transactional
     public void createOffer(OfferAddBindingModel offerDTO) {
         BigDecimal oldPrice = new BigDecimal(0);
-
         Offer offer = this.modelMapper.map(offerDTO, Offer.class);
         offer.setValidUntil(TimeUtil.parseDateToTime(offerDTO.getValidUntil()));
         List<Product> products = new ArrayList<>();
@@ -51,9 +50,24 @@ public class OfferService {
         //TODO: Once again find the differences between save and saveAndFlush !!!
     }
 
+    @Transactional
+    public void softDelete(Long offerId) {
+        Offer offer = this.offerRepository.findById(offerId)
+                .orElseThrow(() -> new OfferNotFoundException("Offer with the given id was not found!"));
+        offer.setDeleted(true);
+        offer.setDeletedOn(LocalDateTime.now());
+        this.offerRepository.save(offer);
+    }
+
+    @Transactional
+    public void hardDelete(Long productId) {
+        this.offerRepository.deleteById(productId);
+    }
+
     public List<OfferBindingModel> findAllValidOffers(){
         return this.offerRepository.findAll()
                 .stream()
+                .filter(offer -> offer.getDeleted().equals(false))
                 .filter(offer -> offer.getValidUntil().isAfter(LocalDateTime.now()))
                 .map(offer -> this.modelMapper.map(offer, OfferBindingModel.class))
                 .collect(Collectors.toList());

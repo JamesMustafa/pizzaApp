@@ -85,10 +85,18 @@ public class ProductController {
         return "redirect:/products/";
     }
 
+    //SOFT DELETE MEANS THAT WE WON'T DELETE THE ENTITY ITSELF, RATHER CHANGE ITS "isDeleted" BOOLEAN TO TRUE!
+    @PostMapping("/softDelete")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String softDelete(@ModelAttribute(name="deleteId") Long deleteId) {
+        this.productService.softDelete(deleteId);
+        return "redirect:/home";
+    }
 
+    //IN HARD DELETE, WE DELETE THE WHOLE ENTITY, WITHOUT CHANCE OF RETURNING IT BACK!
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
-    public String delete(@ModelAttribute(name="deleteId") Long deleteId) {
+    public String hardDelete(@ModelAttribute(name="deleteId") Long deleteId) {
         this.productService.hardDelete(deleteId);
         return "redirect:/home";
     }

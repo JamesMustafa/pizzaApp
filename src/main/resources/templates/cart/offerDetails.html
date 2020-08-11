@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragment/head :: head"></head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
+<!-- EO: Navbar -->
+
+<h1 class="text-center text-dark">Shopping Cart</h1>
+<hr class="hr-2 bg-dark w-75">
+<table class="table table-hover w-75 mx-auto">
+    <thead>
+    <tr class="row mx-auto">
+        <th class="col-md-2 text-center">Image</th>
+        <th class="col-md-3 text-center">Name</th>
+        <th class="col-md-5 text-center">Description</th>
+        <th class="col-md-2 text-center">Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:each="product : ${offer.products}">
+        <tr class="row mx-auto">
+            <th class="col-md-2 text-center"><img th:src="*{product.imgSrc}" alt="Product" height="150" width="150"></th>
+            <td class="col-md-3 text-center" th:text="*{product.name}"></td>
+            <td class="col-md-5 text-center" th:text="*{product.description}"></td>
+            <td class="col-md-2 text-center" th:text="*{product.price}"></td>
+        </tr>
+    </th:block>
+    </tbody>
+</table>
+
+
+<hr class="hr-2 bg-dark">
+<div class="text-center">
+    <p class="text-warning font-italic">Note: If you want to add another product to the cart, you will lose your promotional price...</p>
+    <h3>Old Price: <del class="text-danger" th:text="${offer.oldPrice}"></del></h3>
+    <h3>New Price: <span class="text-success" th:text="${offer.promoPrice}"></span></h3>
+</div>
+<hr class="hr-2 bg-dark">
+<h4 class="text-center">If you want to add some comment to your order you can type it below</h4>
+<form th:action="@{/cart/checkout}" th:method="post">
+    <div class="form-group w-50 mx-auto">
+        <label for="comment" class="col-form-label">Let us know if you have any preferences: </label>
+        <textarea class="form-control"
+                  id="comment"
+                  name="comment"
+                  style="resize:none"
+                  rows="3"
+                  placeholder="Example: I don't want any sauces/ I have milk intolerance"
+        ></textarea>
+    </div>
+    <div class="button-holder d-flex justify-content-center my-4">
+        <input type="hidden" id="price" name="price" th:value="${offer.promoPrice}">
+        <button type="submit" class="btn btn-success">Checkout</button>
+    </div>
+</form>
+
+
+</body>
+</html>

@@ -3,6 +3,7 @@ package bg.jamesmustafa.pizzaria.db.entity.common;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 //can two classes be @MappedSuperclass?
@@ -13,7 +14,7 @@ public abstract class BaseDeletableEntity extends BaseEntity {
     private Boolean isDeleted;
 
     @Column(name = "deleted_on")
-    private Date deletedOn;
+    private LocalDateTime deletedOn;
 
     protected BaseDeletableEntity() {
     }
@@ -31,11 +32,7 @@ public abstract class BaseDeletableEntity extends BaseEntity {
         isDeleted = deleted;
     }
 
-    public Date getDeletedOn() {
-        return deletedOn;
-    }
+    public LocalDateTime getDeletedOn() { return deletedOn; }
 
-    public void setDeletedOn(Date deletedOn) {
-        this.deletedOn = deletedOn;
-    }
+    public void setDeletedOn(LocalDateTime deletedOn) { this.deletedOn = deletedOn; }
 }

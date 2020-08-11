@@ -19,12 +19,13 @@
                             <h5 class="card-title">Top Offer</h5>
                         </div>
                         <div class="col">
-                            <form method="post" th:action="@{/cart/addOffer}">
-                                <div class="form-group">
-                                    <input id="offerId" name="offerId" type="hidden" th:value="${offer.id}"/>
-                                    <button type="submit" class="btn btn-success btn-sm btn-block">Order Now</button>
-                                </div>
-                            </form>
+<!--                            <form method="post" th:action="@{/cart/addOffer}">-->
+<!--                                <div class="form-group">-->
+<!--                                    <input id="offerId" name="offerId" type="hidden" th:value="${offer.id}"/>-->
+<!--                                    <button type="submit" class="btn btn-success btn-sm btn-block">Order Now</button>-->
+<!--                                </div>-->
+<!--                            </form>-->
+                            <a class="btn btn-success btn-sm btn-block" th:href="@{/cart/details/offer/{id}(id = ${offer.id})}">Order Now</a>
                         </div>
                     </div>
                 </div>

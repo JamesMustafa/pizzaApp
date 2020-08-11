@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,43 +25,8 @@ public class ProductService {
 
     @Transactional
     public void createProduct(ProductBindingModel productModel) {
-
         Product product = this.modelMapper.map(productModel, Product.class);
-        productRepository.save(product);
-    }
-
-    public List<ProductBindingModel> findAll() {
-        return productRepository.
-                findAll().
-                stream().
-                map(product -> this.modelMapper.map(product, ProductBindingModel.class)).
-                collect(Collectors.toList());
-    }
-
-    public List<ProductBindingModel> findAllByCategory(String categoryName){
-        return productRepository.
-                findAll().
-                stream().
-                filter(product -> product.getCategory().getName().equalsIgnoreCase(categoryName)).
-                map(product -> this.modelMapper.map(product, ProductBindingModel.class)).
-                collect(Collectors.toList());
-    }
-
-    public ProductBindingModel findById(Long productId){
-
-       return this.productRepository.findById(productId)
-               .map(product -> this.modelMapper.map(product, ProductBindingModel.class))
-               .orElseThrow(() -> new ProductNotFoundException("Product with this id was not found"));
-    }
-
-    @Transactional
-    public void softDelete(Long productId) {
-        //TODO: set isDeleted  to true and deletedOn to LocalDateTime.now()
-    }
-
-    @Transactional
-    public void hardDelete(Long productId) {
-        productRepository.deleteById(productId);
+        this.productRepository.save(product);
     }
 
     @Transactional
@@ -73,12 +39,11 @@ public class ProductService {
         }
         else product.setActivity(true);
 
-        productRepository.save(product);
+        this.productRepository.save(product);
     }
 
     @Transactional
     public void editProduct(Long productId, ProductBindingModel productDTO){
-
         Product product = this.productRepository
                 .findById(productId)
                 .orElseThrow(() -> new ProductNotFoundException("Product with this id was not found!"));
@@ -88,8 +53,45 @@ public class ProductService {
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
         product.setCategory(productDTO.getCategory());
+        this.productRepository.save(product);
+    }
 
-        productRepository.save(product);
+    @Transactional
+    public void softDelete(Long productId) {
+        Product product = this.productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException("Product with the given id was not found!"));
+        product.setDeleted(true);
+        product.setDeletedOn(LocalDateTime.now());
+        this.productRepository.save(product);
+
+    }
+
+    @Transactional
+    public void hardDelete(Long productId) {
+        this.productRepository.deleteById(productId);
+    }
+
+    public List<ProductBindingModel> findAll() {
+        return this.productRepository.
+                findAll()
+                .stream()
+                .filter(product -> product.getDeleted().equals(false))
+                .map(product -> this.modelMapper.map(product, ProductBindingModel.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductBindingModel> findAllByCategory(String categoryName){
+        return this.findAll()
+                .stream()
+                .filter(product -> product.getCategory().getName().equalsIgnoreCase(categoryName))
+                .collect(Collectors.toList());
+    }
+
+    public ProductBindingModel findById(Long productId){
+
+        return this.productRepository.findById(productId)
+                .map(product -> this.modelMapper.map(product, ProductBindingModel.class))
+                .orElseThrow(() -> new ProductNotFoundException("Product with this id was not found"));
     }
 
 }
