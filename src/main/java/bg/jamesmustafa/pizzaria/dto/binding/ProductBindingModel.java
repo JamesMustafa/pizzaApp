@@ -34,7 +34,6 @@ public class ProductBindingModel {
     //TODO: Make it categoryDTO class.
     @NotNull(message = "Category cannot be null")
     private Category category;
-    //TODO: check if using another class in dto is correct
 
     public Long getId() {
         return id;

@@ -20,6 +20,6 @@ public class RoleService {
                 .stream()
                 .filter(r -> r.getName().equals(name))
                 .findAny()
-                .orElseThrow(() -> new RoleNotFoundException("Role with given id was not found!")); //TODO: Order not found exception
+                .orElseThrow(() -> new RoleNotFoundException("Role with given id was not found!"));
     }
 }

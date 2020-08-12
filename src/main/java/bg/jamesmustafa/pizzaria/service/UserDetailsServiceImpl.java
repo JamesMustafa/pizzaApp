@@ -38,14 +38,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
-    @Override
-    public UserDTO loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
-        return new UserDTO(user);
-    }
-
     @Transactional
     public void createAndLoginUser(UserAddBindingModel userModel) {
         User newUser = createUser(userModel);
@@ -56,7 +48,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 userModel.getPassword(),
                 user.getAuthorities()
         );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
@@ -64,7 +55,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public void editUser(Long userId, UserServiceModel userModel){
         User user = this.userRepository
                 .findById(userId)
-                .orElseThrow(); // user not found exception creat
+                .orElseThrow(() -> new UserNotFoundException("User with given id was not found!"));
+
         user.setName(userModel.getName());
         user.setSurname(userModel.getSurname());
 
@@ -82,7 +74,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userRepository.save(user);
     }
 
-    //TODO: Should there be two methods like that or i should make them one
+    @Override
+    public UserDTO loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = this.userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username));
+        return new UserDTO(user);
+    }
+
+    //TODO: Should there be two methods like that (loadUserByUsername) or i should make them as one
     //TODO: This method below should return a dto not the entity object ;)
     public User findUserByUsername(String username) throws UsernameNotFoundException{
         return this.userRepository.findByUsername(username)
@@ -101,7 +100,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Transactional
     private User createUser(UserAddBindingModel userModel) {
-        LOGGER.info("Creating a new user with username.");
+        LOGGER.info("Creating a new user with username {}.", userModel.getUsername());
         User user = this.modelMapper.map(userModel, User.class);
 
         if (userModel.getPassword() != null) {

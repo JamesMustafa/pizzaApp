@@ -34,7 +34,6 @@ public class OrderController {
     @GetMapping("/pending/{id}")
     @PreAuthorize("hasRole('EMPLOYEE')")
     public String pendingDetails(@PathVariable("id") Long orderId, Model model) {
-        //TODO: Should I use service models in controller
         OrderBindingModel orderBindingModel = this.orderService.findById(orderId);
         model.addAttribute("order", orderBindingModel);
         return "order/pendingDetails";

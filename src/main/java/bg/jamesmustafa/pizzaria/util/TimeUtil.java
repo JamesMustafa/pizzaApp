@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 public class TimeUtil {
 
-    //TODO: Learn about that exception
+    //TODO: Utility classes should not have public constructors.
     private TimeUtil() {
         throw new IllegalStateException("Utility class");
     }
