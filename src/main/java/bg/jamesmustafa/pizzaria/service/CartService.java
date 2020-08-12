@@ -16,6 +16,7 @@ import java.util.List;
 
 @Service
 public class CartService {
+
     private final ModelMapper modelMapper;
     private final UserDetailsServiceImpl userDetailsService;
 
@@ -24,19 +25,19 @@ public class CartService {
         this.userDetailsService = userDetailsService;
     }
 
-    public void initCart(HttpSession session) {
+    public void initializeCart(HttpSession session) {
         if (session.getAttribute("shopping-cart") == null) {
             session.setAttribute("shopping-cart", new LinkedList<>());
         }
     }
 
     public List<CartProductViewModel> retrieveCart(HttpSession session) {
-        this.initCart(session);
+        this.initializeCart(session);
         return (List<CartProductViewModel>) session.getAttribute("shopping-cart");
     }
 
     public void addOneProductToCart(ProductBindingModel productDTO, HttpSession session){
-        this.initCart(session);
+        this.initializeCart(session);
         ProductDetailsViewModel product = this.modelMapper
                 .map(productDTO, ProductDetailsViewModel.class);
         CartProductViewModel cartProductViewModel = new CartProductViewModel();
@@ -47,7 +48,7 @@ public class CartService {
     }
 
     public void addOneProductToCart(ProductBindingModel productDTO, int quantity , HttpSession session){
-        this.initCart(session);
+        this.initializeCart(session);
         ProductDetailsViewModel product = this.modelMapper
                 .map(productDTO, ProductDetailsViewModel.class);
         CartProductViewModel cartProductViewModel = new CartProductViewModel();
@@ -102,5 +103,4 @@ public class CartService {
 
         return orderBindingModel;
     }
-
 }

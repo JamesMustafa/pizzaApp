@@ -20,9 +20,7 @@ public class CategoryService {
         this.modelMapper = modelMapper;
     }
 
-
     public List<CategoryBindingModel> findAll() {
-
         return categoryRepository.findAll()
                 .stream()
                 .map(category -> this.modelMapper.map(category, CategoryBindingModel.class))
@@ -30,11 +28,9 @@ public class CategoryService {
     }
 
     public CategoryBindingModel findById(Long categoryId) {
-
         return this.categoryRepository
                 .findById(categoryId)
                 .map(category -> this.modelMapper.map(category, CategoryBindingModel.class))
                 .orElseThrow(() -> new CategoryNotFoundException("Cannot find category with the given id!"));
-
     }
 }

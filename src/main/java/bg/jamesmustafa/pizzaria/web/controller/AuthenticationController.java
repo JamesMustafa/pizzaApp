@@ -31,64 +31,54 @@ public class AuthenticationController {
 
 
     @GetMapping("/login")
+    @PreAuthorize("isAnonymous()")
     public String login(){
         return "authenticate/login";
     }
 
     @GetMapping("/register")
+    @PreAuthorize("isAnonymous()")
     public String showRegisterView(Model model) {
-
         model.addAttribute("userRegisterForm", new UserAddBindingModel());
-
         return "authenticate/registration";
     }
 
     @GetMapping("/authentication/profile")
     @PreAuthorize("hasRole('CUSTOMER')")
     public String showProfile(Principal principal, Model model){
-
         UserDetailsViewModel user = this.modelMapper.map(
                 this.userService.findUserByUsername(principal.getName()) , UserDetailsViewModel.class);
 
         model.addAttribute("userProfile", user);
-
         return "authenticate/profile";
     }
 
     @GetMapping("authentication/edit")
     @PreAuthorize("hasRole('CUSTOMER')")
     public String editUser(Principal principal, Model model) {
-        //TODO: Is good practice to use principal, because if I pass id's everywhere its super easy to change the id
+        //TODO: Is it good practice to use principal, because if I pass id's everywhere its super easy to change the id
         //TODO: and see data of other users. Should look for a solution for this with Spring Secuirty as well...
         UserServiceModel user = this.modelMapper.map(
                 this.userService.findUserByUsername(principal.getName()),UserServiceModel.class);
 
         model.addAttribute("userEditForm", user);
-
         return "authenticate/edit";
     }
 
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute("userRegisterForm") UserAddBindingModel user,
                            BindingResult bindingResult) {
-
         if (bindingResult.hasErrors()) {
             return "authenticate/registration";
         }
-
         if (userService.isUsernameAvailable(user.getUsername())) {
-            bindingResult.rejectValue("username",
-                    "error.username",
-                    "An account with this username already exists.");
-
+            //TODO: Add error message here: "User with that username already exists".
             return "authenticate/registration";
         }
 
-        userService.createAndLoginUser(user);
-
+        this.userService.createAndLoginUser(user);
         return "redirect:/home";
     }
-
 
     @PostMapping("authentication/edit/{id}")
     @PreAuthorize("hasRole('CUSTOMER')")
@@ -96,12 +86,13 @@ public class AuthenticationController {
                                      @PathVariable("id") Long userId,
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes){
-
         if (bindingResult.hasErrors()) {
             return "authenticate/edit";
         }
+
         this.userService.editUser(userId, userModel);
         return "authenticate/profile";
     }
 
+    //TODO:Add change password option!
 }

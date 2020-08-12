@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailService.class);
     private JavaMailSender emailSender;
 
     public EmailService(JavaMailSender emailSender) {

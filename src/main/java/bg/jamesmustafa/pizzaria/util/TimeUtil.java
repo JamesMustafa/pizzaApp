@@ -19,6 +19,7 @@ public class TimeUtil {
 
         return dateTime;
     }
+
     public static LocalDateTime parseDateToTime(String date){
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("HH:mm");
         String timeNow = LocalDateTime.now().format(dateFormatter).toString();

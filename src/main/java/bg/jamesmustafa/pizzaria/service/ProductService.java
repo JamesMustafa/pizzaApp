@@ -56,6 +56,7 @@ public class ProductService {
         this.productRepository.save(product);
     }
 
+    //Soft delete sets the entity column is_deleted=true, and does not delete object itself.
     @Transactional
     public void softDelete(Long productId) {
         Product product = this.productRepository.findById(productId)
@@ -63,9 +64,9 @@ public class ProductService {
         product.setDeleted(true);
         product.setDeletedOn(LocalDateTime.now());
         this.productRepository.save(product);
-
     }
 
+    //On the other hand, hardDelete method deletes the whole object without chance of putting the object back to our project.
     @Transactional
     public void hardDelete(Long productId) {
         this.productRepository.deleteById(productId);
@@ -88,7 +89,6 @@ public class ProductService {
     }
 
     public ProductBindingModel findById(Long productId){
-
         return this.productRepository.findById(productId)
                 .map(product -> this.modelMapper.map(product, ProductBindingModel.class))
                 .orElseThrow(() -> new ProductNotFoundException("Product with this id was not found"));

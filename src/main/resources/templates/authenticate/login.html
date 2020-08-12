@@ -8,13 +8,6 @@
         <article class="card-body">
             <a th:href="@{/register}" class="float-right btn btn-outline-primary">Sign up</a>
             <h4 class="card-title mb-4 mt-1">Sign in</h4>
-<!--            <p>-->
-<!--                <a th:href="@{/oauth2/authorization/facebook}"-->
-<!--                   class="btn btn-block btn-outline-primary">-->
-<!--                    <i class="fab fa-facebook-f"></i>-->
-<!--                    Login via facebook-->
-<!--                </a>-->
-<!--            </p>-->
             <hr>
             <form th:action="@{/login}" method="post">
                 <div th:if="${error}" class="alert alert-danger" role="alert">
@@ -53,18 +46,14 @@
         </article>
     </div> <!-- card.// -->
 
-    <!-- Demo credentials -->
+    <!--Test credentials -->
     <div class="container">
         A user and password pairs that you may use:
         <li>admin/admin (for admin user)</li>
         <li>employee/employee (for employee user)</li>
         <li>customer/customer (for customer user)</li>
     </div>
-    <!-- EO: Demo credentials -->
-
-    <!-- Bootstap JS -->
-    <!--<div th:replace="fragments/bootstrap-js :: bootstrap-js"></div> -->
-    <!-- EO: Bootstap JS -->
+    <!--Test credentials -->
 </div>
 </body>
 </html>

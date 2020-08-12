@@ -19,22 +19,13 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/offers")
 public class OfferController {
-    //TODO: Super Important: Offer and order must check if the products they contain are all active and if not automatically to remove them from cart !!!
+    //TODO: Super Important: Offer and order must check if the products they contain are all active and if not to remove them from cart or to deactivate the offer!!!
     private final OfferService offerService;
     private final ProductService productService;
 
     public OfferController(OfferService offerService, ProductService productService) {
         this.offerService = offerService;
         this.productService = productService;
-    }
-
-    @GetMapping("/add")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String addOffer(Model model){
-        model.addAttribute("offerInputForm", new OfferAddBindingModel());
-        model.addAttribute("allProducts", this.productService.findAll());
-
-        return "offer/createOffer";
     }
 
     @GetMapping("/")
@@ -44,6 +35,13 @@ public class OfferController {
         return "offer/allOffers";
     }
 
+    @GetMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String addOffer(Model model){
+        model.addAttribute("offerInputForm", new OfferAddBindingModel());
+        model.addAttribute("allProducts", this.productService.findAll());
+        return "offer/createOffer";
+    }
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")

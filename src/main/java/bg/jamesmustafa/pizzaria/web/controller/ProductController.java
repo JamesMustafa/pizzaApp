@@ -41,7 +41,7 @@ public class ProductController {
         return "product/createProduct";
     }
 
-    //TODO: to make the getter without /{id}
+    //TODO: Consider if it is better to make this method without "/{id}"
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String editProduct(@PathVariable("id") Long productId, Model model) {
@@ -51,7 +51,6 @@ public class ProductController {
     }
 
     //TODO: Should I make my own image uploader???
-    //TODO: Should this method have the same name with the getMethod above?
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
     public String save
@@ -85,7 +84,7 @@ public class ProductController {
         return "redirect:/products/";
     }
 
-    //SOFT DELETE MEANS THAT WE WON'T DELETE THE ENTITY ITSELF, RATHER CHANGE ITS "isDeleted" BOOLEAN TO TRUE!
+    //SOFT DELETE MEANS THAT WE WON'T DELETE THE ENTITY OBJECT ITSELF, RATHER CHANGE ITS "isDeleted" BOOLEAN TO TRUE!
     @PostMapping("/softDelete")
     @PreAuthorize("hasRole('ADMIN')")
     public String softDelete(@ModelAttribute(name="deleteId") Long deleteId) {
@@ -93,12 +92,11 @@ public class ProductController {
         return "redirect:/home";
     }
 
-    //IN HARD DELETE, WE DELETE THE WHOLE ENTITY, WITHOUT CHANCE OF RETURNING IT BACK!
+    //IN HARD DELETE, WE DELETE THE WHOLE ENTITY OBJECT, WITHOUT CHANCE OF RETURNING IT BACK!
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public String hardDelete(@ModelAttribute(name="deleteId") Long deleteId) {
         this.productService.hardDelete(deleteId);
         return "redirect:/home";
     }
-
 }

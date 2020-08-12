@@ -38,6 +38,34 @@ public class OrderService {
         this.orderRepository.save(pendingOrder);
     }
 
+    @Transactional
+    public void declineOrder(Long orderId){
+        Order order = this.orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order with this id does not exist!"));
+
+        order.setApproved(true);
+        order.setSuccessful(false);
+        //send an email to the customer
+        //this.emailService.sendMail(order.getCustomer().getEmail(),"Your order has been declined.", "Dear Customer, your order has not been placed.");
+
+        this.orderRepository.save(order);
+    }
+
+    @Transactional
+    public void confirmOrder(Long orderId, String waitingTime){
+        Order order = this.orderRepository
+                .findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order with this id does not exist!"));
+
+        order.setApproved(true);
+        order.setSuccessful(true);
+        order.setWaitingTime(TimeUtil.parseTimeToDate(waitingTime));
+        //send an email to the customer
+        // Should add the waiting time for the order as well with "Duration.between()"
+        //this.emailService.sendMail(order.getCustomer().getEmail(),"Your order has been confirmed.", "Your order has been placed.");
+
+        this.orderRepository.save(order);
+    }
 
     public List<OrderBindingModel> findAllOrdersForApproval(){
         return this.findAll()
@@ -67,19 +95,18 @@ public class OrderService {
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id has not been found!"));
 
         OrderDetailsViewModel orderDetailsViewModel = this.modelMapper.map(order, OrderDetailsViewModel.class);
-
         orderDetailsViewModel.setProducts(
                 order.getProducts()
                 .stream()
                 .map(o -> this.modelMapper.map(o, ProductDetailsViewModel.class))
                 .collect(Collectors.toList())
         );
-
         if(orderDetailsViewModel.getWaitingTime() != null){
             orderDetailsViewModel
                     .setWaitingMinutes
                             (Duration.between(orderDetailsViewModel.getCreatedOn(), orderDetailsViewModel.getWaitingTime()).toMinutes());
         }
+        //Checks if the customer has added some comment to the order, and if not, puts this comment below in order to give the employee additional info.
         if(orderDetailsViewModel.getComment().isEmpty()){
             orderDetailsViewModel.setComment("You do not have any comments about this order!");
         }
@@ -87,40 +114,10 @@ public class OrderService {
         return orderDetailsViewModel;
     }
 
-
     public OrderBindingModel findById(Long orderId) {
         return this.orderRepository.findById(orderId)
                 .map(o -> this.modelMapper.map(o, OrderBindingModel.class))
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id has not been found!"));
     }
-
-    @Transactional
-    public void declineOrder(Long orderId){
-        Order order = this.orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("Order with this id does not exist!"));
-
-        order.setApproved(true);
-        order.setSuccessful(false);
-        //send an email to the customer
-        //this.emailService.sendMail(order.getCustomer().getEmail(),"Your order has been declined.", "you order has been placed bro");
-
-        this.orderRepository.save(order);
-    }
-
-    @Transactional
-    public void confirmOrder(Long orderId, String waitingTime){
-        Order order = this.orderRepository
-                .findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("Order with this id does not exist!"));
-
-        order.setApproved(true);
-        order.setSuccessful(true);
-        order.setWaitingTime(TimeUtil.parseTimeToDate(waitingTime));
-        //send an email to the customer
-        //this.emailService.sendMail(order.getCustomer().getEmail(),"Your order has been confirmed.", "you order has been placed bro");
-
-        this.orderRepository.save(order);
-    }
-
 }
 

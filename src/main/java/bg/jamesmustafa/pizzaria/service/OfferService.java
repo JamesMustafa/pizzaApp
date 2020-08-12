@@ -5,7 +5,6 @@ import bg.jamesmustafa.pizzaria.db.entity.Product;
 import bg.jamesmustafa.pizzaria.db.repository.OfferRepository;
 import bg.jamesmustafa.pizzaria.dto.binding.OfferAddBindingModel;
 import bg.jamesmustafa.pizzaria.dto.binding.OfferBindingModel;
-import bg.jamesmustafa.pizzaria.dto.binding.ProductBindingModel;
 import bg.jamesmustafa.pizzaria.error.OfferNotFoundException;
 import bg.jamesmustafa.pizzaria.util.TimeUtil;
 import org.modelmapper.ModelMapper;
@@ -50,6 +49,7 @@ public class OfferService {
         //TODO: Once again find the differences between save and saveAndFlush !!!
     }
 
+    //Soft delete sets the entity column is_deleted=true, and does not delete object itself.
     @Transactional
     public void softDelete(Long offerId) {
         Offer offer = this.offerRepository.findById(offerId)
@@ -59,6 +59,7 @@ public class OfferService {
         this.offerRepository.save(offer);
     }
 
+    //On the other hand, hardDelete method deletes the whole object without chance of putting the object back to our project.
     @Transactional
     public void hardDelete(Long productId) {
         this.offerRepository.deleteById(productId);

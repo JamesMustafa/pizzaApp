@@ -53,7 +53,7 @@ public class CartController {
         return "redirect:/cart/details";
     }
 
-    //TODO: DeleteMapping and method="delete" are not working, but when it's Post everything is fine. Why is that?
+    //TODO: @DeleteMapping and method="delete" are not working, but when it's Post everything is fine. Why is that?
     @PostMapping("/removeProduct")
     public String removeFromCartConfirm(@ModelAttribute(name="deleteId") Long deleteId, HttpSession session) {
         this.cartService.removeItemFromCart(deleteId, this.cartService.retrieveCart(session));
