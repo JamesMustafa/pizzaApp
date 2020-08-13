@@ -46,7 +46,7 @@ public class OrderService {
         order.setApproved(true);
         order.setSuccessful(false);
         //send an email to the customer
-        //this.emailService.sendMail(order.getCustomer().getEmail(),"Your order has been declined.", "Dear Customer, your order has not been placed.");
+        this.emailService.sendMail(order.getCustomer().getEmail(),"Your order has been declined.", "Dear Customer, your order has not been placed.");
 
         this.orderRepository.save(order);
     }
