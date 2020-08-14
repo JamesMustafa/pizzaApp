@@ -24,7 +24,8 @@ public class ProductController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("/")
+    @GetMapping
+    @PreAuthorize("hasRole('CUSTOMER')")
     public String viewProducts(Model model){
         model.addAttribute("pizzas", this.productService.findAllByCategory("pizza"));
         model.addAttribute("drinks", this.productService.findAllByCategory("drinks"));
@@ -61,7 +62,7 @@ public class ProductController {
             return "redirect:/products/add";
         }
         this.productService.createProduct(productDTO);
-        return "redirect:/products/";
+        return "redirect:/products";
     }
 
     @PostMapping("/edit/{id}")
@@ -71,7 +72,7 @@ public class ProductController {
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes){
         if (bindingResult.hasErrors()) {
-            return "redirect:/products/";
+            return "redirect:/products";
         }
         this.productService.editProduct(id, productDTO);
         return "redirect:/home";
@@ -81,7 +82,7 @@ public class ProductController {
     @PreAuthorize("hasRole('EMPLOYEE')")
     public String activate(@ModelAttribute(name="activateId") Long activateId) {
         this.productService.activateProduct(activateId);
-        return "redirect:/products/";
+        return "redirect:/products";
     }
 
     //SOFT DELETE MEANS THAT WE WON'T DELETE THE ENTITY OBJECT ITSELF, RATHER CHANGE ITS "isDeleted" BOOLEAN TO TRUE!

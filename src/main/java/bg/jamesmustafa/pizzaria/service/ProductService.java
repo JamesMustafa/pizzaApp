@@ -1,5 +1,6 @@
 package bg.jamesmustafa.pizzaria.service;
 
+import bg.jamesmustafa.pizzaria.db.entity.Category;
 import bg.jamesmustafa.pizzaria.dto.binding.ProductBindingModel;
 import bg.jamesmustafa.pizzaria.db.entity.Product;
 import bg.jamesmustafa.pizzaria.error.ProductNotFoundException;
@@ -52,7 +53,7 @@ public class ProductService {
         product.setActivity(productDTO.getActivity());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
-        product.setCategory(productDTO.getCategory());
+        product.setCategory(this.modelMapper.map(productDTO.getCategory(), Category.class));
         this.productRepository.save(product);
     }
 

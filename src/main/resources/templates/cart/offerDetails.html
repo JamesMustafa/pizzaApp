@@ -40,7 +40,7 @@
 </div>
 <hr class="hr-2 bg-dark">
 <h4 class="text-center">If you want to add some comment to your order you can type it below</h4>
-<form th:action="@{/cart/checkout}" th:method="post">
+<form th:action="@{/cart/checkoutOffer}" th:method="post">
     <div class="form-group w-50 mx-auto">
         <label for="comment" class="col-form-label">Let us know if you have any preferences: </label>
         <textarea class="form-control"
@@ -53,6 +53,7 @@
     </div>
     <div class="button-holder d-flex justify-content-center my-4">
         <input type="hidden" id="price" name="price" th:value="${offer.promoPrice}">
+        <input type="hidden" id="offerId" name="offerId" th:value="${offer.id}">
         <button type="submit" class="btn btn-success">Checkout</button>
     </div>
 </form>

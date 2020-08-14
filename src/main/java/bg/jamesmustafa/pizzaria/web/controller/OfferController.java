@@ -28,7 +28,7 @@ public class OfferController {
         this.productService = productService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     @PreAuthorize("hasRole('CUSTOMER')")
     public String allOffers(Model model){
         model.addAttribute("offers", this.offerService.findAllValidOffers()) ;
@@ -53,6 +53,6 @@ public class OfferController {
             return "redirect:/offers/add";
         }
         this.offerService.createOffer(offerDTO);
-        return "redirect:/home";
+        return "redirect:/offers";
     }
 }

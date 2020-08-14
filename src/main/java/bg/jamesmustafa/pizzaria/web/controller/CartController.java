@@ -43,7 +43,7 @@ public class CartController {
     @PostMapping("/addProduct")
     public String addToCartConfirm(@ModelAttribute(name="productId") Long productId, int quantity, HttpSession session) {
         this.cartService.addOneProductToCart(this.productService.findById(productId), quantity, session);
-        return "redirect:/products/";
+        return "redirect:/products";
     }
 
     @PostMapping("/reOrder")
@@ -66,6 +66,13 @@ public class CartController {
         OrderBindingModel orderBindingModel = this.cartService.prepareOrder(cart, principal.getName(), comment, price);
         this.orderService.addOrderForApproval(orderBindingModel);
         session.removeAttribute("shopping-cart");
+        return "redirect:/home";
+    }
+
+    @PostMapping("/checkoutOffer")
+    public String checkoutConfirm(Long offerId, String comment, BigDecimal price, Principal principal) {
+        OrderBindingModel orderBindingModel = this.cartService.prepareOrderFromOffer(offerId, comment, price, principal.getName());
+        this.orderService.addOrderForApproval(orderBindingModel);
         return "redirect:/home";
     }
 }

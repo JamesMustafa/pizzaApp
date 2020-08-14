@@ -14,7 +14,7 @@ public class CategoryBindingModel {
     private String name;
 
     @NotEmpty(message = "There must be more than zero products")
-    private List<ProductServiceModel> products;
+    private List<ProductBindingModel> products;
 
     public Long getId() {
         return id;
@@ -32,11 +32,7 @@ public class CategoryBindingModel {
         this.name = name;
     }
 
-    public List<ProductServiceModel> getProducts() {
-        return products;
-    }
+    public List<ProductBindingModel> getProducts() { return products; }
 
-    public void setProducts(List<ProductServiceModel> products) {
-        this.products = products;
-    }
+    public void setProducts(List<ProductBindingModel> products) { this.products = products; }
 }

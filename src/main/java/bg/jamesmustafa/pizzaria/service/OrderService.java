@@ -8,6 +8,7 @@ import bg.jamesmustafa.pizzaria.db.entity.Order;
 import bg.jamesmustafa.pizzaria.db.entity.User;
 import bg.jamesmustafa.pizzaria.error.OrderNotFoundException;
 import bg.jamesmustafa.pizzaria.db.repository.OrderRepository;
+import bg.jamesmustafa.pizzaria.event.ApprovedOrderPublisher;
 import bg.jamesmustafa.pizzaria.util.TimeUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,12 @@ import java.util.stream.Collectors;
 public class OrderService {
     //TODO: This service returns a couple of view models instead of binding models. should check it again...
     private final OrderRepository orderRepository;
-    private final EmailService emailService;
+    private final ApprovedOrderPublisher orderPublisher;
     private final ModelMapper modelMapper;
 
-    public OrderService(OrderRepository orderRepository, EmailService emailService, ModelMapper modelMapper) {
+    public OrderService(OrderRepository orderRepository, ApprovedOrderPublisher orderPublisher, ModelMapper modelMapper) {
         this.orderRepository = orderRepository;
-        this.emailService = emailService;
+        this.orderPublisher = orderPublisher;
         this.modelMapper = modelMapper;
     }
 
@@ -45,8 +46,10 @@ public class OrderService {
 
         order.setApproved(true);
         order.setSuccessful(false);
-        //send an email to the customer
-        this.emailService.sendMail(order.getCustomer().getEmail(),"Your order has been declined.", "Dear Customer, your order has not been placed.");
+
+        //publish event
+        this.orderPublisher.publishDecline(order.getCustomer().getEmail(),
+                order.getId().toString());
 
         this.orderRepository.save(order);
     }
@@ -60,9 +63,12 @@ public class OrderService {
         order.setApproved(true);
         order.setSuccessful(true);
         order.setWaitingTime(TimeUtil.parseTimeToDate(waitingTime));
-        //send an email to the customer
-        // Should add the waiting time for the order as well with "Duration.between()"
-        //this.emailService.sendMail(order.getCustomer().getEmail(),"Your order has been confirmed.", "Your order has been placed.");
+
+        //publish event
+        this.orderPublisher.publishSuccess(order.getCustomer().getEmail(),
+                order.getId().toString(),
+                order.getWaitingTime().toString(),
+                order.getTotalPrice().toString());
 
         this.orderRepository.save(order);
     }

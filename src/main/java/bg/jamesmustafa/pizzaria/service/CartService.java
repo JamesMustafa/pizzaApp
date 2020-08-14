@@ -1,5 +1,6 @@
 package bg.jamesmustafa.pizzaria.service;
 
+import bg.jamesmustafa.pizzaria.dto.binding.OfferBindingModel;
 import bg.jamesmustafa.pizzaria.dto.binding.OrderBindingModel;
 import bg.jamesmustafa.pizzaria.dto.binding.ProductBindingModel;
 import bg.jamesmustafa.pizzaria.dto.binding.auth.UserServiceModel;
@@ -19,10 +20,12 @@ public class CartService {
 
     private final ModelMapper modelMapper;
     private final UserDetailsServiceImpl userDetailsService;
+    private final OfferService offerService;
 
-    public CartService(HttpSession httpSession, ModelMapper modelMapper, UserDetailsServiceImpl userDetailsService) {
+    public CartService(HttpSession httpSession, ModelMapper modelMapper, UserDetailsServiceImpl userDetailsService, OfferService offerService) {
         this.modelMapper = modelMapper;
         this.userDetailsService = userDetailsService;
+        this.offerService = offerService;
     }
 
     public void initializeCart(HttpSession session) {
@@ -87,9 +90,7 @@ public class CartService {
     }
 
     public OrderBindingModel prepareOrder(List<CartProductViewModel> cart, String customer, String comment, BigDecimal price) {
-        OrderBindingModel orderBindingModel = new OrderBindingModel();
-        orderBindingModel.setComment(comment);
-        orderBindingModel.setCustomer(this.modelMapper.map(this.userDetailsService.findUserByUsername(customer), UserServiceModel.class));
+        OrderBindingModel orderBindingModel = this.mapToOrder(customer,comment,price);
         List<ProductBindingModel> products = new ArrayList<>();
         for (CartProductViewModel item : cart) {
             ProductBindingModel productDTO = this.modelMapper.map(item.getProductDetailsViewModel(), ProductBindingModel.class);
@@ -99,8 +100,21 @@ public class CartService {
             }
         }
         orderBindingModel.setProducts(products);
-        orderBindingModel.setTotalPrice(price);
+        return orderBindingModel;
+    }
 
+    public OrderBindingModel prepareOrderFromOffer(Long offerId, String comment, BigDecimal price, String customer){
+        OrderBindingModel orderBindingModel = this.mapToOrder(customer,comment,price);
+        OfferBindingModel offer = this.offerService.findById(offerId);
+        orderBindingModel.setProducts(offer.getProducts());
+        return orderBindingModel;
+    }
+
+    private OrderBindingModel mapToOrder(String customer, String comment, BigDecimal price){
+        OrderBindingModel orderBindingModel = new OrderBindingModel();
+        orderBindingModel.setComment(comment);
+        orderBindingModel.setTotalPrice(price);
+        orderBindingModel.setCustomer(this.modelMapper.map(this.userDetailsService.findUserByUsername(customer), UserServiceModel.class));
         return orderBindingModel;
     }
 }

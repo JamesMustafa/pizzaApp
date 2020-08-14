@@ -3,9 +3,11 @@ package bg.jamesmustafa.pizzaria.web.controller.error;
 import bg.jamesmustafa.pizzaria.error.common.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +36,7 @@ public class GlobalControllerExceptionHandler {
         return mav;
     }
 
-
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = NotFoundException.class)
     public ModelAndView notFoundErrorHandler(HttpServletRequest req, NotFoundException e) throws NotFoundException{
         LOGGER.error("EXCEPTION: " + e.getMessage() + ", AT URL: " + req.getRequestURL());

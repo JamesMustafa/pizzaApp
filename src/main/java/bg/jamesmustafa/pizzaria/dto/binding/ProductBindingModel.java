@@ -1,7 +1,5 @@
 package bg.jamesmustafa.pizzaria.dto.binding;
 
-import bg.jamesmustafa.pizzaria.db.entity.Category;
-
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -33,7 +31,7 @@ public class ProductBindingModel {
 
     //TODO: Make it categoryDTO class.
     @NotNull(message = "Category cannot be null")
-    private Category category;
+    private CategoryBindingModel category;
 
     public Long getId() {
         return id;
@@ -81,11 +79,7 @@ public class ProductBindingModel {
         this.imgSrc = imgSrc;
     }
 
-    public Category getCategory() {
-        return category;
-    }
+    public CategoryBindingModel getCategory() { return category; }
 
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+    public void setCategory(CategoryBindingModel category) { this.category = category; }
 }
