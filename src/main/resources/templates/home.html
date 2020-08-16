@@ -5,20 +5,29 @@
 <div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
 <!-- EO: Navbar -->
 
-
+<section id="hero" class="d-flex align-items-center">
 <div class="container-fluid" data-aos="zoom-out" data-aos-delay="100">
     <div class="row justify-content-center">
         <div class="col-xl-10">
             <div class="row">
                 <div class="col-xl-5">
                     <h1>With Pizzaria La Jem it is always tasty.</h1>
-                    <h2>We are a talented startup searching for employees. Our biggest purpose is to change the pizza industry for good.</h2>
-                        <a th:href="@{/products}" class="btn-get-started">View Our Menu</a>
+                    <h2>Welcome to our home page. If you don't wanna lose more time, get started with our
+                        <div class="row">
+                            <div class="col">
+                                <a th:href="@{/products}" class="btn btn-outline-warning btn-lg btn-block my-4">Special Menu</a>
+                            </div>
+                            <div class="col">
+                                <a th:href="@{/offers}" class="btn btn-outline-danger btn-lg btn-block my-4">HOT Offers</a>
+                            </div>
+                        </div>
+                    </h2>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</section><!-- End Hero -->
 
 
 </body>

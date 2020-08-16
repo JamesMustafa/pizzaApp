@@ -1,13 +1,13 @@
 package bg.jamesmustafa.pizzaria.db.entity;
 
-import bg.jamesmustafa.pizzaria.db.entity.common.BaseDeletableEntity;
+import bg.jamesmustafa.pizzaria.db.entity.common.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "products")
-public class Product extends BaseDeletableEntity {
+public class Product extends BaseEntity {
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -27,6 +27,11 @@ public class Product extends BaseDeletableEntity {
     @ManyToOne(targetEntity = Category.class)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
+
+    @PreRemove
+    private void removeProductFromCategory(){
+        this.category.getProducts().remove(this);
+    }
 
     public Product() {
     }

@@ -56,8 +56,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     public String save
     (@Valid @ModelAttribute("productInputForm") ProductBindingModel productDTO,
-                    BindingResult bindingResult,
-                    RedirectAttributes redirectAttributes) {
+                    BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "redirect:/products/add";
         }
@@ -72,10 +71,10 @@ public class ProductController {
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes){
         if (bindingResult.hasErrors()) {
-            return "redirect:/products";
+            return "product/edit";
         }
         this.productService.editProduct(id, productDTO);
-        return "redirect:/home";
+        return "redirect:/products";
     }
 
     @PostMapping("/activate")
@@ -85,19 +84,12 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    //SOFT DELETE MEANS THAT WE WON'T DELETE THE ENTITY OBJECT ITSELF, RATHER CHANGE ITS "isDeleted" BOOLEAN TO TRUE!
-    @PostMapping("/softDelete")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String softDelete(@ModelAttribute(name="deleteId") Long deleteId) {
-        this.productService.softDelete(deleteId);
-        return "redirect:/home";
-    }
-
+    //Does DeleteMapping works only on restful applications
     //IN HARD DELETE, WE DELETE THE WHOLE ENTITY OBJECT, WITHOUT CHANCE OF RETURNING IT BACK!
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public String hardDelete(@ModelAttribute(name="deleteId") Long deleteId) {
         this.productService.hardDelete(deleteId);
-        return "redirect:/home";
+        return "redirect:/products";
     }
 }

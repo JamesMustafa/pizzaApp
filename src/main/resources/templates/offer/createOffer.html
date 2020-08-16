@@ -7,29 +7,26 @@
 <div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
 <!-- EO: Navbar -->
 
-<div class="container center my-5">
+<div class="container center text-center my-4 w-50">
+    <h1>Add new offer</h1>
     <form th:action="@{/offers/add}" method="post" th:object="${offerInputForm}" id="createOfferForm">
-        <div class="input-group">
+
+
+        <div class="form-group">
             <label for="offerPrice">Price</label>
-            <input type="text"
-                   th:errorclass="is-invalid"
-                   placeholder="Enter the price of the offer here"
-                   class="form-control"
-                   aria-label="Amount (to the nearest dollar)"
-                   id="offerPrice"
-                   th:field="*{promoPrice}">
-            <div class="input-group-append">
-                <span class="input-group-text">$</span>
-                <span class="input-group-text">0.00</span>
-            </div>
-            <div class="invalid-feedback">
-                Please fill in a offer price.
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                </div>
+                <input type="text" id="offerPrice" class="form-control" th:field="*{promoPrice}" aria-label="Amount (to the nearest dollar)">
+                <div class="input-group-append">
+                    <span class="input-group-text">.00</span>
+                </div>
             </div>
         </div>
 
-        <div class="form-group row">
-            <label for="validUntil" class="col-2 col-form-label">Valid Until</label>
-            <div class="col-10">
+        <div class="form-group">
+            <label for="validUntil">Valid Until</label>
                 <input class="form-control"
                        type="month"
                        th:errorclass="is-invalid"
@@ -39,20 +36,18 @@
                 <div class="invalid-feedback">
                     Please fill in a validity month
                 </div>
-            </div>
         </div>
 
-
-        <div class="form-group col-md-6 mb-3">
+        <div class="form-group">
             <label class="text-center text-white font-weight-bold" for="products">Products</label>
             <select multiple th:field="*{products}" id="products" class="form-control"
                     th:classappend="${#fields.hasErrors('products')}? 'field-error'" >
                 <option value="">- Select products -</option>
-                    <option th:each="product : ${allProducts}" th:value="${product.id}"
-                            th:text="|   ${product.name} ${product.category.name}|"
-                            th:selected="${product == products}">
-                        Model
-                    </option>
+                <option th:each="product : ${allProducts}" th:value="${product.id}"
+                        th:text="|Name:   ${product.name}    ,Category:    ${product.category.name}|"
+                        th:selected="${product == products}">
+                    Model
+                </option>
                 </optgroup>
             </select>
             <p th:if="${#fields.hasErrors('products')}" th:errors="*{products}"
@@ -61,8 +56,7 @@
             </p>
         </div>
 
-
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-outline-success w-50">Submit Product</button>
     </form>
 </div>
 

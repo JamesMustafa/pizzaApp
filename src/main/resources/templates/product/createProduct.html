@@ -7,17 +7,20 @@
 <div th:replace="fragment/navbar :: navbar('home')">Navbar here</div>
 <!-- EO: Navbar -->
 
-<div class="container center">
+<div class="container center text-center my-4 w-50">
+    <h1>Add new product</h1>
     <form th:action="@{/products/add}" method="post" th:object="${productInputForm}" id="createProductForm">
         <div class="form-group">
             <label for="productName">Name</label>
             <input type="text"
+                   minlength="3"
+                   maxlength="32"
+                   th:errorclass="is-invalid"
                    placeholder="Enter the name of the product here"
                    class="form-control"
-                   th:errorclass="is-invalid"
                    id="productName"
-                   th:field="*{name}"/>
-            <div class="invalid-feedback">
+                   th:field="*{name}" required/>
+            <div class="is-invalid" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
                 Please fill in a product name.
             </div>
         </div>
@@ -25,78 +28,77 @@
         <div class="form-group">
             <label for="productDescription">Description</label>
             <textarea class="form-control"
+                      minlength="10"
+                      maxlength="256"
                       form="createProductForm"
                       placeholder="Description"
                       th:errorclass="is-invalid"
                       id="productDescription"
                       rows="3"
-                      th:field="*{description}"></textarea>
-            <div class="invalid-feedback">
+                      th:field="*{description}" required></textarea>
+            <div class="is-invalid" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">
                 The description should be longer than 10 characters.
             </div>
         </div>
 
         <div class="form-group">
+            <label for="productPrice">Price</label>
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
-                    <label class="input-group-text" for="category">Category type</label>
+                    <span class="input-group-text">$</span>
                 </div>
-                <select th:errorclass="is-invalid"
-                        id="category"
-                        name="category"
-                        th:field="*{category.id}">
-                    <option th:each="aCategoryType : ${categoryTypes}"
-                            th:value="${aCategoryType.id}"
-                            th:text="${aCategoryType.name}"
-                            ></option>
-                </select>
-                <div class="invalid-feedback">
-                    Category type should be specified.
+                <input type="text" id="productPrice" class="form-control" th:field="*{price}" aria-label="Amount (to the nearest dollar)">
+                <div class="input-group-append">
+                    <span class="input-group-text">.00</span>
                 </div>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="custom-control-label" for="productIsActive">Is active? </label>
-            <input type="checkbox"
-                   class="custom-control-input"
-                   id="productIsActive"
-                   th:field="*{activity}">
-        </div>
-
-        <div class="input-group">
-            <label for="productName">Price</label>
-            <input type="text"
-                   th:errorclass="is-invalid"
-                   placeholder="Enter the price of the product here"
-                   class="form-control"
-                   aria-label="Amount (to the nearest dollar)"
-                   id="productPrice"
-                   th:field="*{price}">
-            <div class="input-group-append">
-                <span class="input-group-text">$</span>
-                <span class="input-group-text">0.00</span>
-            </div>
-            <div class="invalid-feedback">
-                Please fill in a product price.
+            <label for="productImgUrl">Image URL</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">images/product/{name}.{jpg/png}</span>
+                </div>
+                <input type="text" class="form-control" th:field="*{imgSrc}" id="productImgUrl" aria-describedby="basic-addon3" required>
             </div>
         </div>
 
-        <div class="form-group">
-            <label for="productImgSrc">Image Url</label>
-            <input type="text"
-                   placeholder="Enter the image url here"
-                   class="form-control"
-                   th:errorclass="is-invalid"
-                   id="productImgSrc"
-                   th:field="*{imgSrc}"/>
-            <div class="invalid-feedback">
-                Please fill in a product image source.
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="category">Category type</label>
+                    </div>
+                    <select th:errorclass="is-invalid"
+                            id="category"
+                            name="category"
+                            th:field="*{category.id}">
+                        <option th:each="aCategoryType : ${categoryTypes}"
+                                th:value="${aCategoryType.id}"
+                                th:text="${aCategoryType.name}"
+                        ></option>
+                    </select>
+                    <div class="invalid-feedback">
+                        Category type should be specified.
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="col">
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="productIsActive" th:field="*{activity}">
+                    <label class="form-check-label pl-4" for="productIsActive">
+                        <h6>Is the product active?</h6>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-outline-success w-50">Submit Product</button>
     </form>
 </div>
 

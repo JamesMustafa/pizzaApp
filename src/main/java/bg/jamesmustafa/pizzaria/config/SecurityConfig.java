@@ -28,8 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable().
                 authorizeRequests().
                 requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll().
-                antMatchers("/login**", "/register", "/").permitAll().
-                antMatchers("/**").authenticated().
+                antMatchers("/login", "/register", "/").permitAll().
+                anyRequest().authenticated().
                 and().
                     formLogin().
                     loginPage("/login").
@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     logout().
                     logoutUrl("/logout").
                     logoutSuccessUrl("/").
-                    invalidateHttpSession(true).
+                    invalidateHttpSession(false).
                     deleteCookies("JSESSIONID");
     }
 

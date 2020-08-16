@@ -68,7 +68,6 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" th:href="@{/authentication/profile}">View Profile</a>
                         <a class="dropdown-item" th:href="@{/authentication/edit}">Edit Profile</a>
-                        <a class="dropdown-item" th:href="@{/authentication/changePassword}">Change Password</a>
                         <div class="dropdown-divider"></div>
                         <div class="dropdown-item">
                             <form th:action="@{/logout}" method="post">
@@ -83,6 +82,12 @@
             </li>
             <li sec:authorize="hasRole('EMPLOYEE')" class="nav-item">
                 <a class="nav-link btn-lg" th:href="@{/orders/pending}">Pending Orders</a>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')" class="nav-item">
+                <a class="nav-link btn-lg" th:href="@{/products/add}">Add Product</a>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')" class="nav-item">
+                <a class="nav-link btn-lg" th:href="@{/offers/add}">Add Offer</a>
             </li>
         </ul>
 

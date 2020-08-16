@@ -1,6 +1,6 @@
 package bg.jamesmustafa.pizzaria.db.entity;
 
-import bg.jamesmustafa.pizzaria.db.entity.common.BaseDeletableEntity;
+import bg.jamesmustafa.pizzaria.db.entity.common.BaseEntity;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "offers")
-public class Offer extends BaseDeletableEntity {
+public class Offer extends BaseEntity {
 
     @Column(name = "old_price", nullable = false)
     private BigDecimal oldPrice;

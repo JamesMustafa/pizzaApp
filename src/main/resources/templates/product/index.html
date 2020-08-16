@@ -5,6 +5,12 @@
     <body>
 
     <!-- Behaviour -->
+    <script sec:authorize="hasRole('ADMIN')">
+        $(document).on("click", ".open-delete-dialog", function () {
+        $("#deleteId").val($(this).data('id'));
+        });
+    </script>
+
     <script sec:authorize="hasRole('EMPLOYEE')">
         $(document).on("click", ".open-edit-dialog", function () {
         $("#activateId").val($(this).data('id'));
@@ -37,36 +43,46 @@
                         <p class="card-text" th:text="${pizza.description}"></p>
                     </div>
                     <div class="card-footer">
-                        <small class="text-muted" th:text="${pizza.price}"></small>
-
-                        <div sec:authorize="hasRole('CUSTOMER')">
-                            <button type="button"
-                                    th:if="${pizza.activity}"
-                                    class="open-add-to-cart-dialog btn btn-success"
-                                    data-toggle="modal"
-                                    data-target="#addToCartModal"
-                                    th:data-id="*{pizza.id}">Add To Cart
-                            </button>
-                        </div>
-
-                        <div sec:authorize="hasRole('EMPLOYEE')">
-                            <button type="button"
-                                    th:if="${!pizza.activity}"
-                                    class="open-edit-dialog btn btn-success"
-                                    data-toggle="modal"
-                                    data-target="#activateModal"
-                                    th:data-id="*{pizza.id}">Activate
-                            </button>
-                            <button type="button"
-                                    th:if="${pizza.activity}"
-                                    class="open-edit-dialog btn btn-danger"
-                                    data-toggle="modal"
-                                    data-target="#activateModal"
-                                    th:data-id="*{pizza.id}">Deactivate
-                            </button>
-                        </div>
-                        <div sec:authorize="hasRole('ADMIN')">
-                            <a th:href="@{/products/edit/{id}(id=${pizza.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                        <span class="text-muted" th:text="${pizza.price}"></span>
+                        <div class="row">
+                            <div class="col">
+                                <div sec:authorize="hasRole('CUSTOMER')">
+                                    <button type="button"
+                                            th:if="${pizza.activity}"
+                                            class="open-add-to-cart-dialog btn btn-success"
+                                            data-toggle="modal"
+                                            data-target="#addToCartModal"
+                                            th:data-id="*{pizza.id}">Add To Cart
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col" sec:authorize="hasRole('EMPLOYEE')" th:if="${!pizza.activity}">
+                                    <button type="button"
+                                            class="open-edit-dialog btn btn-success"
+                                            data-toggle="modal"
+                                            data-target="#activateModal"
+                                            th:data-id="*{pizza.id}">Activate
+                                    </button>
+                            </div>
+                            <div class="col" sec:authorize="hasRole('EMPLOYEE')" th:if="${pizza.activity}">
+                                <button type="button"
+                                        class="open-edit-dialog btn btn-warning text-light"
+                                        data-toggle="modal"
+                                        data-target="#activateModal"
+                                        th:data-id="*{pizza.id}">Deactivate
+                                </button>
+                            </div>
+                            <div class="col" sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/products/edit/{id}(id=${pizza.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                            </div>
+                            <div class="col" sec:authorize="hasRole('ADMIN')">
+                                <button type="button"
+                                        class="open-delete-dialog btn btn-danger text-light"
+                                        data-toggle="modal"
+                                        data-target="#deleteModal"
+                                        th:data-id="*{pizza.id}">Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
                     </div>
@@ -91,34 +107,43 @@
                         </div>
                         <div class="card-footer">
                             <small class="text-muted" th:text="${salad.price}"></small>
-
-                            <div sec:authorize="hasRole('CUSTOMER')">
-                                <button type="button"
-                                        th:if="${salad.activity}"
-                                        class="open-add-to-cart-dialog btn btn-success"
-                                        data-toggle="modal"
-                                        data-target="#addToCartModal"
-                                        th:data-id="*{salad.id}">Add To Cart
-                                </button>
-                            </div>
-                            <div sec:authorize="hasRole('EMPLOYEE')">
-                                <button type="button"
-                                        th:if="${!salad.activity}"
-                                        class="open-edit-dialog btn btn-success"
-                                        data-toggle="modal"
-                                        data-target="#activateModal"
-                                        th:data-id="*{salad.id}">Activate
-                                </button>
-                                <button type="button"
-                                        th:if="${salad.activity}"
-                                        class="open-edit-dialog btn btn-danger"
-                                        data-toggle="modal"
-                                        data-target="#activateModal"
-                                        th:data-id="*{salad.id}">Deactivate
-                                </button>
-                            </div>
-                            <div sec:authorize="hasRole('ADMIN')">
-                                <a th:href="@{/products/edit/{id}(id=${salad.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                            <div class="row">
+                                <div class="col" sec:authorize="hasRole('CUSTOMER')">
+                                    <button type="button"
+                                            th:if="${salad.activity}"
+                                            class="open-add-to-cart-dialog btn btn-success"
+                                            data-toggle="modal"
+                                            data-target="#addToCartModal"
+                                            th:data-id="*{salad.id}">Add To Cart
+                                    </button>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('EMPLOYEE')" th:if="${!salad.activity}">
+                                    <button type="button"
+                                            class="open-edit-dialog btn btn-success"
+                                            data-toggle="modal"
+                                            data-target="#activateModal"
+                                            th:data-id="*{salad.id}">Activate
+                                    </button>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('EMPLOYEE')" th:if="${salad.activity}">
+                                    <button type="button"
+                                            class="open-edit-dialog btn btn-warning text-light"
+                                            data-toggle="modal"
+                                            data-target="#activateModal"
+                                            th:data-id="*{salad.id}">Deactivate
+                                    </button>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('ADMIN')">
+                                    <a th:href="@{/products/edit/{id}(id=${salad.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('ADMIN')">
+                                    <button type="button"
+                                            class="open-delete-dialog btn btn-danger text-light"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            th:data-id="*{salad.id}">Delete
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -143,34 +168,43 @@
                         </div>
                         <div class="card-footer">
                             <small class="text-muted" th:text="${desert.price}"></small>
-
-                            <div sec:authorize="hasRole('CUSTOMER')">
-                                <button type="button"
-                                        th:if="${desert.activity}"
-                                        class="open-add-to-cart-dialog btn btn-success"
-                                        data-toggle="modal"
-                                        data-target="#addToCartModal"
-                                        th:data-id="*{desert.id}">Add To Cart
-                                </button>
-                            </div>
-                            <div sec:authorize="hasRole('EMPLOYEE')">
-                                <button type="button"
-                                        th:if="${!desert.activity}"
-                                        class="open-edit-dialog btn btn-success"
-                                        data-toggle="modal"
-                                        data-target="#activateModal"
-                                        th:data-id="*{desert.id}">Activate
-                                </button>
-                                <button type="button"
-                                        th:if="${desert.activity}"
-                                        class="open-edit-dialog btn btn-danger"
-                                        data-toggle="modal"
-                                        data-target="#activateModal"
-                                        th:data-id="*{desert.id}">Deactivate
-                                </button>
-                            </div>
-                            <div sec:authorize="hasRole('ADMIN')">
-                                <a th:href="@{/products/edit/{id}(id=${desert.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                            <div class="row">
+                                <div class="col" sec:authorize="hasRole('CUSTOMER')">
+                                    <button type="button"
+                                            th:if="${desert.activity}"
+                                            class="open-add-to-cart-dialog btn btn-success"
+                                            data-toggle="modal"
+                                            data-target="#addToCartModal"
+                                            th:data-id="*{desert.id}">Add To Cart
+                                    </button>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('EMPLOYEE')" th:if="${!desert.activity}">
+                                    <button type="button"
+                                            class="open-edit-dialog btn btn-success"
+                                            data-toggle="modal"
+                                            data-target="#activateModal"
+                                            th:data-id="*{desert.id}">Activate
+                                    </button>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('EMPLOYEE')" th:if="${desert.activity}">
+                                    <button type="button"
+                                            class="open-edit-dialog btn btn-warning text-light"
+                                            data-toggle="modal"
+                                            data-target="#activateModal"
+                                            th:data-id="*{desert.id}">Deactivate
+                                    </button>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('ADMIN')">
+                                    <a th:href="@{/products/edit/{id}(id=${desert.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('ADMIN')">
+                                    <button type="button"
+                                            class="open-delete-dialog btn btn-danger text-light"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            th:data-id="*{desert.id}">Delete
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -196,33 +230,43 @@
                         </div>
                         <div class="card-footer">
                             <small class="text-muted" th:text="${drink.price}"></small>
-                            <div sec:authorize="hasRole('CUSTOMER')">
-                                <button type="button"
-                                        th:if="${drink.activity}"
-                                        class="open-add-to-cart-dialog btn btn-success"
-                                        data-toggle="modal"
-                                        data-target="#addToCartModal"
-                                        th:data-id="*{drink.id}">Add To Cart
-                                </button>
-                            </div>
-                            <div sec:authorize="hasRole('EMPLOYEE')">
-                                <button type="button"
-                                        th:if="${!drink.activity}"
-                                        class="open-edit-dialog btn btn-success"
-                                        data-toggle="modal"
-                                        data-target="#activateModal"
-                                        th:data-id="*{drink.id}">Activate
-                                </button>
-                                <button type="button"
-                                        th:if="${drink.activity}"
-                                        class="open-edit-dialog btn btn-danger"
-                                        data-toggle="modal"
-                                        data-target="#activateModal"
-                                        th:data-id="*{drink.id}">Deactivate
-                                </button>
-                            </div>
-                            <div sec:authorize="hasRole('ADMIN')">
-                                <a th:href="@{/products/edit/{id}(id=${drink.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                            <div class="row">
+                                <div class="col" sec:authorize="hasRole('CUSTOMER')">
+                                    <button type="button"
+                                            th:if="${drink.activity}"
+                                            class="open-add-to-cart-dialog btn btn-success"
+                                            data-toggle="modal"
+                                            data-target="#addToCartModal"
+                                            th:data-id="*{drink.id}">Add To Cart
+                                    </button>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('EMPLOYEE')" th:if="${!drink.activity}">
+                                    <button type="button"
+                                            class="open-edit-dialog btn btn-success"
+                                            data-toggle="modal"
+                                            data-target="#activateModal"
+                                            th:data-id="*{drink.id}">Activate
+                                    </button>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('EMPLOYEE')" th:if="${drink.activity}">
+                                    <button type="button"
+                                            class="open-edit-dialog btn btn-warning text-light"
+                                            data-toggle="modal"
+                                            data-target="#activateModal"
+                                            th:data-id="*{drink.id}">Deactivate
+                                    </button>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('ADMIN')">
+                                    <a th:href="@{/products/edit/{id}(id=${drink.id})}" class="btn btn-primary font-weight-bold text-white">Edit</a>
+                                </div>
+                                <div class="col" sec:authorize="hasRole('ADMIN')">
+                                    <button type="button"
+                                            class="open-delete-dialog btn btn-danger text-light"
+                                            data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            th:data-id="*{drink.id}">Delete
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -243,15 +287,11 @@
         </div>
         <!-- EO: Add to cart product-->
 
-
-
-<!--    <a href="#" class="btn btn-primary" rel="popover" data-content='-->
-<!--<form id="quantityForm" name="quantityForm" method="post" th:action="@{/cart/addProduct}">-->
-<!--        <label for="quantity">Quantity: </label>-->
-<!--        <input type="number" id="quantity" name="quantity" min="1" max="15" step="1"/>-->
-<!--</form>-->
-<!--' data-placement="top" data-original-title="Fill in form">Add to Cart</a>-->
-
+        <!-- Delete product-->
+        <div sec:authorize="hasRole('ADMIN')" th:replace="product/modal/deleteModal :: delete-product">
+        Modal dialog for deleting product
+        </div>
+        <!-- Delete product-->
 
     </body>
 </html>

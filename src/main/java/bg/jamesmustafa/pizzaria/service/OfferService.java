@@ -49,16 +49,6 @@ public class OfferService {
         //TODO: Once again find the differences between save and saveAndFlush !!!
     }
 
-    //Soft delete sets the entity column is_deleted=true, and does not delete object itself.
-    @Transactional
-    public void softDelete(Long offerId) {
-        Offer offer = this.offerRepository.findById(offerId)
-                .orElseThrow(() -> new OfferNotFoundException("Offer with the given id was not found!"));
-        offer.setDeleted(true);
-        offer.setDeletedOn(LocalDateTime.now());
-        this.offerRepository.save(offer);
-    }
-
     //On the other hand, hardDelete method deletes the whole object without chance of putting the object back to our project.
     @Transactional
     public void hardDelete(Long productId) {
@@ -68,7 +58,6 @@ public class OfferService {
     public List<OfferBindingModel> findAllValidOffers(){
         return this.offerRepository.findAll()
                 .stream()
-                .filter(offer -> offer.getDeleted().equals(false))
                 .filter(offer -> offer.getValidUntil().isAfter(LocalDateTime.now()))
                 .map(offer -> this.modelMapper.map(offer, OfferBindingModel.class))
                 .collect(Collectors.toList());
