@@ -8,30 +8,85 @@
 <!-- Navbar -->
 
 <h1 class="text-center text-dark">User Details</h1>
-<hr class="hr-2 bg-dark w-75">
-<div class="card w-75 mx-auto text-center" style="width: 18rem;">
+<hr class="hr-2 bg-dark w-50">
+<div class="card w-50 mx-auto text-center" style="width: 18rem;">
     <div class="card-body">
         <h4 class="card-title">User details for <span th:text="${userProfile.username}"></span></h4>
     </div>
     <ul class="list-group list-group-flush">
-        <li class="list-group-item"><h6>Full Name: </h6><span th:text="${userProfile.name}"></span> <span th:text="${userProfile.surname}"></span></li>
         <li class="list-group-item">
-            <h6>E-mail:  </h6><span th:text="${userProfile.email}"></span>
+            <div class="row">
+                <div class="col">
+                    <h6>Full Name: </h6>
+                </div>
+                <div class="col">
+                    <span th:text="|${userProfile.name}  ${userProfile.surname}|"></span>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col">
+                    <h6>E-mail:  </h6>
+                </div>
+                <div class="col">
+                    <span th:text="${userProfile.email}"></span>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col">
+                    <h6>Phone number:  </h6>
+                </div>
+                <div class="col">
+                    <span th:text="|+359 ${userProfile.phoneNumber}|"></span>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col">
+                    <h6>City, Address: </h6>
+                </div>
+                <div class="col">
+                    <span th:text="|${userProfile.city}, ${userProfile.address}|"></span>
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="container w-50">
+    <div class="row">
+        <div class="col">
             <button type="button"
                     th:if="${userProfile.emailConfirmed == false}"
                     class="btn btn-success btn-block my-4">Confirm your email address
             </button>
-        </li>
-        <li class="list-group-item">
-            <h6>Phone number:  </h6><span th:text="${userProfile.phoneNumber}"></span>
+        </div>
+        <div class="col">
             <button type="button"
                     th:if="${userProfile.phoneNumberConfirmed == false}"
                     class="btn btn-success btn-block my-4">Confirm your phone number
             </button>
-        </li>
-        <li class="list-group-item"><h6>City: </h6><span th:text="${userProfile.city}"></span></li>
-        <li class="list-group-item"><h6>Address: </h6><span th:text="${userProfile.address}"></span></li>
-    </ul>
+        </div>
+        <div class="col">
+            <a  th:href="@{/authentication/edit}"
+                    class="btn btn-warning btn-block my-4 text-light">Edit your profile
+            </a>
+
+        </div>
+        <div class="col">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit"
+                        class="btn btn-danger btn-block my-4">
+                    Logout
+                </button>
+            </form>
+        </div>
+    </div>
+
+
 </div>
 </body>
 </html>

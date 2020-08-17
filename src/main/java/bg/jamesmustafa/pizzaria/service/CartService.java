@@ -110,6 +110,10 @@ public class CartService {
         return orderBindingModel;
     }
 
+    public boolean checkIfEmailConfirmed(String username){
+        return this.userDetailsService.findUserByUsername(username).getEmailConfirmed();
+    }
+
     private OrderBindingModel mapToOrder(String customer, String comment, BigDecimal price){
         OrderBindingModel orderBindingModel = new OrderBindingModel();
         orderBindingModel.setComment(comment);

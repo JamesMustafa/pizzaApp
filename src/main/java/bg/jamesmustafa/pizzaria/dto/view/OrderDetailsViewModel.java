@@ -12,6 +12,7 @@ public class OrderDetailsViewModel {
     private BigDecimal totalPrice;
     private UserServiceModel customer;
     private LocalDateTime createdOn;
+    private Boolean approved; //thymeleaf does not recognize it if it's isApproved
     private Boolean successful; //thymeleaf does not recognize it if it's isSuccessful
     private LocalDateTime waitingTime;
     private String comment;
@@ -89,4 +90,8 @@ public class OrderDetailsViewModel {
     public void setWaitingMinutes(Long waitingMinutes) {
         this.waitingMinutes = waitingMinutes;
     }
+
+    public Boolean getApproved() { return approved; }
+
+    public void setApproved(Boolean approved) { this.approved = approved; }
 }

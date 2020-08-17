@@ -1,9 +1,6 @@
 package bg.jamesmustafa.pizzaria.dto.binding;
 
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 import java.math.BigDecimal;
 
@@ -11,22 +8,22 @@ public class ProductBindingModel {
 
     private Long id;
 
-    @NotBlank(message = "Name cannot be blank")
-    @Size(min = 3,max = 32, message = "Name must be less than 32 characters")
+    @NotNull(message = "Name cannot be null")
+    @Size(min = 3,max = 32, message = "Name must be more than 3 and less than 32 characters")
     private String name;
 
-    @NotBlank(message = "Description cannot be blank")
-    @Size(min = 10, max = 1024, message = "Description length must be less than 1024 characters")
+    @NotEmpty(message = "Description cannot be blank")
+    @Size(min = 10, max = 1024, message = "Description length must be more than 10 and less than 1024 characters")
     private String description;
 
-    @NotBlank(message = "Price cannot be blank")
+    @NotNull(message = "Price cannot be null")
     @DecimalMin(value = "0.00", inclusive = false)
     private BigDecimal price;
 
     @NotNull
     private Boolean activity;
 
-    @NotBlank(message = "Image source cannot be blank")
+    @NotEmpty(message = "Image source cannot be blank")
     private String imgSrc;
 
     //TODO: Make it categoryDTO class.

@@ -30,7 +30,7 @@ public class OrderBindingModel {
     private UserServiceModel customer;
 
     @NotNull(message = "Boolean should be either true or false")
-    private Boolean isApproved;
+    private Boolean approved;
 
     @Size(max = 200, message = "Comment length must be less than 200 characters")
     private String comment;
@@ -65,9 +65,13 @@ public class OrderBindingModel {
 
     public void setCustomer(UserServiceModel customer) { this.customer = customer; }
 
-    public Boolean getApproved() { return isApproved; }
+    public Boolean getApproved() {
+        return approved;
+    }
 
-    public void setApproved(Boolean approved) { isApproved = approved; }
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
+    }
 
     public String getComment() { return comment; }
 

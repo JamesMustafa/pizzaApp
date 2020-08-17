@@ -62,7 +62,8 @@
             </div>
             <div class="button-holder d-flex justify-content-center my-4">
                 <input type="hidden" id="price" name="price" th:value="${totalPrice}">
-                <button type="submit" class="btn btn-success">Checkout</button>
+                <button type="submit" th:if="${#session.getAttribute('shopping-cart').isEmpty()}" class="btn btn-secondary disabled" aria-disabled="true" disabled>Checkout</button>
+                <button type="submit" th:if="!${#session.getAttribute('shopping-cart').isEmpty()}" class="btn btn-success">Checkout</button>
             </div>
         </form>
 

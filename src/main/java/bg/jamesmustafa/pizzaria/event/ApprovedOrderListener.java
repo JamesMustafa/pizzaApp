@@ -17,8 +17,8 @@ public class ApprovedOrderListener {
     @EventListener(ApprovedOrderEvent.class)
     public void onEvent(ApprovedOrderEvent orderEvent) {
 
-        var link = '"' + "localhost:8000/orders/history/" + orderEvent.getOrderId() + '"';
-        var orderLink = String.format("<a href={}>FROM HERE</a>",link);
+        var link = '"' + "http://localhost:8000/orders/history/" + orderEvent.getOrderId() + '"';
+        var orderLink = String.format("<html><body><a href=%s>FROM HERE</a></body></html>",link);
 
         if(orderEvent.getArrivingOn() != null && !orderEvent.getPrice().isEmpty()){
             var message = "Dear Customer,</br></br>"
@@ -35,7 +35,7 @@ public class ApprovedOrderListener {
                     + "You can still see you order " + orderLink + " and maybe try again another time</br></br>"
                     + "<b>Wish you a happy and joyful day!</b>";
 
-            this.emailService.sendMail(orderEvent.getTo(),"Your order has been confirmed.", message);
+            this.emailService.sendMail(orderEvent.getTo(),"Your order has been declined.", message);
         }
     }
 }

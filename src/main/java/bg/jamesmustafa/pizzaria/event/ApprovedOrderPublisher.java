@@ -16,6 +16,7 @@ public class ApprovedOrderPublisher {
 
     public void publishDecline(String to, String orderId) {
         ApprovedOrderEvent approvedEvent = new ApprovedOrderEvent(this, to, orderId);
+        
         this.applicationEventPublisher.publishEvent(approvedEvent);
     }
 

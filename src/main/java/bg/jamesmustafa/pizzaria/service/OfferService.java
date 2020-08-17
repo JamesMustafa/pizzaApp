@@ -5,6 +5,7 @@ import bg.jamesmustafa.pizzaria.db.entity.Product;
 import bg.jamesmustafa.pizzaria.db.repository.OfferRepository;
 import bg.jamesmustafa.pizzaria.dto.binding.OfferAddBindingModel;
 import bg.jamesmustafa.pizzaria.dto.binding.OfferBindingModel;
+import bg.jamesmustafa.pizzaria.dto.binding.ProductBindingModel;
 import bg.jamesmustafa.pizzaria.error.OfferNotFoundException;
 import bg.jamesmustafa.pizzaria.util.TimeUtil;
 import org.modelmapper.ModelMapper;
@@ -59,8 +60,13 @@ public class OfferService {
         return this.offerRepository.findAll()
                 .stream()
                 .filter(offer -> offer.getValidUntil().isAfter(LocalDateTime.now()))
+//                .filter(offer -> offer.getProducts()
+//                        .stream()
+//                        .filter(p -> p.getActivity().equals(true))
+//                        .collect(Collectors.toList()))
                 .map(offer -> this.modelMapper.map(offer, OfferBindingModel.class))
                 .collect(Collectors.toList());
+
     }
 
     public OfferBindingModel findById(Long offerId){

@@ -59,9 +59,35 @@
                     </div>
                 </div>
             </li>
+        </ul>
 
-            <li sec:authorize="hasRole('CUSTOMER')" class="nav-item">
+        <ul class="navbar-nav ml-auto">
+            <li sec:authorize="isAnonymous()" class="nav-item">
+                <a th:href="@{/register}" class="btn btn-outline-danger btn-lg">Get Started</a>
+            </li>
+            <li sec:authorize="hasRole('EMPLOYEE')" class="nav-item">
                 <div class="dropdown">
+                    <a class="nav-link js-scroll-trigger dropdown-toggle btn-lg" data-toggle="dropdown">
+                        Employee
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:href="@{/orders/pending}">Pending Orders</a>
+                    </div>
+                </div>
+            </li>
+            <li sec:authorize="hasRole('ADMIN')" class="nav-item">
+                <div class="dropdown">
+                    <a class="nav-link js-scroll-trigger dropdown-toggle btn-lg" data-toggle="dropdown">
+                        Admin
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:href="@{/products/add}">Add Product</a>
+                        <a class="dropdown-item" th:href="@{/offers/add}">Add Offer</a>
+                    </div>
+                </div>
+            </li>
+            <li sec:authorize="hasRole('CUSTOMER')" class="nav-item pr-3">
+                <div class="dropleft">
                     <a class="nav-link js-scroll-trigger dropdown-toggle btn-lg" data-toggle="dropdown">
                         Profile
                     </a>
@@ -79,21 +105,6 @@
                         </div>
                     </div>
                 </div>
-            </li>
-            <li sec:authorize="hasRole('EMPLOYEE')" class="nav-item">
-                <a class="nav-link btn-lg" th:href="@{/orders/pending}">Pending Orders</a>
-            </li>
-            <li sec:authorize="hasRole('ADMIN')" class="nav-item">
-                <a class="nav-link btn-lg" th:href="@{/products/add}">Add Product</a>
-            </li>
-            <li sec:authorize="hasRole('ADMIN')" class="nav-item">
-                <a class="nav-link btn-lg" th:href="@{/offers/add}">Add Offer</a>
-            </li>
-        </ul>
-
-        <ul class="navbar-nav ml-auto">
-            <li sec:authorize="isAnonymous()" class="nav-item">
-                <a th:href="@{/register}" class="btn btn-outline-danger btn-lg">Get Started</a>
             </li>
         </ul>
     </div>

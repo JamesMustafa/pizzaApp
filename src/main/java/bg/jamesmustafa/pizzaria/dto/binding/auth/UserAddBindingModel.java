@@ -1,13 +1,12 @@
 package bg.jamesmustafa.pizzaria.dto.binding.auth;
 
 import bg.jamesmustafa.pizzaria.validation.PasswordValidator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.validation.constraints.*;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 @PasswordValidator(pass = "password",
-        confPass = "repeatPassword",
+        confPass = "confirmPassword",
         message = "The passwords do not match")
 public class UserAddBindingModel {
 
@@ -36,9 +35,9 @@ public class UserAddBindingModel {
     @Email(message = "Please enter a valid email address")
     private String email;
 
-    //TODO: Could create a phone number validation with regex
     @NotBlank(message = "Phone number cannot be blank")
-    @Size(min = 9,max = 11, message = "Phone number length must be between 9 and 11 characters")
+    @Pattern(regexp = "[7-9][0-9] {9}", message = "Invalid phone number")
+    @Size(max = 10 ,message = "Phone number should be maximum of 10 digits")
     private String phoneNumber;
 
     @NotBlank(message = "City cannot be blank")

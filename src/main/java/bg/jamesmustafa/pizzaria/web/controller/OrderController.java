@@ -34,8 +34,7 @@ public class OrderController {
     @GetMapping("/pending/{id}")
     @PreAuthorize("hasRole('EMPLOYEE')")
     public String pendingDetails(@PathVariable("id") Long orderId, Model model) {
-        OrderBindingModel orderBindingModel = this.orderService.findById(orderId);
-        model.addAttribute("order", orderBindingModel);
+        model.addAttribute("order", this.orderService.findOrderDetailsById(orderId));
         return "order/pendingDetails";
     }
 
@@ -57,14 +56,14 @@ public class OrderController {
     @PreAuthorize("hasRole('EMPLOYEE')")
     public String declineOrder(@ModelAttribute(name="orderDeclineId") Long orderId){
         this.orderService.declineOrder(orderId);
-        return "order/pendingOrders";
+        return "redirect:/orders/pending";
     }
 
     @PostMapping("/confirmOrder")
     @PreAuthorize("hasRole('EMPLOYEE')")
     public String confirmOrder(@ModelAttribute(name="orderConfirmId") Long orderId, String waitingTime){
         this.orderService.confirmOrder(orderId, waitingTime);
-        return "order/pendingOrders";
+        return "redirect:/orders/pending";
     }
 
 }

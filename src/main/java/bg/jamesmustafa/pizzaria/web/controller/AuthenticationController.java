@@ -13,14 +13,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
 
 @Controller
 public class AuthenticationController {
-
+//TODO: EMAIL CONFIRM.
     private final UserDetailsServiceImpl userService;
     private final ModelMapper modelMapper;
 
@@ -66,6 +65,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
+    @PreAuthorize("isAnonymous()")
     public String register(@Valid @ModelAttribute("userRegisterForm") UserAddBindingModel user,
                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -84,15 +84,12 @@ public class AuthenticationController {
     @PreAuthorize("hasRole('CUSTOMER')")
     public String editUserConfirm(@Valid @ModelAttribute("userEditForm") UserServiceModel userModel,
                                      @PathVariable("id") Long userId,
-                                     BindingResult bindingResult,
-                                     RedirectAttributes redirectAttributes){
+                                     BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
-            return "authenticate/edit";
+            return "redirect:authentication/edit";
         }
 
         this.userService.editUser(userId, userModel);
-        return "authenticate/profile";
+        return "redirect:/authentication/profile";
     }
-
-    //TODO:Add change password option!
 }

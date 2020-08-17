@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragment/head :: head"></head>
 <body>
 
@@ -10,6 +10,7 @@
     <article class="card-body mx-auto" style="max-width: 400px;">
         <h4 class="card-title mt-3 text-center">Create Account</h4>
         <p class="text-center">Get started with your free account</p>
+
         <form th:action="@{/register}" th:method="post" th:object="${userRegisterForm}">
 
             <!-- username -->
@@ -23,9 +24,7 @@
                        type="text"
                        th:value="*{username}"
                        th:errorclass="is-invalid">
-                <div class="invalid-feedback">
-                    The username should be valid.
-                </div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
             </div>
             <!-- username -->
 
@@ -40,9 +39,7 @@
                        type="text"
                        th:value="*{name}"
                        th:errorclass="is-invalid">
-                <div class="invalid-feedback">
-                    The name should be valid.
-                </div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
             </div>
             <!-- name -->
 
@@ -57,9 +54,7 @@
                        type="text"
                        th:value="*{surname}"
                        th:errorclass="is-invalid">
-                <div class="invalid-feedback">
-                    The surname should be valid.
-                </div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></div>
             </div>
             <!-- surname -->
 
@@ -74,9 +69,7 @@
                        type="email"
                        th:value="*{email}"
                        th:errorclass="is-invalid">
-                <div class="invalid-feedback">
-                    The e-mail address should be valid.
-                </div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
             </div>
             <!-- email -->
 
@@ -94,9 +87,7 @@
                        type="text"
                        th:value="*{phoneNumber}"
                        th:errorclass="is-invalid">
-                <div class="invalid-feedback">
-                    The phone number should be valid.
-                </div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
             </div>
             <!-- phone -->
 
@@ -111,9 +102,7 @@
                        type="text"
                        th:value="*{city}"
                        th:errorclass="is-invalid">
-                <div class="invalid-feedback">
-                    The city field should be valid.
-                </div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></div>
             </div>
             <!-- city -->
 
@@ -128,9 +117,7 @@
                        type="text"
                        th:value="*{address}"
                        th:errorclass="is-invalid">
-                <div class="invalid-feedback">
-                    The address field should be valid.
-                </div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('address')}" th:errors="*{address}"></div>
             </div>
             <!-- address -->
 
@@ -145,9 +132,7 @@
                         placeholder="Create Password"
                         class="form-control"
                         id="password"/>
-                <div class="invalid-feedback">
-                    Both passwords should match.
-                </div>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
             </div>
             <!-- create password -->
 
@@ -161,7 +146,7 @@
                         th:errorclass="is-invalid"
                         placeholder="Repeat Password"
                         class="form-control"
-                        id="confirmPassword" />
+                        id="confirmPassword">
                 <div class="invalid-feedback">
                     Both passwords should match.
                 </div>
@@ -169,9 +154,7 @@
             <!-- confirm password -->
 
             <!-- register button -->
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block"> Create Account  </button>
-            </div>
+            <button type="submit" class="btn btn-primary btn-block"> Create Account  </button>
             <!-- register button -->
 
             <p class="text-center">Have an account? <a th:href="@{/login}">Log In</a> </p>

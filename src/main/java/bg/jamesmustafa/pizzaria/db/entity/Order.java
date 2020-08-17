@@ -21,7 +21,7 @@ public class Order extends BaseEntity {
     private LocalDateTime waitingTime;
 
     @Column(name = "is_approved", nullable = false)
-    private Boolean isApproved;
+    private Boolean approved;
 
     @Column(name = "comment")
     private String comment;
@@ -79,9 +79,9 @@ public class Order extends BaseEntity {
 
     public void setCustomer(User customer) { this.customer = customer; }
 
-    public Boolean getApproved() { return isApproved; }
+    public Boolean getApproved() { return approved; }
 
-    public void setApproved(Boolean approved) { isApproved = approved; }
+    public void setApproved(Boolean approved) { this.approved = approved; }
 
     public String getComment() { return comment; }
 

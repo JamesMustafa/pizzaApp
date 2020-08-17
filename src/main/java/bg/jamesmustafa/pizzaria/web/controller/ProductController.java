@@ -36,8 +36,7 @@ public class ProductController {
 
     @GetMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
-    public String addProduct(Model model) {
-        model.addAttribute("productInputForm", new ProductBindingModel());
+    public String addProduct(ProductBindingModel productBindingModel, Model model) {
         model.addAttribute("categoryTypes", this.categoryService.findAll());
         return "product/createProduct";
     }
@@ -55,12 +54,13 @@ public class ProductController {
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
     public String save
-    (@Valid @ModelAttribute("productInputForm") ProductBindingModel productDTO,
-                    BindingResult bindingResult) {
+    (@Valid ProductBindingModel productBindingModel, BindingResult bindingResult) {
+
         if (bindingResult.hasErrors()) {
-            return "redirect:/products/add";
+            return "product/createProduct";
         }
-        this.productService.createProduct(productDTO);
+
+        this.productService.createProduct(productBindingModel);
         return "redirect:/products";
     }
 
