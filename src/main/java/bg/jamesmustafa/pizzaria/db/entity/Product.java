@@ -1,7 +1,6 @@
 package bg.jamesmustafa.pizzaria.db.entity;
 
 import bg.jamesmustafa.pizzaria.db.entity.common.BaseEntity;
-import org.springframework.data.jpa.repository.Query;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

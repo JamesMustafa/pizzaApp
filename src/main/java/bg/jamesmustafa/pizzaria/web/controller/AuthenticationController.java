@@ -3,16 +3,15 @@ package bg.jamesmustafa.pizzaria.web.controller;
 import bg.jamesmustafa.pizzaria.dto.binding.auth.UserAddBindingModel;
 import bg.jamesmustafa.pizzaria.dto.binding.auth.UserServiceModel;
 import bg.jamesmustafa.pizzaria.dto.view.UserDetailsViewModel;
+import bg.jamesmustafa.pizzaria.event.ConfirmEmailPublisher;
+import bg.jamesmustafa.pizzaria.service.ConfirmationTokenService;
 import bg.jamesmustafa.pizzaria.service.UserDetailsServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -21,10 +20,14 @@ import java.security.Principal;
 public class AuthenticationController {
 //TODO: EMAIL CONFIRM.
     private final UserDetailsServiceImpl userService;
+    private final ConfirmationTokenService tokenService;
+    private final ConfirmEmailPublisher emailPublisher;
     private final ModelMapper modelMapper;
 
-    public AuthenticationController(UserDetailsServiceImpl userService, ModelMapper modelMapper) {
+    public AuthenticationController(UserDetailsServiceImpl userService, ConfirmationTokenService tokenService, ConfirmEmailPublisher emailPublisher, ModelMapper modelMapper) {
         this.userService = userService;
+        this.tokenService = tokenService;
+        this.emailPublisher = emailPublisher;
         this.modelMapper = modelMapper;
     }
 
@@ -52,7 +55,7 @@ public class AuthenticationController {
         return "authenticate/profile";
     }
 
-    @GetMapping("authentication/edit")
+    @GetMapping("/authentication/edit")
     @PreAuthorize("hasRole('CUSTOMER')")
     public String editUser(Principal principal, Model model) {
         //TODO: Is it good practice to use principal, because if I pass id's everywhere its super easy to change the id
@@ -62,6 +65,16 @@ public class AuthenticationController {
 
         model.addAttribute("userEditForm", user);
         return "authenticate/edit";
+    }
+
+    @GetMapping("/authentication/emailConfirm/{token}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public String emailConfirm(@PathVariable("token") String token, Principal principal){
+        if(!this.tokenService.isTokenValid(token,this.userService.findUserByUsername(principal.getName()).getEmail())){
+           return "redirect:/authentication/profile";
+        }
+        this.userService.confirmUserEmail(this.userService.findUserByUsername(principal.getName()));
+        return "redirect:/home";
     }
 
     @PostMapping("/register")
@@ -91,5 +104,12 @@ public class AuthenticationController {
 
         this.userService.editUser(userId, userModel);
         return "redirect:/authentication/profile";
+    }
+
+    @PostMapping("authentication/sendConfirmEmail")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public String confirmEmail(@ModelAttribute(name="userId") Long userId){
+        this.emailPublisher.publish(this.userService.findUserById(userId));
+        return "redirect:/home";
     }
 }

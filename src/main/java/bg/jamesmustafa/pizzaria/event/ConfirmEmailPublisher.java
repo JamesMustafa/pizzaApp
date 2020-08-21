@@ -1,5 +1,6 @@
 package bg.jamesmustafa.pizzaria.event;
 
+import bg.jamesmustafa.pizzaria.db.entity.User;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +13,8 @@ public class ConfirmEmailPublisher {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public void publish(String to){
-        ConfirmEmailEvent confirmEmailEvent = new ConfirmEmailEvent(this,to);
+    public void publish(User user){
+        ConfirmEmailEvent confirmEmailEvent = new ConfirmEmailEvent(this, user);
         this.applicationEventPublisher.publishEvent(confirmEmailEvent);
     }
 }

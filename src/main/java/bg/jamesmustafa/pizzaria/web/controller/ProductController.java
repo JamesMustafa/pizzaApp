@@ -2,6 +2,7 @@ package bg.jamesmustafa.pizzaria.web.controller;
 
 import bg.jamesmustafa.pizzaria.dto.binding.ProductBindingModel;
 import bg.jamesmustafa.pizzaria.service.CategoryService;
+import bg.jamesmustafa.pizzaria.service.OfferService;
 import bg.jamesmustafa.pizzaria.service.ProductService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -54,9 +55,12 @@ public class ProductController {
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
     public String save
-    (@Valid ProductBindingModel productBindingModel, BindingResult bindingResult) {
+    (@Valid ProductBindingModel productBindingModel,
+     BindingResult bindingResult,
+     Model model) {
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("categoryTypes", this.categoryService.findAll());
             return "product/createProduct";
         }
 

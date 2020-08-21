@@ -1,16 +1,17 @@
 package bg.jamesmustafa.pizzaria.event;
 
+import bg.jamesmustafa.pizzaria.db.entity.User;
 import org.springframework.context.ApplicationEvent;
 
 public class ConfirmEmailEvent extends ApplicationEvent {
-    private final String to;
+    private final User user;
 
-    public ConfirmEmailEvent(Object source, String to) {
+    public ConfirmEmailEvent(Object source, User user) {
         super(source);
-        this.to = to;
+        this.user = user;
     }
 
-    public String getTo() {
-        return to;
+    public User getUser() {
+        return user;
     }
 }

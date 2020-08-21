@@ -52,6 +52,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Transactional
+    private User createUser(UserAddBindingModel userModel) {
+        LOGGER.info("Creating a new user with username {}.", userModel.getUsername());
+        User user = this.modelMapper.map(userModel, User.class);
+
+        if (userModel.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(userModel.getPassword()));
+        }
+
+        user.setEmailConfirmed(false);
+        user.setPhoneNumberConfirmed(false);
+        Role customerRole = this.roleService.findRoleByName("ROLE_CUSTOMER");
+        user.setRoles(Set.of(customerRole));
+        return userRepository.save(user);
+    }
+
+    @Transactional
     public void editUser(Long userId, UserServiceModel userModel){
         User user = this.userRepository
                 .findById(userId)
@@ -71,6 +87,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         user.setCity(userModel.getCity());
         user.setAddress(userModel.getAddress());
+        this.userRepository.save(user);
+    }
+
+    @Transactional
+    public void confirmUserEmail(User user){
+        user.setEmailConfirmed(true);
         this.userRepository.save(user);
     }
 
@@ -95,22 +117,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public boolean isUsernameAvailable(String username){
         return userRepository.findByUsername(username).isPresent();
-    }
-
-
-    @Transactional
-    private User createUser(UserAddBindingModel userModel) {
-        LOGGER.info("Creating a new user with username {}.", userModel.getUsername());
-        User user = this.modelMapper.map(userModel, User.class);
-
-        if (userModel.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(userModel.getPassword()));
-        }
-
-        user.setEmailConfirmed(false);
-        user.setPhoneNumberConfirmed(false);
-        Role customerRole = this.roleService.findRoleByName("ROLE_CUSTOMER");
-        user.setRoles(Set.of(customerRole));
-        return userRepository.save(user);
     }
 }

@@ -66,7 +66,6 @@ public class OfferService {
 //                        .collect(Collectors.toList()))
                 .map(offer -> this.modelMapper.map(offer, OfferBindingModel.class))
                 .collect(Collectors.toList());
-
     }
 
     public OfferBindingModel findById(Long offerId){
@@ -74,4 +73,5 @@ public class OfferService {
                 .map(offer -> this.modelMapper.map(offer, OfferBindingModel.class))
                 .orElseThrow(() -> new OfferNotFoundException("Offer with this id was not found"));
     }
+
 }

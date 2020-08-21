@@ -19,9 +19,8 @@ public class Offer extends BaseEntity {
 
     @Column(name = "valid_until", nullable = false)
     private LocalDateTime validUntil;
-    //TODO: Learn about all the cascadetypes...
-    //TODO: Gives exception but when ???
-    @ManyToMany(targetEntity = Product.class ,fetch = FetchType.LAZY) //with cascadetype.all it gives exception
+
+    @ManyToMany(targetEntity = Product.class ,fetch = FetchType.LAZY)
     @JoinTable(
             name = "offers_products",
             joinColumns = @JoinColumn(

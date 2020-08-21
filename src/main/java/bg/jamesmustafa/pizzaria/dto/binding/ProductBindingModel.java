@@ -48,9 +48,7 @@ public class ProductBindingModel {
 
     public String getDescription() { return description; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+    public void setDescription(String description) { this.description = description; }
 
     public BigDecimal getPrice() {
         return price;

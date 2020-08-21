@@ -14,6 +14,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
+import javax.persistence.PersistenceContext;
 import java.time.Duration;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +27,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ApprovedOrderPublisher orderPublisher;
     private final ModelMapper modelMapper;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public OrderService(OrderRepository orderRepository, ApprovedOrderPublisher orderPublisher, ModelMapper modelMapper) {
         this.orderRepository = orderRepository;
@@ -41,11 +47,14 @@ public class OrderService {
 
     @Transactional
     public void declineOrder(Long orderId){
-        Order order = this.orderRepository.findById(orderId)
+        Order order  = this.orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order with this id does not exist!"));
 
         order.setApproved(true);
         order.setSuccessful(false);
+
+        //In this way we are making optimistic locking to this entity.
+        this.entityManager.lock(order, LockModeType.OPTIMISTIC);
 
         //publish event
         this.orderPublisher.publishDecline(order.getCustomer().getEmail(),
@@ -63,6 +72,9 @@ public class OrderService {
         order.setApproved(true);
         order.setSuccessful(true);
         order.setWaitingTime(TimeUtil.parseTimeToDate(waitingTime));
+
+        //In this way we are making optimistic locking to this entity.
+        this.entityManager.lock(order, LockModeType.OPTIMISTIC);
 
         //publish event
         this.orderPublisher.publishSuccess(order.getCustomer().getEmail(),

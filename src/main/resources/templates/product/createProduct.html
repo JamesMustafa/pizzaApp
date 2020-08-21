@@ -80,8 +80,7 @@
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="category">Category type</label>
                     </div>
-                    <select th:errorclass="is-invalid"
-                            id="category"
+                    <select id="category"
                             name="category"
                             th:field="*{category.id}">
                         <option th:each="aCategoryType : ${categoryTypes}"
@@ -89,9 +88,6 @@
                                 th:text="${aCategoryType.name}"
                         ></option>
                     </select>
-                    <div class="invalid-feedback">
-                        Category type should be specified.
-                    </div>
                 </div>
             </div>
         </div>

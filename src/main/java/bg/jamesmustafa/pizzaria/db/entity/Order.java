@@ -26,6 +26,9 @@ public class Order extends BaseEntity {
     @Column(name = "comment")
     private String comment;
 
+    @Version
+    private Integer version;
+
     @ManyToMany(targetEntity = Product.class, fetch = FetchType.LAZY)
     @JoinTable(
             name = "orders_products",
@@ -86,4 +89,10 @@ public class Order extends BaseEntity {
     public String getComment() { return comment; }
 
     public void setComment(String comment) { this.comment = comment; }
+
+    public Integer getVersion() { return version; }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
 }

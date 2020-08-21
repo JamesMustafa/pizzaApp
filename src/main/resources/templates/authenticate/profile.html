@@ -59,10 +59,13 @@
 <div class="container w-50">
     <div class="row">
         <div class="col">
-            <button type="button"
-                    th:if="${userProfile.emailConfirmed == false}"
-                    class="btn btn-success btn-block my-4">Confirm your email address
-            </button>
+            <form th:action="@{/authentication/sendConfirmEmail}" method="post">
+                <input id="userId" name="userId" type="hidden" th:value="${userProfile.id}"/>
+                <button type="submit"
+                        th:if="${userProfile.emailConfirmed == false}"
+                        class="btn btn-success btn-block my-4">Confirm your email address
+                </button>
+            </form>
         </div>
         <div class="col">
             <button type="button"

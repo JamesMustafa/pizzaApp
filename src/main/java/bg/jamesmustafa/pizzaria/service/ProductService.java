@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +59,9 @@ public class ProductService {
     //On the other hand, hardDelete method deletes the whole object without chance of putting the object back to our project.
     //Added @PreRemove method in entity class, in order to delete the object from another tables as well.
     @Transactional
-    public void hardDelete(Long productId) { this.productRepository.deleteById(productId); }
+    public void hardDelete(Long productId) {
+        this.productRepository.deleteById(productId);
+    }
 
     public List<ProductBindingModel> findAll() {
         return this.productRepository.
