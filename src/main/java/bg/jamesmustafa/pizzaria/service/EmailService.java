@@ -23,7 +23,6 @@ public class EmailService {
     public void sendMail(String to, String subject, String text){
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
-
         try {
             helper.setFrom("djemko123@gmail.com");
             helper.setTo(to);

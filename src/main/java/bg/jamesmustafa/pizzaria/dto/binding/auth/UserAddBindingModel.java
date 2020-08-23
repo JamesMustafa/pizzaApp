@@ -4,7 +4,6 @@ import bg.jamesmustafa.pizzaria.validation.PasswordValidator;
 
 import javax.validation.constraints.*;
 
-
 @PasswordValidator(pass = "password",
         confPass = "confirmPassword",
         message = "The passwords do not match")
@@ -14,14 +13,12 @@ public class UserAddBindingModel {
     @Size(min = 3,max = 20, message = "Username length must be less than 20 characters")
     private String username;
 
-    @NotEmpty
-    @Min(value = 3,message = "Password must be more than 3 characters")
-    @Max(value = 20,message = "Password must be less then 20 characters")
+    @NotBlank
+    @Size(min = 3,max = 20, message = "Password length must be between 3 and 20 characters")
     private String password;
 
-    @NotEmpty
-    @Min(value = 3,message = "Password must be more than 3 characters")
-    @Max(value = 20,message = "Password must be less then 20 characters")
+    @NotBlank
+    @Size(min = 3,max = 20, message = "Password length must be between 3 and 20 characters")
     private String confirmPassword;
 
     @NotBlank(message = "Name cannot be blank")
@@ -36,7 +33,7 @@ public class UserAddBindingModel {
     private String email;
 
     @NotBlank(message = "Phone number cannot be blank")
-    @Pattern(regexp = "[7-9][0-9] {9}", message = "Invalid phone number")
+    @Pattern(regexp = "([ 0-9]){8,11}$", message = "Invalid phone number")
     @Size(max = 10 ,message = "Phone number should be maximum of 10 digits")
     private String phoneNumber;
 

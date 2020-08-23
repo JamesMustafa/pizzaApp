@@ -42,7 +42,6 @@ public class ProductController {
         return "product/createProduct";
     }
 
-    //TODO: Consider if it is better to make this method without "/{id}"
     @GetMapping("/edit/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public String editProduct(@PathVariable("id") Long productId, Model model) {
@@ -51,7 +50,6 @@ public class ProductController {
         return "product/edit";
     }
 
-    //TODO: Should I make my own image uploader???
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
     public String save
@@ -72,8 +70,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')")
     public String editProductConfirm(@Valid @ModelAttribute("productEditForm") ProductBindingModel productDTO,
                                      @PathVariable("id") Long id,
-                                     BindingResult bindingResult,
-                                     RedirectAttributes redirectAttributes){
+                                     BindingResult bindingResult){
         if (bindingResult.hasErrors()) {
             return "product/edit";
         }

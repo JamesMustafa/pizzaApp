@@ -9,5 +9,4 @@ import java.util.Optional;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findByName(String name);
-    //TODO: Is it a good practice to access repos with Optional<> ?
 }

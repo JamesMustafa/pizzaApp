@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
-    //TODO: This service returns a couple of view models instead of binding models. should check it again...
     private final OrderRepository orderRepository;
     private final ApprovedOrderPublisher orderPublisher;
     private final ModelMapper modelMapper;
@@ -38,11 +37,12 @@ public class OrderService {
     }
 
     @Transactional
-    public void addOrderForApproval(OrderBindingModel orderBindingModel){
+    public Order addOrderForApproval(OrderBindingModel orderBindingModel){
         Order pendingOrder = this.modelMapper.map(orderBindingModel, Order.class);
         pendingOrder.setApproved(false);
         pendingOrder.setCustomer(this.modelMapper.map(orderBindingModel.getCustomer(), User.class));
         this.orderRepository.save(pendingOrder);
+        return pendingOrder;
     }
 
     @Transactional
@@ -54,10 +54,11 @@ public class OrderService {
         order.setSuccessful(false);
 
         //In this way we are making optimistic locking to this entity.
-        this.entityManager.lock(order, LockModeType.OPTIMISTIC);
+        //this.entityManager.lock(order, LockModeType.OPTIMISTIC);
 
         //publish event
-        this.orderPublisher.publishDecline(order.getCustomer().getEmail(),
+        this.orderPublisher.publishDecline(
+                order.getCustomer().getEmail(),
                 order.getId().toString());
 
         this.orderRepository.save(order);
@@ -74,10 +75,11 @@ public class OrderService {
         order.setWaitingTime(TimeUtil.parseTimeToDate(waitingTime));
 
         //In this way we are making optimistic locking to this entity.
-        this.entityManager.lock(order, LockModeType.OPTIMISTIC);
+        //this.entityManager.lock(order, LockModeType.OPTIMISTIC);
 
         //publish event
-        this.orderPublisher.publishSuccess(order.getCustomer().getEmail(),
+        this.orderPublisher.publishSuccess(
+                order.getCustomer().getEmail(),
                 order.getId().toString(),
                 order.getWaitingTime().toString(),
                 order.getTotalPrice().toString());

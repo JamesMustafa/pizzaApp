@@ -1,13 +1,23 @@
 package bg.jamesmustafa.pizzaria.integration;
 
+import bg.jamesmustafa.pizzaria.db.entity.Category;
+import bg.jamesmustafa.pizzaria.db.entity.Product;
+import bg.jamesmustafa.pizzaria.db.repository.ProductRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,6 +29,34 @@ public class ProductControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ProductRepository mockProductRepository;
+
+    @BeforeEach
+    public void setUp(){
+        if(this.mockProductRepository.count() == 0){
+            Product apple = new Product();
+            apple.setId((long)1);
+            apple.setName("Apple");
+            apple.setDescription("Try our fresh apples now");
+            apple.setActivity(true);
+            apple.setImgSrc("images/product/apple.png");
+            apple.setPrice(BigDecimal.valueOf(3.00));
+            apple.setCategory(new Category());
+            this.mockProductRepository.save(apple);
+        }
+    }
+
+    @AfterEach
+    public void setDown(){
+        this.mockProductRepository.deleteAll();
+    }
+
+    @Test
+    public void testDoesItCreateEntityInDB() throws Exception{
+        Assertions.assertTrue(this.mockProductRepository.count() > 0);
+    }
 
     @Test
     @WithAnonymousUser
@@ -48,7 +86,6 @@ public class ProductControllerTest {
     public void testValidProductAdd() throws Exception {
         this.mockMvc.perform(
                 post("/products/add").
-                        contentType(MediaType.APPLICATION_FORM_URLENCODED).
                         param("name", "krusha").
                         param("description", "nai vkusnata krusha na trakiyskata nizina").
                         param("price", "1.99").
@@ -65,7 +102,6 @@ public class ProductControllerTest {
     public void testInvalidProductAdd() throws Exception {
         this.mockMvc.perform(
                 post("/products/add").
-                        contentType(MediaType.APPLICATION_FORM_URLENCODED).
                         param("name", "kr").
                         param("description", "nai vkusnata krusha na trakiyskata nizina").
                         param("price", "1,39").

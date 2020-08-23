@@ -6,7 +6,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-//TODO: User validations ???
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO implements UserDetails {
 

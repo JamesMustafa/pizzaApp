@@ -24,13 +24,13 @@ public class ProductService {
     }
 
     @Transactional
-    public void createProduct(ProductBindingModel productModel) {
+    public Product createProduct(ProductBindingModel productModel) {
         Product product = this.modelMapper.map(productModel, Product.class);
-        this.productRepository.save(product);
+        return this.productRepository.save(product);
     }
 
     @Transactional
-    public void activateProduct(Long activateId){
+    public Product activateProduct(Long activateId){
         Product product = this.productRepository.findById(activateId)
                 .orElseThrow(() -> new ProductNotFoundException("No product with the given id was found!"));
 
@@ -40,6 +40,7 @@ public class ProductService {
         else product.setActivity(true);
 
         this.productRepository.save(product);
+        return product;
     }
 
     @Transactional
@@ -52,6 +53,7 @@ public class ProductService {
         product.setActivity(productDTO.getActivity());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
+        product.setImgSrc(productDTO.getImgSrc());
         product.setCategory(this.modelMapper.map(productDTO.getCategory(), Category.class));
         this.productRepository.save(product);
     }

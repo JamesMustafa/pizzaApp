@@ -47,7 +47,6 @@ public class OfferService {
         offer.setProducts(products);
         offer.setOldPrice(oldPrice);
         this.offerRepository.save(offer);
-        //TODO: Once again find the differences between save and saveAndFlush !!!
     }
 
     //On the other hand, hardDelete method deletes the whole object without chance of putting the object back to our project.

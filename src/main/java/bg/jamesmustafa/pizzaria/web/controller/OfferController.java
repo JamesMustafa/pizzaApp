@@ -19,7 +19,6 @@ import javax.validation.Valid;
 @Controller
 @RequestMapping("/offers")
 public class OfferController {
-    //TODO: Super Important: Offer and order must check if the products they contain are all active and if not to remove them from cart or to deactivate the offer!!!
     private final OfferService offerService;
     private final ProductService productService;
 

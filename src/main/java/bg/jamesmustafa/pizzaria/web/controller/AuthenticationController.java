@@ -18,7 +18,6 @@ import java.security.Principal;
 
 @Controller
 public class AuthenticationController {
-//TODO: EMAIL CONFIRM.
     private final UserDetailsServiceImpl userService;
     private final ConfirmationTokenService tokenService;
     private final ConfirmEmailPublisher emailPublisher;
@@ -49,7 +48,7 @@ public class AuthenticationController {
     @PreAuthorize("hasRole('CUSTOMER')")
     public String showProfile(Principal principal, Model model){
         UserDetailsViewModel user = this.modelMapper.map(
-                this.userService.findUserByUsername(principal.getName()) , UserDetailsViewModel.class);
+                this.userService.loadUserByUsername(principal.getName()) , UserDetailsViewModel.class);
 
         model.addAttribute("userProfile", user);
         return "authenticate/profile";
@@ -58,10 +57,8 @@ public class AuthenticationController {
     @GetMapping("/authentication/edit")
     @PreAuthorize("hasRole('CUSTOMER')")
     public String editUser(Principal principal, Model model) {
-        //TODO: Is it good practice to use principal, because if I pass id's everywhere its super easy to change the id
-        //TODO: and see data of other users. Should look for a solution for this with Spring Secuirty as well...
         UserServiceModel user = this.modelMapper.map(
-                this.userService.findUserByUsername(principal.getName()),UserServiceModel.class);
+                this.userService.loadUserByUsername(principal.getName()),UserServiceModel.class);
 
         model.addAttribute("userEditForm", user);
         return "authenticate/edit";
@@ -70,10 +67,10 @@ public class AuthenticationController {
     @GetMapping("/authentication/emailConfirm/{token}")
     @PreAuthorize("hasRole('CUSTOMER')")
     public String emailConfirm(@PathVariable("token") String token, Principal principal){
-        if(!this.tokenService.isTokenValid(token,this.userService.findUserByUsername(principal.getName()).getEmail())){
+        if(!this.tokenService.isTokenValid(token,this.userService.loadUserByUsername(principal.getName()).getEmail())){
            return "redirect:/authentication/profile";
         }
-        this.userService.confirmUserEmail(this.userService.findUserByUsername(principal.getName()));
+        this.userService.confirmUserEmail(this.userService.loadUserByUsername(principal.getName()));
         return "redirect:/home";
     }
 

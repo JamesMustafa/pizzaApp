@@ -5,9 +5,11 @@ import org.apache.tomcat.jni.Local;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class TimeUtil {
+public final class TimeUtil {
 
-    //TODO: Utility classes should not have public constructors.
+    //This prevents the default parameter-less constructor from being used elsewhere in your code.
+    //Additionally, you can make the class final, so that it can't be extended in subclasses,
+    // which is a best practice for utility classes
     private TimeUtil() {
         throw new IllegalStateException("Utility class");
     }

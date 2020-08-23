@@ -103,6 +103,7 @@ public class CartService {
         return orderBindingModel;
     }
 
+    //should check here if i remove the price from constructor and just add it from the offer ;)
     public OrderBindingModel prepareOrderFromOffer(Long offerId, String comment, BigDecimal price, String customer){
         OrderBindingModel orderBindingModel = this.mapToOrder(customer,comment,price);
         OfferBindingModel offer = this.offerService.findById(offerId);
@@ -110,15 +111,16 @@ public class CartService {
         return orderBindingModel;
     }
 
+    //I think that this should not be here.
     public boolean checkIfEmailConfirmed(String username){
-        return this.userDetailsService.findUserByUsername(username).getEmailConfirmed();
+        return this.userDetailsService.loadUserByUsername(username).getEmailConfirmed();
     }
 
     private OrderBindingModel mapToOrder(String customer, String comment, BigDecimal price){
         OrderBindingModel orderBindingModel = new OrderBindingModel();
         orderBindingModel.setComment(comment);
         orderBindingModel.setTotalPrice(price);
-        orderBindingModel.setCustomer(this.modelMapper.map(this.userDetailsService.findUserByUsername(customer), UserServiceModel.class));
+        orderBindingModel.setCustomer(this.modelMapper.map(this.userDetailsService.loadUserByUsername(customer), UserServiceModel.class));
         return orderBindingModel;
     }
 }

@@ -53,7 +53,6 @@ public class CartController {
         return "redirect:/cart/details";
     }
 
-    //TODO: @DeleteMapping and method="delete" are not working, but when it's Post everything is fine. Why is that?
     @PostMapping("/removeProduct")
     public String removeFromCartConfirm(@ModelAttribute(name="deleteId") Long deleteId, HttpSession session) {
         this.cartService.removeItemFromCart(deleteId, this.cartService.retrieveCart(session));
@@ -63,7 +62,6 @@ public class CartController {
     @PostMapping("/checkout")
     public String checkoutConfirm(String comment, BigDecimal price, HttpSession session, Principal principal) {
         var cart = this.cartService.retrieveCart(session);
-
         if(!this.cartService.checkIfEmailConfirmed(principal.getName())){
             return "redirect:/authentication/profile";
         }
@@ -76,6 +74,10 @@ public class CartController {
 
     @PostMapping("/checkoutOffer")
     public String checkoutConfirm(Long offerId, String comment, BigDecimal price, Principal principal) {
+        if(!this.cartService.checkIfEmailConfirmed(principal.getName())){
+            return "redirect:/authentication/profile";
+        }
+
         OrderBindingModel orderBindingModel = this.cartService.prepareOrderFromOffer(offerId, comment, price, principal.getName());
         this.orderService.addOrderForApproval(orderBindingModel);
         return "redirect:/home";

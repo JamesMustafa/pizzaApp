@@ -10,11 +10,6 @@ public class UserServiceModel {
     @Size(min = 3,max = 20, message = "Username length must be less than 20 characters")
     private String username;
 
-    @NotEmpty
-    @Min(value = 3,message = "Password must be more than 3 characters")
-    @Max(value = 20,message = "Password must be less then 20 characters")
-    private String password;
-
     @NotBlank(message = "Name cannot be blank")
     @Size(min = 2,max = 15, message = "Name length must be between 2 and 15 characters")
     private String name;
@@ -26,9 +21,9 @@ public class UserServiceModel {
     @Email(message = "Please enter a valid email address")
     private String email;
 
-    //TODO: Could create a phone number validation with regex
     @NotBlank(message = "Phone number cannot be blank")
-    @Size(min = 9,max = 11, message = "Phone number length must be between 9 and 11 characters")
+    @Pattern(regexp = "([ 0-9]){8,11}$", message = "Invalid phone number")
+    @Size(max = 10 ,message = "Phone number should be maximum of 10 digits")
     private String phoneNumber;
 
     @NotBlank(message = "City cannot be blank")
@@ -38,6 +33,8 @@ public class UserServiceModel {
     @NotBlank(message = "Address cannot be blank")
     @Size(min = 5,max = 100, message = "Address length must be between 5 and 100 characters")
     private String address;
+
+    private String password;
 
     public Long getId() {
         return id;

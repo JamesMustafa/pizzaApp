@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//TODO: Can I add more validation annotations ?
 public class OfferBindingModel {
 
     private Long id;

@@ -21,14 +21,14 @@ public class ConfirmationTokenService {
     }
 
     @Transactional
-    public void createToken(String tokenString, User user){
+    public ConfirmationToken createToken(String tokenString, User user){
         ConfirmationToken token = new ConfirmationToken();
         token.setToken(tokenString);
         token.setUser(user);
         token.setExpiryDate(LocalDateTime.now().plusMinutes(30));
-        //TODO: You have already confirmed your email validation
         this.tokenRepository.save(token);
         LOGGER.info("Creating a new token for user with email {}.", user.getEmail());
+        return token;
     }
 
     public boolean isTokenValid(String tokenString, String email){

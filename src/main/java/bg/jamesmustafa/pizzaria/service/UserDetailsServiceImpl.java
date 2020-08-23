@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,7 +42,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public void createAndLoginUser(UserAddBindingModel userModel) {
         User newUser = createUser(userModel);
-        UserDTO user = loadUserByUsername(newUser.getUsername());
+        User user = loadUserByUsername(newUser.getUsername());
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 user,
@@ -52,7 +53,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Transactional
-    private User createUser(UserAddBindingModel userModel) {
+    public User createUser(UserAddBindingModel userModel) {
         LOGGER.info("Creating a new user with username {}.", userModel.getUsername());
         User user = this.modelMapper.map(userModel, User.class);
 
@@ -97,15 +98,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDTO loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = this.userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
-        return new UserDTO(user);
-    }
-
-    //TODO: Should there be two methods like that (loadUserByUsername) or i should make them as one
-    //TODO: This method below should return a dto not the entity object ;)
-    public User findUserByUsername(String username) throws UsernameNotFoundException{
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
         return this.userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
