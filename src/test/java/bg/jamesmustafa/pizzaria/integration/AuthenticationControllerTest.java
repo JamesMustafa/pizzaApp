@@ -80,23 +80,7 @@ public class AuthenticationControllerTest {
             admin.setRoles(Set.of());
             this.mockUserRepository.save(admin);
         }
-
-//        when(mockUserRepository.findById(admin.getId())).thenReturn(Optional.of(admin));
-//
-//        when(mockUserRepository.save(any())).thenAnswer(
-//                (Answer<User>) invocation -> {
-//                    User userToSave = invocation.getArgument(0);
-//                    userToSave.setId((long)NEW_USER_ID);
-//                    return userToSave;
-//                }
-//        );
-
     }
-
-    //@AfterEach
-    //public void setDown(){
-        //this.mockUserRepository.deleteAll();
-    //}
 
     @Test
     public void testDoesItCreateEntityInDB() throws Exception{

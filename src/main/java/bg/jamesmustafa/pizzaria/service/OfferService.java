@@ -32,7 +32,7 @@ public class OfferService {
     }
 
     @Transactional
-    public void createOffer(OfferAddBindingModel offerDTO) {
+    public Offer createOffer(OfferAddBindingModel offerDTO) {
         BigDecimal oldPrice = new BigDecimal(0);
         Offer offer = this.modelMapper.map(offerDTO, Offer.class);
         offer.setValidUntil(TimeUtil.parseDateToTime(offerDTO.getValidUntil()));
@@ -47,6 +47,7 @@ public class OfferService {
         offer.setProducts(products);
         offer.setOldPrice(oldPrice);
         this.offerRepository.save(offer);
+        return offer;
     }
 
     //On the other hand, hardDelete method deletes the whole object without chance of putting the object back to our project.
