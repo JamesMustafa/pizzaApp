@@ -46,8 +46,7 @@ public class OfferController {
     @PreAuthorize("hasRole('ADMIN')")
     public String save
             (@Valid @ModelAttribute("offerInputForm") OfferAddBindingModel offerDTO,
-             BindingResult bindingResult,
-             RedirectAttributes redirectAttributes) {
+             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "redirect:/offers/add";
         }

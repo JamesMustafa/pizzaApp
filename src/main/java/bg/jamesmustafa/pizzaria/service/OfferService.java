@@ -5,7 +5,6 @@ import bg.jamesmustafa.pizzaria.db.entity.Product;
 import bg.jamesmustafa.pizzaria.db.repository.OfferRepository;
 import bg.jamesmustafa.pizzaria.dto.binding.OfferAddBindingModel;
 import bg.jamesmustafa.pizzaria.dto.binding.OfferBindingModel;
-import bg.jamesmustafa.pizzaria.dto.binding.ProductBindingModel;
 import bg.jamesmustafa.pizzaria.error.OfferNotFoundException;
 import bg.jamesmustafa.pizzaria.util.TimeUtil;
 import org.modelmapper.ModelMapper;
@@ -14,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,17 +32,18 @@ public class OfferService {
 
     @Transactional
     public Offer createOffer(OfferAddBindingModel offerDTO) {
-        BigDecimal oldPrice = new BigDecimal(0);
         Offer offer = this.modelMapper.map(offerDTO, Offer.class);
         offer.setValidUntil(TimeUtil.parseDateToTime(offerDTO.getValidUntil()));
-        List<Product> products = new ArrayList<>();
 
-        for(String productId: offerDTO.getProducts()){
-            Product product = this.modelMapper.map(
-                    this.productService.findById(Long.parseLong(productId)), Product.class);
-            oldPrice = oldPrice.add(product.getPrice()); //collecting the prices from all the products
-            products.add(product);
-        }
+        List<Product> products = Arrays.stream(offerDTO.getProducts())
+                .map(productId -> modelMapper.map(productService.findById(Long.parseLong(productId)), Product.class))
+                .collect(Collectors.toList());
+
+        BigDecimal oldPrice = BigDecimal.valueOf(products.stream()
+                .map(Product::getPrice)
+                .mapToLong(BigDecimal::longValue)
+                .sum());
+
         offer.setProducts(products);
         offer.setOldPrice(oldPrice);
         this.offerRepository.save(offer);
@@ -56,19 +56,15 @@ public class OfferService {
         this.offerRepository.deleteById(productId);
     }
 
-    public List<OfferBindingModel> findAllValidOffers(){
+    public List<OfferBindingModel> findAllValidOffers() {
         return this.offerRepository.findAll()
                 .stream()
                 .filter(offer -> offer.getValidUntil().isAfter(LocalDateTime.now()))
-//                .filter(offer -> offer.getProducts()
-//                        .stream()
-//                        .filter(p -> p.getActivity().equals(true))
-//                        .collect(Collectors.toList()))
                 .map(offer -> this.modelMapper.map(offer, OfferBindingModel.class))
                 .collect(Collectors.toList());
     }
 
-    public OfferBindingModel findById(Long offerId){
+    public OfferBindingModel findById(Long offerId) {
         return this.offerRepository.findById(offerId)
                 .map(offer -> this.modelMapper.map(offer, OfferBindingModel.class))
                 .orElseThrow(() -> new OfferNotFoundException("Offer with this id was not found"));

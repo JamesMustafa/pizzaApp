@@ -46,7 +46,6 @@ public class OfferServiceTest {
     private List<Product> products;
     private long OFFER_ID = 1;
     private ArrayList<Offer> offers;
-    private Product product;
 
     @BeforeEach
     public void setUp(){
@@ -55,7 +54,7 @@ public class OfferServiceTest {
     }
 
     @Test
-    public void testCreateOffer() throws Exception {
+    public void testCreateOffer() {
         //arrange
         ProductBindingModel product = this.mockModelMapper.map(createProduct(), ProductBindingModel.class);
         Product first = createProduct();
@@ -75,14 +74,14 @@ public class OfferServiceTest {
                     return offerToSave;
                 });
         //act
-        Offer actual = this.serviceToTest.createOffer(offer);
+        Offer actual = serviceToTest.createOffer(offer);
         //assert
         Assertions.assertEquals(OFFER_ID, actual.getId());
         Assertions.assertEquals(product.getName(), actual.getProducts().get(0).getName());
     }
 
     @Test
-    public void testHardDelete() throws Exception {
+    public void testHardDelete() {
         //arrange
         Offer testOffer = createTestOffer();
         this.mockOfferRepository.save(testOffer);
@@ -136,7 +135,6 @@ public class OfferServiceTest {
         Offer offer = new Offer();
         offer.setOldPrice(BigDecimal.valueOf(30.00));
         offer.setPromoPrice(BigDecimal.valueOf(19.99));
-        offer.setValidUntil(LocalDateTime.now());
         offer.setProducts(products);
 
         return offer;
